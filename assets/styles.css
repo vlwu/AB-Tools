@@ -17,7 +17,7 @@ body {
 
 /* ===== Typography ===== */
 h1, h2, h3 {
-  color: #005cbf;
+  color: #ffffff;
   margin-bottom: 1rem;
 }
 
@@ -28,7 +28,7 @@ p {
 
 /* ===== Links ===== */
 a {
-  color: #005cbf;
+  color: #ffdf2c;
   text-decoration: none;
   font-weight: 600;
 }
@@ -39,7 +39,7 @@ a:hover {
 
 /* ===== Containers ===== */
 section, .card, .box {
-  background: white;
+  background: rgb(156, 224, 255);
   padding: 1.5rem;
   margin: 1.5rem 0;
   border-radius: 10px;
@@ -68,7 +68,7 @@ button {
 }
 
 button:hover {
-  background-color: #004a99;
+  background-color: #387bc4;
 }
 
 /* ===== Tables (Optional) ===== */
