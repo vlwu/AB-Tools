@@ -39,7 +39,7 @@ a:hover {
 
 /* ===== Containers ===== */
 section, .card, .box {
-  background: rgb(156, 224, 255);
+  background: rgb(131, 216, 255);
   padding: 1.5rem;
   margin: 1.5rem 0;
   border-radius: 10px;
