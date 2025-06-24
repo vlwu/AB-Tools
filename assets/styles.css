@@ -1,1 +1,104 @@
-body { font-family: sans-serif; }
+/* ===== Reset & Base Styles ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9f9;
+  color: #222;
+  line-height: 1.6;
+  padding: 2rem;
+  max-width: 900px;
+  margin: auto;
+}
+
+/* ===== Typography ===== */
+h1, h2, h3 {
+  color: #005cbf;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+/* ===== Links ===== */
+a {
+  color: #005cbf;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Containers ===== */
+section, .card, .box {
+  background: white;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* ===== Inputs & Buttons ===== */
+input, select {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #005cbf;
+  color: white;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+button:hover {
+  background-color: #004a99;
+}
+
+/* ===== Tables (Optional) ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+th {
+  background-color: #f1f1f1;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  body {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  input, button {
+    font-size: 1rem;
+  }
+}
