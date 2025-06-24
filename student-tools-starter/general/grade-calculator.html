@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grade Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input { margin: 5px 0; display: block; }
+  </style>
+</head>
+<body>
+  <h2>General Grade Calculator</h2>
+  <p>Enter up to 8 course grades:</p>
+  <div id="inputs">
+    <input type="number" id="g1" placeholder="Grade 1">
+    <input type="number" id="g2" placeholder="Grade 2">
+    <input type="number" id="g3" placeholder="Grade 3">
+    <input type="number" id="g4" placeholder="Grade 4">
+    <input type="number" id="g5" placeholder="Grade 5">
+    <input type="number" id="g6" placeholder="Grade 6">
+    <input type="number" id="g7" placeholder="Grade 7">
+    <input type="number" id="g8" placeholder="Grade 8">
+    <button onclick="calculateAverage()">Calculate Average</button>
+  </div>
+  <p id="output"></p>
+  <script>
+    function calculateAverage() {
+      let sum = 0, count = 0;
+      for (let i = 1; i <= 8; i++) {
+        let grade = parseFloat(document.getElementById('g' + i).value);
+        if (!isNaN(grade)) {
+          sum += grade;
+          count++;
+        }
+      }
+      document.getElementById('output').textContent = 
+        count > 0 ? "Average: " + (sum / count).toFixed(1) + "%" : "Enter at least one grade.";
+    }
+  </script>
+</body>
+</html>
