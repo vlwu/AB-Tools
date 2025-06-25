@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chemistry 20 Outcome-Based Calculator</title>
+  <link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+  <h1>🧪 Chemistry 20 Grade Calculator</h1>
+  <p>Enter your current average for each outcome to calculate your Chemistry 20 overall mark. Outcome weights are based on the Alberta curriculum.</p>
+
+  <form id="chem20Form" class="box">
+    <!-- Scientific Inquiry Outcomes -->
+    <label>SK1 – Initiate & Plan [5%]</label>
+    <input type="number" min="0" max="100" id="sk1">
+
+    <label>SK2 – Perform & Record [5%]</label>
+    <input type="number" min="0" max="100" id="sk2">
+
+    <label>SK3 – Analyze & Interpret [5%]</label>
+    <input type="number" min="0" max="100" id="sk3">
+
+    <label>SK4 – Communicate & Teamwork [5%]</label>
+    <input type="number" min="0" max="100" id="sk4">
+
+    <!-- Unit Outcomes -->
+    <label>A1 – Ionic Compounds [3%]</label>
+    <input type="number" min="0" max="100" id="a1">
+
+    <label>A2 – Molecular Compounds [12%]</label>
+    <input type="number" min="0" max="100" id="a2">
+
+    <label>B1 – Gases [11%]</label>
+    <input type="number" min="0" max="100" id="b1">
+
+    <label>C1 – Solutions [14%]</label>
+    <input type="number" min="0" max="100" id="c1">
+
+    <label>C2 – Acids & Bases [12%]</label>
+    <input type="number" min="0" max="100" id="c2">
+
+    <label>D1 – Balanced Equations [7%]</label>
+    <input type="number" min="0" max="100" id="d1">
+
+    <label>D2a – Stoichiometry [12%]</label>
+    <input type="number" min="0" max="100" id="d2a">
+
+    <label>D2b – Titration [9%]</label>
+    <input type="number" min="0" max="100" id="d2b">
+
+    <!-- Final Exam -->
+    <label>Final Exam (Optional – 20%)</label>
+    <input type="number" min="0" max="100" id="finalExam">
+
+    <button type="button" onclick="calculateChem20()">Calculate Final Grade</button>
+    <p id="output"></p>
+  </form>
+
+  <script>
+    function calculateChem20() {
+      const weights = {
+        sk1: 5, sk2: 5, sk3: 5, sk4: 5,
+        a1: 3, a2: 12, b1: 11, c1: 14, c2: 12,
+        d1: 7, d2a: 12, d2b: 9
+      };
+
+      let totalWeighted = 0;
+      let totalWeight = 0;
+
+      for (let id in weights) {
+        const input = document.getElementById(id).value;
+        if (input !== "") {
+          const mark = parseFloat(input);
+          totalWeighted += mark * weights[id];
+          totalWeight += weights[id];
+        }
+      }
+
+      const finalExamInput = document.getElementById("finalExam").value;
+      let finalGrade;
+
+      if (finalExamInput !== "") {
+        const courseWeight = 0.80;
+        const examWeight = 0.20;
+        const courseMark = totalWeighted / totalWeight;
+        const finalExam = parseFloat(finalExamInput);
+        finalGrade = (courseMark * courseWeight + finalExam * examWeight).toFixed(1);
+        document.getElementById("output").innerText = `Final Grade (with Exam): ${finalGrade}%`;
+      } else {
+        const courseMark = (totalWeighted / totalWeight).toFixed(1);
+        document.getElementById("output").innerText = `Course Grade (without Exam): ${courseMark}%`;
+      }
+    }
+  </script>
+
+</body>
+</html>
