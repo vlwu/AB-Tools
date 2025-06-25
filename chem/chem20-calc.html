@@ -85,10 +85,10 @@
         const courseMark = totalWeighted / totalWeight;
         const finalExam = parseFloat(finalExamInput);
         finalGrade = (courseMark * courseWeight + finalExam * examWeight).toFixed(1);
-        document.getElementById("output").innerText = `Final Grade (with Exam): ${finalGrade}%`;
+        document.getElementById("output").innerText = `Course Grade (with Final Exam): ${finalGrade}%`;
       } else {
         const courseMark = (totalWeighted / totalWeight).toFixed(1);
-        document.getElementById("output").innerText = `Course Grade (without Exam): ${courseMark}%`;
+        document.getElementById("output").innerText = `Course Grade (without Final Exam): ${courseMark}%`;
       }
     }
   </script>
