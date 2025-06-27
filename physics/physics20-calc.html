@@ -2,34 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Physics 20 Grade Calculator</title>
+  <title>Physics 20 Calculator</title>
   <link rel="stylesheet" href="https://vlwu.github.io/EMHS-Learning-Tools/assets/styles.css">
 </head>
 <body>
-
   <h1>Physics 20 Grade Calculator</h1>
-
   <div id="calculator"></div>
 
   <script src="../assets/outcome-calculator.js"></script>
   <script>
-    const physics20Outcomes = [
-      { id: "sk1", label: "SK1 – Initiate & Plan", weight: 5 },
-      { id: "sk2", label: "SK2 – Perform & Record", weight: 5 },
-      { id: "sk3", label: "SK3 – Analyze & Interpret", weight: 5 },
-      { id: "sk4", label: "SK4 – Communicate & Teamwork", weight: 5 },
-      { id: "a1", label: "A1 – Kinematics", weight: 15 },
-      { id: "b1", label: "B1 – Dynamics", weight: 15 },
-      { id: "b2", label: "B2 – Gravity", weight: 8 },
-      { id: "c1", label: "C1 – Circular Motion", weight: 11 },
-      { id: "c2", label: "C2 – Work & Energy", weight: 13 },
-      { id: "d1", label: "D1 – Oscillatory Motion", weight: 10 },
-      { id: "d2", label: "D2 – Mechanical Waves", weight: 8 }
-    ];
-
-    // Build the calculator in the #calculator div with a 20% final exam
-    createCalculator("calculator", physics20Outcomes, 20);
+    window.onload = function () {
+      const physics20Outcomes = [
+        { id: "sk1", label: "SK1 – Initiate & Plan", weight: 5 },
+        { id: "sk2", label: "SK2 – Perform & Record", weight: 5 },
+        { id: "sk3", label: "SK3 – Analyze & Interpret", weight: 5 },
+        { id: "sk4", label: "SK4 – Communicate & Team", weight: 5 },
+        { id: "a1", label: "A1 – Kinematics", weight: 15 },
+        { id: "b1", label: "B1 – Dynamics", weight: 15 },
+        { id: "b2", label: "B2 – Gravity", weight: 8 },
+        { id: "c1", label: "C1 – Circular Motion", weight: 11 },
+        { id: "c2", label: "C2 – Work & Energy", weight: 13 },
+        { id: "d1", label: "D1 – Oscillatory Motion", weight: 10 },
+        { id: "d2", label: "D2 – Mechanical Waves", weight: 8 }
+      ];
+      createCalculator("calculator", physics20Outcomes, 20);
+    };
   </script>
-
 </body>
 </html>
