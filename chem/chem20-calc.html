@@ -1,97 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
-  <title>Chemistry 20 Outcome-Based Calculator</title>
-  <link rel="stylesheet" href="https://vlwu.github.io/EMHS-Learning-Tools/assets/styles.css">
+  <title>Chem 20 Calculator</title>
+  <link rel="stylesheet" href="../assets/styles.css">
 </head>
 <body>
+  <h1>Chemistry 20 Calculator</h1>
+  <div id="calculator"></div>
 
-  <h2>Chemistry 20 Grade Calculator</h2>
-
-  <form id="chem20Form" class="box">
-    <!-- Scientific Inquiry Outcomes -->
-    <label> <b>SK1 – Initiate & Plan [5%]</b> (Ask questions about observed relationships, and plan investigations of questions, ideas, problems and issues)</label>
-    <input type="number" min="0" max="100" id="sk1">
-
-    <label><b>SK2 – Perform & Record [5%]</b> (Conduct investigations into relationships between and among observable variables, and use a broad range of tools and techniques to gather and record data and information)</label>
-    <input type="number" min="0" max="100" id="sk2">
-
-    <label><b>SK3 – Analyze & Interpret [5%]</b> (Analyze data and apply mathematical and conceptual models to develop and assess possible solutions)</label>
-    <input type="number" min="0" max="100" id="sk3">
-
-    <label><b>SK4 – Communicate & Teamwork [5%]</b> (Work as members of a team in addressing problems, and apply the skills and conventions of science in communicating information and ideas and in assessing results)</label>
-    <input type="number" min="0" max="100" id="sk4">
-
-    <!-- Unit Outcomes -->
-    <label><b>A1 – Ionic Compounds [3%]</b> (Describe the role of modelling, evidence and theory in explaining and understanding the structure, chemical bonding and properties of ionic compounds)</label>
-    <input type="number" min="0" max="100" id="a1">
-
-    <label><b>A2 – Molecular Compounds [12%]</b> (Describe the role of modelling, evidence and theory in explaining and understanding the structure, chemical bonding and properties of molecular substances)</label>
-    <input type="number" min="0" max="100" id="a2">
-
-    <label><b>B1 – Gases [11%]</b> (Explain molecular behaviour, using models of the gaseous state of matter.)</label>
-    <input type="number" min="0" max="100" id="b1">
-
-    <label><b>C1 – Solutions [14%]</b> (Investigate solutions, describing their physical and chemical properties)</label>
-    <input type="number" min="0" max="100" id="c1">
-
-    <label><b>C2 – Acids & Bases [12%]</b> (Describe acidic and basic solutions qualitatively and quantitatively)</label>
-    <input type="number" min="0" max="100" id="c2">
-
-    <label> <b>D1 – Balanced Equations [7%]</b> (Explain how balanced chemical equations indicate the quantitative relationships between reactants and products involved in chemical changes)</label>
-    <input type="number" min="0" max="100" id="d1">
-
-    <label><b>D2a – Stoichiometry [12%]</b> (Use stoichiometry in quantitative analysis)</label>
-    <input type="number" min="0" max="100" id="d2a">
-
-    <label><b>D2b – Titration [9%]</b> (Use stoichiometry in quantitative analysis)</label>
-    <input type="number" min="0" max="100" id="d2b">
-
-    <!-- Final Exam -->
-    <label><b>Final Exam</b> (Optional Input – 20%)</label>
-    <input type="number" min="0" max="100" id="finalExam">
-
-    <button type="button" onclick="calculateChem20()">Calculate Final Grade</button>
-    <p id="output"></p>
-  </form>
-
+  <script src="../assets/outcome-calculator.js"></script>
   <script>
-    function calculateChem20() {
-      const weights = {
-        sk1: 5, sk2: 5, sk3: 5, sk4: 5,
-        a1: 3, a2: 12, b1: 11, c1: 14, c2: 12,
-        d1: 7, d2a: 12, d2b: 9
-      };
+    const chem20Outcomes = [
+      { id: "sk1", label: "SK1 – Initiate & Plan", weight: 5 },
+      { id: "sk2", label: "SK2 – Perform & Record", weight: 5 },
+      { id: "sk3", label: "SK3 – Analyze & Interpret", weight: 5 },
+      { id: "sk4", label: "SK4 – Communicate & Teamwork", weight: 5 },
+      { id: "a1", label: "A1 – Ionic Compounds", weight: 3 },
+      { id: "a2", label: "A2 – Molecular Compounds", weight: 12 },
+      { id: "b1", label: "B1 – Gases", weight: 11 },
+      { id: "c1", label: "C1 – Solutions", weight: 14 },
+      { id: "c2", label: "C2 – Acids & Bases", weight: 12 },
+      { id: "d1", label: "D1 – Balanced Equations", weight: 7 },
+      { id: "d2a", label: "D2a – Stoichiometry", weight: 12 },
+      { id: "d2b", label: "D2b – Titration", weight: 9 }
+    ];
 
-      let totalWeighted = 0;
-      let totalWeight = 0;
-
-      for (let id in weights) {
-        const input = document.getElementById(id).value;
-        if (input !== "") {
-          const mark = parseFloat(input);
-          totalWeighted += mark * weights[id];
-          totalWeight += weights[id];
-        }
-      }
-
-      const finalExamInput = document.getElementById("finalExam").value;
-      let finalGrade;
-
-      if (finalExamInput !== "") {
-        const courseWeight = 0.80;
-        const examWeight = 0.20;
-        const courseMark = totalWeighted / totalWeight;
-        const finalExam = parseFloat(finalExamInput);
-        finalGrade = (courseMark * courseWeight + finalExam * examWeight).toFixed(1);
-        document.getElementById("output").innerText = `Course Grade (with Final Exam): ${finalGrade}%`;
-      } else {
-        const courseMark = (totalWeighted / totalWeight).toFixed(1);
-        document.getElementById("output").innerText = `Course Grade (without Final Exam): ${courseMark}%`;
-      }
-    }
+    createCalculator("calculator", chem20Outcomes, 20);
   </script>
-
 </body>
 </html>
