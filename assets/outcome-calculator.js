@@ -52,10 +52,10 @@ function calculateGrade(examWeight) {
         courseAverage * ((100 - examWeight) / 100) +
         finalExamScore * (examWeight / 100)
       ).toFixed(1);
-      document.getElementById("output").innerText = `Final Grade (with Exam): ${finalGrade}%`;
+      document.getElementById("output").innerText = `Course Grade (with Final Exam): ${finalGrade}%`;
       return;
     }
   }
 
-  document.getElementById("output").innerText = `Course Grade (without Exam): ${courseAverage.toFixed(1)}%`;
+  document.getElementById("output").innerText = `Course Grade (without Final Exam): ${courseAverage.toFixed(1)}%`;
 }
