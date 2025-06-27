@@ -1,32 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Chem 20 Calculator</title>
+  <title>Chemistry 20 Calculator</title>
   <link rel="stylesheet" href="https://vlwu.github.io/EMHS-Learning-Tools/assets/styles.css">
 </head>
 <body>
-  <h1>Chemistry 20 Calculator</h1>
+  <h1>Chemistry 20 Grade Calculator</h1>
+  <p>Enter your marks for each outcome below to calculate your grade. Final exam weight: 20%</p>
   <div id="calculator"></div>
 
   <script src="../assets/outcome-calculator.js"></script>
   <script>
-    const chem20Outcomes = [
-      { id: "sk1", label: "SK1 – Initiate & Plan", weight: 5 },
-      { id: "sk2", label: "SK2 – Perform & Record", weight: 5 },
-      { id: "sk3", label: "SK3 – Analyze & Interpret", weight: 5 },
-      { id: "sk4", label: "SK4 – Communicate & Teamwork", weight: 5 },
-      { id: "a1", label: "A1 – Ionic Compounds", weight: 3 },
-      { id: "a2", label: "A2 – Molecular Compounds", weight: 12 },
-      { id: "b1", label: "B1 – Gases", weight: 11 },
-      { id: "c1", label: "C1 – Solutions", weight: 14 },
-      { id: "c2", label: "C2 – Acids & Bases", weight: 12 },
-      { id: "d1", label: "D1 – Balanced Equations", weight: 7 },
-      { id: "d2a", label: "D2a – Stoichiometry", weight: 12 },
-      { id: "d2b", label: "D2b – Titration", weight: 9 }
-    ];
-
-    createCalculator("calculator", chem20Outcomes, 20);
+    window.onload = function () {
+      const chem20Outcomes = [
+        { id: "sk1", label: "SK1 – Initiate & Plan", weight: 5 },
+        { id: "sk2", label: "SK2 – Perform & Record", weight: 5 },
+        { id: "sk3", label: "SK3 – Analyze & Interpret", weight: 5 },
+        { id: "sk4", label: "SK4 – Communicate & Team", weight: 5 },
+        { id: "a1", label: "A1 – Ionic Compounds", weight: 3 },
+        { id: "a2", label: "A2 – Molecular Compounds", weight: 12 },
+        { id: "b1", label: "B1 – Gases", weight: 11 },
+        { id: "c1", label: "C1 – Solutions", weight: 14 },
+        { id: "c2", label: "C2 – Acids & Bases", weight: 12 },
+        { id: "d1", label: "D1 – Balanced Equations", weight: 7 },
+        { id: "d2a", label: "D2a – Stoichiometry", weight: 12 },
+        { id: "d2b", label: "D2b – Titration", weight: 9 }
+      ];
+      createCalculator("calculator", chem20Outcomes, 20);
+    };
   </script>
 </body>
 </html>
