@@ -1,1 +1,94 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Physics 20 Outcome-Based Calculator</title>
+  <link rel="stylesheet" href="https://vlwu.github.io/EMHS-Learning-Tools/assets/styles.css">
+</head>
+<body>
+
+  <h1>⚛️ Physics 20 Grade Calculator</h1>
+  <p>Enter your current average for each outcome below. This calculator will determine your Physics 20 grade based on Alberta curriculum weights.</p>
+
+  <form id="physics20Form" class="box">
+
+    <!-- Scientific Inquiry Outcomes -->
+    <label><b>SK1 – Initiate & Plan [5%]</b></label>
+    <input type="number" min="0" max="100" id="sk1">
+
+    <label><b>SK2 – Perform & Record [5%]</b></label>
+    <input type="number" min="0" max="100" id="sk2">
+
+    <label><b>SK3 – Analyze & Interpret [5%]</b></label>
+    <input type="number" min="0" max="100" id="sk3">
+
+    <label><b>SK4 – Communicate & Teamwork [5%]</b></label>
+    <input type="number" min="0" max="100" id="sk4">
+
+    <!-- Unit Outcomes -->
+    <label><b>A1 – Kinematics [15%]</b></label>
+    <input type="number" min="0" max="100" id="a1">
+
+    <label><b>B1 – Dynamics [15%]</b></label>
+    <input type="number" min="0" max="100" id="b1">
+
+    <label><b>B2 – Gravity [8%]</b></label>
+    <input type="number" min="0" max="100" id="b2">
+
+    <label><b>C1 – Circular Motion [11%]</b></label>
+    <input type="number" min="0" max="100" id="c1">
+
+    <label><b>C2 – Work & Energy [13%]</b></label>
+    <input type="number" min="0" max="100" id="c2">
+
+    <label><b>D1 – Oscillatory Motion [10%]</b></label>
+    <input type="number" min="0" max="100" id="d1">
+
+    <label><b>D2 – Mechanical Waves [8%]</b></label>
+    <input type="number" min="0" max="100" id="d2">
+
+    <!-- Final Exam -->
+    <label><b>Final Exam</b> (Optional Input - 20%) </label>
+    <input type="number" min="0" max="100" id="finalExam">
+
+    <button type="button" onclick="calculatePhysics20()">Calculate Final Grade</button>
+    <p id="output"></p>
+  </form>
+
+  <script>
+    function calculatePhysics20() {
+      const weights = {
+        sk1: 5, sk2: 5, sk3: 5, sk4: 5,
+        a1: 15, b1: 15, b2: 8, c1: 11,
+        c2: 13, d1: 10, d2: 8
+      };
+
+      let totalWeighted = 0;
+      let totalWeight = 0;
+
+      for (let id in weights) {
+        const input = document.getElementById(id).value;
+        if (input !== "") {
+          const mark = parseFloat(input);
+          totalWeighted += mark * weights[id];
+          totalWeight += weights[id];
+        }
+      }
+
+      const finalExamInput = document.getElementById("finalExam").value;
+      let finalGrade;
+
+      if (finalExamInput !== "") {
+        const courseMark = totalWeighted / totalWeight;
+        const examMark = parseFloat(finalExamInput);
+        finalGrade = (courseMark * 0.8 + examMark * 0.2).toFixed(1);
+        document.getElementById("output").innerText = `Course Grade (with Final Exam): ${finalGrade}%`;
+      } else {
+        const courseMark = (totalWeighted / totalWeight).toFixed(1);
+        document.getElementById("output").innerText = `Course Grade (without Final Exam): ${courseMark}%`;
+      }
+    }
+  </script>
+
+</body>
+</html>
