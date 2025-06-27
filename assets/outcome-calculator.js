@@ -17,9 +17,14 @@ function createCalculator(containerId, outcomes, examWeight = 0) {
   }
 
   container.innerHTML += `
-    <button onclick="calculateGrade(${examWeight})">Calculate</button>
+    <button id="calculateButton">Calculate</button>
     <p id="output"></p>
   `;
+
+  // This is called after everything is inserted
+  document.getElementById("calculateButton").addEventListener("click", () => {
+    calculateGrade(examWeight);
+  });
 }
 
 function calculateGrade(examWeight) {
