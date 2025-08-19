@@ -1,1 +1,40 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Math 30-1 Grade Calculator</title>
+  <link rel="stylesheet" href="https://vlwu.github.io/AB-Tools/assets/styles.css">
+</head>
+<body>
+  <h2>Math 30-1 Grade Calculator</h2>
+  <div id="calculator"></div>
+
+  <script src="../assets/outcome-calculator.js"></script>
+  <script>
+    window.onload = function () {
+      const math30Outcomes = [
+        { id: "t1_2_3", label: "T1/2/3 – Trigonometric Ratios & Unit Circle", weight: 8 },
+        { id: "t4", label: "T4 – Trigonometric Functions", weight: 7 },
+        { id: "t5", label: "T5 – Trigonometric Equations", weight: 5 },
+        { id: "t6", label: "T6 – Trigonometric Identities", weight: 5 },
+        { id: "rf1", label: "RF1 – Operations & Compositions of Functions", weight: 4 },
+        { id: "rf2_3", label: "RF2/3 – Translations & Stretches", weight: 4 },
+        { id: "rf4", label: "RF4 – Applying Transformations", weight: 4 },
+        { id: "rf5", label: "RF5 – Reflections", weight: 4 },
+        { id: "rf6", label: "RF6 – Inverses", weight: 4 },
+        { id: "rf7_9", label: "RF7/9 – Exponential & Logarithmic Functions", weight: 10 },
+        { id: "rf8", label: "RF8 – Laws of Logarithms", weight: 5 },
+        { id: "rf10", label: "RF10 – Exponential & Logarithmic Equations", weight: 7 },
+        { id: "rf11_12", label: "RF11/12 – Polynomial Functions", weight: 9 },
+        { id: "rf13", label: "RF13 – Radical Functions", weight: 4 },
+        { id: "rf14", label: "RF14 – Rational Functions", weight: 5 },
+        { id: "pc1_2_3", label: "PC1/2/3 – Permutations & Combinations", weight: 10 },
+        { id: "pc4", label: "PC4 – Binomial Theorem", weight: 5 }
+      ];
+
+      createCalculator("calculator", math30Outcomes, 30); // Diploma exam is 30% for Grade 12
+    };
+  </script>
+</body>
+</html>```
