@@ -1,1 +1,35 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Physics 30 Calculator</title>
+  <link rel="stylesheet" href="https://vlwu.github.io/AB-Tools/assets/styles.css">
+</head>
+<body>
+  <h2>Physics 30 Grade Calculator</h2>
+
+  <div id="calculator"></div>
+
+  <script src="../assets/outcome-calculator.js"></script>
+  <script>
+    window.onload = function () {
+      const physics30Outcomes = [
+        { id: "sk1", label: "SK1 – Initiate & Plan", weight: 5 },
+        { id: "sk2", label: "SK2 – Perform & Record", weight: 5 },
+        { id: "sk3", label: "SK3 – Analyze & Interpret", weight: 5 },
+        { id: "sk4", label: "SK4 – Communicate & Team", weight: 5 },
+        { id: "a1", label: "A1 – Momentum", weight: 12 },
+        { id: "b1", label: "B1 – Electrostatics", weight: 6 },
+        { id: "b2", label: "B2 – Electric Fields", weight: 9 },
+        { id: "b3", label: "B3 – Electromagnetism", weight: 9 },
+        { id: "c1", label: "C1 – Wave Nature of Light", weight: 15 },
+        { id: "c2", label: "C2 – Particle Nature of Light", weight: 9 },
+        { id: "d1_d2", label: "D1/D2 – Atomic Models", weight: 9 },
+        { id: "d3", label: "D3 – Nuclear Physics", weight: 7 },
+        { id: "d4", label: "D4 – Particle Physics", weight: 4 }
+      ];
+      createCalculator("calculator", physics30Outcomes, 30);
+    };
+  </script>
+</body>
+</html>
