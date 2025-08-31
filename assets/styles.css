@@ -87,17 +87,23 @@ input, select {
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-/* Constrain the calculator form for a cleaner layout on wider screens */
 #calculator,
 #inputs {
   max-width: 550px;
-  margin: 0 auto; /* Center the container horizontally */
+  margin: 0 auto;
 }
 
 input:focus {
   outline: none;
   border-color: #80bdff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* NEW: Style for the red glow on invalid inputs */
+.invalid-input, .invalid-input:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  outline: none;
 }
 
 button {
@@ -127,7 +133,6 @@ footer {
 
 @media (max-width: 600px) {
   .container {
-    /* Increased padding on the sides for smaller screens */
     padding: 1.5rem;
   }
   

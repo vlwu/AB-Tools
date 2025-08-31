@@ -21,7 +21,20 @@ function createCalculator(containerId, outcomes, examWeight = 0) {
     <p id="output"></p>
   `;
 
-  // This is called after everything is inserted
+  // NEW: Add real-time validation listener to each input
+  const inputs = container.querySelectorAll("input[type='number']");
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      const value = parseFloat(input.value);
+      // If value is not empty and outside the 0-100 range, add the invalid class
+      if (input.value !== '' && (value < 0 || value > 100)) {
+        input.classList.add('invalid-input');
+      } else {
+        input.classList.remove('invalid-input');
+      }
+    });
+  });
+
   document.getElementById("calculateButton").addEventListener("click", () => {
     calculateGrade(examWeight);
   });
@@ -33,20 +46,16 @@ function calculateGrade(examWeight) {
   let totalWeight = 0;
   let hasError = false;
 
-  // Reset output
   const output = document.getElementById("output");
   output.innerText = "";
 
   inputs.forEach(input => {
-    input.style.borderColor = ""; // reset border
-
-    if (input.id === "finalExam") return; // handled separately
+    if (input.id === "finalExam") return;
     const value = parseFloat(input.value);
     const weight = parseFloat(input.dataset.weight);
 
     if (!isNaN(value)) {
       if (value < 0 || value > 100) {
-        input.style.borderColor = "red";
         output.innerText = `❌ "${input.previousElementSibling.innerText}" must be between 0 and 100.`;
         hasError = true;
         return;
@@ -71,7 +80,6 @@ function calculateGrade(examWeight) {
     const finalExamScore = parseFloat(finalExamInput.value);
 
     if (isNaN(finalExamScore) || finalExamScore < 0 || finalExamScore > 100) {
-      finalExamInput.style.borderColor = "red";
       output.innerText = "❌ Final Exam must be between 0 and 100.";
       return;
     }

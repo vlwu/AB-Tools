@@ -22,6 +22,23 @@
   <p id="output"></p>
 
   <script>
+    // NEW: Add event listeners for real-time validation
+    document.addEventListener('DOMContentLoaded', () => {
+      for (let i = 1; i <= 8; i++) {
+        const input = document.getElementById('g' + i);
+        if (input) {
+          input.addEventListener('input', () => {
+            const grade = parseFloat(input.value);
+            if (input.value !== '' && (grade < 0 || grade > 100)) {
+              input.classList.add('invalid-input');
+            } else {
+              input.classList.remove('invalid-input');
+            }
+          });
+        }
+      }
+    });
+
     function calculateAverage() {
       let sum = 0, count = 0, invalid = false;
       for (let i = 1; i <= 8; i++) {
