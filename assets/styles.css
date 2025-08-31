@@ -87,6 +87,13 @@ input, select {
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
+/* Constrain the calculator form for a cleaner layout on wider screens */
+#calculator,
+#inputs {
+  max-width: 550px;
+  margin: 0 auto; /* Center the container horizontally */
+}
+
 input:focus {
   outline: none;
   border-color: #80bdff;
@@ -120,7 +127,8 @@ footer {
 
 @media (max-width: 600px) {
   .container {
-    padding: 1rem;
+    /* Increased padding on the sides for smaller screens */
+    padding: 1.5rem;
   }
   
   h1 {
