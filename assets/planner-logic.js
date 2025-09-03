@@ -2,18 +2,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- STATE MANAGEMENT ---
   let plannedCourses = []; // Array of objects: { id, delivery }
   let hasUnsavedChanges = false;
-  
+
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
   // --- DOM ELEMENTS ---
-  const grade10Container = document.getElementById("grade-10-courses");
-  const grade11Container = document.getElementById("grade-11-courses");
-  const grade12Container = document.getElementById("grade-12-courses");
+  const gradeContainers = {
+    10: document.getElementById("grade-10-courses"),
+    11: document.getElementById("grade-11-courses"),
+    12: document.getElementById("grade-12-courses"),
+  };
   const creditCountEl = document.getElementById("credit-count");
+  const gradeCreditEls = {
+    10: document.getElementById("grade-10-credits"),
+    11: document.getElementById("grade-11-credits"),
+    12: document.getElementById("grade-12-credits"),
+  };
   const progressBarEl = document.getElementById("progress-bar");
   const requirementsEl = document.getElementById("requirements-checklist");
-  const modal = document.getElementById("delivery-modal");
-  const modalCourseName = document.getElementById("modal-course-name");
+  
+  // Modals & Tooltip
+  const deliveryModal = document.getElementById("delivery-modal");
+  const detailsModal = document.getElementById("details-modal");
+  const tooltip = document.getElementById("tooltip");
 
   // --- GRADUATION REQUIREMENTS ---
   const gradRequirements = {
@@ -36,18 +46,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- RENDERING & UI ---
   function renderAllCourses() {
-    grade10Container.innerHTML = '';
-    grade11Container.innerHTML = '';
-    grade12Container.innerHTML = '';
-
+    Object.values(gradeContainers).forEach(c => c.innerHTML = '');
     courseData.forEach(course => {
       const card = createCourseCard(course);
-      if (course.grade === 10) grade10Container.appendChild(card);
-      else if (course.grade === 11) grade11Container.appendChild(card);
-      else grade12Container.appendChild(card);
+      gradeContainers[course.grade].appendChild(card);
     });
   }
-  
+
   function createCourseCard(course) {
     const card = document.createElement("div");
     card.className = "course-card";
@@ -58,12 +63,15 @@ document.addEventListener("DOMContentLoaded", () => {
       <span class="delivery-icon"></span>
     `;
     card.addEventListener("click", () => onCourseClick(course));
+    card.addEventListener("mouseover", (e) => onCourseHover(e, course));
+    card.addEventListener("mouseout", onCourseMouseOut);
     return card;
   }
 
   function updateUI() {
     updateCourseStates();
     updateGradTracker();
+    updateGradeCredits();
     hasUnsavedChanges = true;
   }
 
@@ -71,10 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const plannedIds = plannedCourses.map(pc => pc.id);
     document.querySelectorAll(".course-card").forEach(card => {
       const courseId = card.dataset.id;
-      const course = findCourseById(courseId);
       const plannedCourse = plannedCourses.find(pc => pc.id === courseId);
-
-      // Reset states
       card.classList.remove("locked", "available", "planned");
       card.querySelector('.delivery-icon').textContent = '';
 
@@ -82,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         card.classList.add("planned");
         if (plannedCourse.delivery === 'summer') card.querySelector('.delivery-icon').textContent = '☀️';
         if (plannedCourse.delivery === 'elearning') card.querySelector('.delivery-icon').textContent = '💻';
-      } else if (arePrerequisitesMet(course, plannedIds)) {
+      } else if (arePrerequisitesMet(findCourseById(courseId), plannedIds)) {
         card.classList.add("available");
       } else {
         card.classList.add("locked");
@@ -91,13 +96,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateGradTracker() {
-    // 1. Calculate Credits
     const totalCredits = plannedCourses.reduce((sum, pc) => sum + findCourseById(pc.id).credits, 0);
     creditCountEl.textContent = `${totalCredits}`;
-    const progress = Math.min((totalCredits / 100) * 100, 100);
-    progressBarEl.style.width = `${progress}%`;
-    
-    // 2. Check Requirements
+    progressBarEl.style.width = `${Math.min((totalCredits / 100) * 100, 100)}%`;
+
     const plannedCourseObjects = plannedCourses.map(pc => findCourseById(pc.id));
     gradRequirements['ELA-30'].met = plannedCourseObjects.some(c => c.category === 'ELA-30');
     gradRequirements['Social-30'].met = plannedCourseObjects.some(c => c.category === 'Social-30');
@@ -116,22 +118,38 @@ document.addEventListener("DOMContentLoaded", () => {
         .reduce((sum, c) => sum + c.credits, 0);
     gradRequirements['Option-30'].met = thirtyLevelCredits >= 10;
 
-    // 3. Render Checklist
     requirementsEl.innerHTML = Object.entries(gradRequirements)
-        .map(([key, req]) => `<div class="req-item ${req.met ? 'completed' : ''}">✅ ${req.label}</div>`)
-        .join('');
+      .map(([_, req]) => `<div class="req-item ${req.met ? 'completed' : ''}">✅ ${req.label}</div>`)
+      .join('');
+  }
+
+  function updateGradeCredits() {
+    [10, 11, 12].forEach(grade => {
+      const credits = plannedCourses
+        .map(pc => findCourseById(pc.id))
+        .filter(c => c.grade === grade)
+        .reduce((sum, c) => sum + c.credits, 0);
+      gradeCreditEls[grade].textContent = credits;
+      
+      const footer = gradeCreditEls[grade].parentElement;
+      if (credits > 40) { // CBE standard is 40 credits/year
+        footer.classList.add('warning');
+      } else {
+        footer.classList.remove('warning');
+      }
+    });
   }
 
   // --- LOGIC ---
   function arePrerequisitesMet(course, plannedIds) {
-    if (course.prerequisites.length === 0) return true;
+    if (!course.prerequisites || course.prerequisites.length === 0) return true;
     return course.prerequisites.every(prereqId => plannedIds.includes(prereqId));
   }
-  
+
   function addCourse(course, deliveryMethod) {
     if (!plannedCourses.some(pc => pc.id === course.id)) {
-        plannedCourses.push({ id: course.id, delivery: deliveryMethod });
-        updateUI();
+      plannedCourses.push({ id: course.id, delivery: deliveryMethod });
+      updateUI();
     }
   }
 
@@ -143,45 +161,49 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- EVENT HANDLERS ---
   function onCourseClick(course) {
     const isPlanned = plannedCourses.some(pc => pc.id === course.id);
-    const isAvailable = arePrerequisitesMet(course, plannedCourses.map(pc => pc.id));
-
     if (isPlanned) {
-      if (confirm(`Do you want to remove ${course.name} from your plan?`)) {
-        removeCourse(course.id);
-      }
-    } else if (isAvailable) {
-      modalCourseName.textContent = course.name;
-      modal.dataset.courseId = course.id;
-      modal.style.display = "flex";
-    } else {
-      alert(`${course.name} is locked. Prerequisites not met.`);
+      showDetailsModal(course);
+    } else if (arePrerequisitesMet(course, plannedCourses.map(pc => pc.id))) {
+      showDeliveryModal(course);
     }
   }
 
-  function attachEventListeners() {
-    // Modal buttons
-    modal.addEventListener("click", (e) => {
-      if (e.target.tagName !== 'BUTTON') return;
-
-      const method = e.target.dataset.method;
-      const courseId = modal.dataset.courseId;
-      if (method && courseId) {
-        addCourse(findCourseById(courseId), method);
+  function onCourseHover(event, course) {
+    const plannedIds = plannedCourses.map(pc => pc.id);
+    // Prerequisite Highlighting
+    if (course.prerequisites && course.prerequisites.length > 0) {
+      course.prerequisites.forEach(prereqId => {
+        document.querySelector(`.course-card[data-id="${prereqId}"]`)?.classList.add('highlight-prereq');
+      });
+    }
+    // Tooltip for Locked Courses
+    if (!arePrerequisitesMet(course, plannedIds)) {
+      const missing = course.prerequisites.filter(p => !plannedIds.includes(p)).map(p => findCourseById(p).name);
+      if (missing.length > 0) {
+        tooltip.innerHTML = `Requires: ${missing.join(', ')}`;
+        tooltip.style.display = 'block';
+        tooltip.style.left = `${event.pageX + 10}px`;
+        tooltip.style.top = `${event.pageY + 10}px`;
       }
-      modal.style.display = "none";
-    });
-    
-    document.getElementById("modal-cancel").addEventListener('click', () => {
-       modal.style.display = "none";
-    });
+    }
+  }
 
+  function onCourseMouseOut() {
+    document.querySelectorAll('.highlight-prereq').forEach(card => card.classList.remove('highlight-prereq'));
+    tooltip.style.display = 'none';
+  }
+
+  function attachEventListeners() {
     // Planner controls
     document.getElementById("save-plan").addEventListener("click", savePlan);
     document.getElementById("load-plan").addEventListener("click", loadPlan);
     document.getElementById("export-pdf").addEventListener("click", exportPlan);
     document.getElementById("reset-plan").addEventListener("click", resetPlan);
     
-    // Warn on exit
+    // Modals
+    setupDeliveryModal();
+    setupDetailsModal();
+
     window.addEventListener('beforeunload', (e) => {
       if (hasUnsavedChanges) {
         e.preventDefault();
@@ -189,12 +211,54 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+  
+  // --- MODAL MANAGEMENT ---
+  function showDeliveryModal(course) {
+    deliveryModal.querySelector('#modal-course-name').textContent = course.name;
+    deliveryModal.dataset.courseId = course.id;
+    deliveryModal.style.display = "flex";
+  }
+  
+  function setupDeliveryModal() {
+    deliveryModal.addEventListener("click", (e) => {
+      if (e.target.tagName !== 'BUTTON') return;
+      const method = e.target.dataset.method;
+      const courseId = deliveryModal.dataset.courseId;
+      if (method && courseId) {
+        addCourse(findCourseById(courseId), method);
+      }
+      deliveryModal.style.display = "none";
+    });
+  }
+
+  function showDetailsModal(course) {
+    const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
+    detailsModal.dataset.courseId = course.id;
+    detailsModal.querySelector('#details-modal-course-name').textContent = course.name;
+    detailsModal.querySelector('#details-modal-credits').textContent = course.credits;
+    let deliveryText = plannedCourse.delivery.charAt(0).toUpperCase() + plannedCourse.delivery.slice(1);
+    if (plannedCourse.delivery === 'elearning') deliveryText = 'CBe-learn';
+    if (plannedCourse.delivery === 'summer') deliveryText = 'Summer School';
+    detailsModal.querySelector('#details-modal-status').textContent = `Planned (${deliveryText})`;
+    detailsModal.style.display = 'flex';
+  }
+  
+  function setupDetailsModal() {
+      detailsModal.querySelector('#details-modal-remove').addEventListener('click', () => {
+          const courseId = detailsModal.dataset.courseId;
+          removeCourse(courseId);
+          detailsModal.style.display = 'none';
+      });
+      detailsModal.querySelector('#details-modal-close').addEventListener('click', () => {
+          detailsModal.style.display = 'none';
+      });
+  }
 
   // --- SAVE, LOAD, EXPORT ---
   function savePlan() {
     if (plannedCourses.length === 0) {
-        alert("Your plan is empty. Add some courses before saving.");
-        return;
+      alert("Your plan is empty. Add some courses before saving.");
+      return;
     }
     localStorage.setItem("emhsCoursePlan", JSON.stringify(plannedCourses));
     hasUnsavedChanges = false;
@@ -216,49 +280,45 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resetPlan() {
-      if (confirm("Are you sure you want to completely reset your plan? This cannot be undone.")) {
-          plannedCourses = [];
-          renderAllCourses();
-          updateUI();
-      }
+    if (confirm("Are you sure you want to completely reset your plan? This cannot be undone.")) {
+      plannedCourses = [];
+      renderAllCourses();
+      updateUI();
+    }
   }
 
   function exportPlan() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-
     doc.setFontSize(20);
     doc.text("EMHS Course Plan", 10, 20);
-    
     let y = 30;
-    ['10', '11', '12'].forEach(grade => {
-        doc.setFontSize(16);
-        doc.text(`Grade ${grade}`, 10, y);
-        y += 8;
-        doc.setFontSize(10);
-        
-        const coursesInGrade = plannedCourses
-            .map(pc => findCourseById(pc.id))
-            .filter(c => c.grade.toString().startsWith(grade.charAt(0)));
-
-        if (coursesInGrade.length > 0) {
-            coursesInGrade.forEach(course => {
-                const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
-                let deliveryText = '';
-                if(plannedCourse.delivery === 'summer') deliveryText = ' (Summer)';
-                if(plannedCourse.delivery === 'elearning') deliveryText = ' (CBe-learn)';
-                doc.text(`- ${course.name}${deliveryText}`, 15, y);
-                y += 7;
-            });
-        } else {
-            doc.text("No courses planned for this grade.", 15, y);
-            y += 7;
-        }
-        y += 5;
+    [10, 11, 12].forEach(grade => {
+      doc.setFontSize(16);
+      doc.text(`Grade ${grade}`, 10, y);
+      y += 8;
+      doc.setFontSize(10);
+      const coursesInGrade = plannedCourses
+        .map(pc => findCourseById(pc.id))
+        .filter(c => c.grade === grade);
+      if (coursesInGrade.length > 0) {
+        coursesInGrade.forEach(course => {
+          const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
+          let deliveryText = '';
+          if (plannedCourse.delivery === 'summer') deliveryText = ' (Summer)';
+          if (plannedCourse.delivery === 'elearning') deliveryText = ' (CBe-learn)';
+          doc.text(`- ${course.name}${deliveryText}`, 15, y);
+          y += 7;
+        });
+      } else {
+        doc.text("No courses planned for this grade.", 15, y);
+        y += 7;
+      }
+      y += 5;
     });
-
     doc.save("emhs-course-plan.pdf");
   }
 
+  // --- START THE APP ---
   init();
 });

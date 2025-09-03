@@ -16,6 +16,8 @@
   border-radius: 8px;
   border: 1px solid #dee2e6;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
 }
 
 .grade-column h2 {
@@ -28,6 +30,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  flex-grow: 1; /* Allows list to fill space */
 }
 
 /* Course Card Styles */
@@ -69,6 +72,12 @@
   background-color: #d4edda;
   border-color: #28a745;
   font-weight: bold;
+}
+
+/* NEW: Prerequisite Highlight */
+.course-card.highlight-prereq {
+  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.7);
+  border-color: #ffc107;
 }
 
 /* Delivery Method Indicators */
@@ -113,7 +122,7 @@
   color: #6c757d;
 }
 
-/* Controls and Modal */
+/* Controls and Modals */
 .planner-controls {
   margin-top: 1.5rem;
   display: flex;
@@ -151,6 +160,37 @@
 
 .modal-content button {
   margin: 0.5rem;
+}
+
+.modal-content p {
+  margin-bottom: 0.5rem;
+}
+
+/* NEW: Grade Footer/Credit Counter */
+.grade-footer {
+  text-align: right;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 2px solid #e9ecef;
+  font-size: 1.1em;
+}
+
+.grade-footer.warning {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* NEW: Tooltip for Locked Courses */
+.tooltip {
+  position: absolute;
+  background-color: #343a40;
+  color: white;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9em;
+  z-index: 1001;
+  pointer-events: none; /* Allows clicks to go through to the element below */
+  white-space: nowrap;
 }
 
 @media (max-width: 900px) {

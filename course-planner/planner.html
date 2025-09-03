@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EMHS Interactive Course Planner</title>
   <link rel="stylesheet" href="../assets/styles.css">
-  <link rel="stylesheet" href="../assets/planner-styles.css">
+  <link rel="stylesheet" href="planner-styles.css">
   <!-- jsPDF Library for Exporting -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -38,14 +38,23 @@
         <div class="grade-column">
           <h2>Grade 10</h2>
           <div id="grade-10-courses" class="course-list"></div>
+          <div class="grade-footer">
+            <strong>Credits: <span id="grade-10-credits">0</span></strong>
+          </div>
         </div>
         <div class="grade-column">
           <h2>Grade 11</h2>
           <div id="grade-11-courses" class="course-list"></div>
+          <div class="grade-footer">
+            <strong>Credits: <span id="grade-11-credits">0</span></strong>
+          </div>
         </div>
         <div class="grade-column">
           <h2>Grade 12</h2>
           <div id="grade-12-courses" class="course-list"></div>
+          <div class="grade-footer">
+            <strong>Credits: <span id="grade-12-credits">0</span></strong>
+          </div>
         </div>
       </div>
     </main>
@@ -59,9 +68,22 @@
       <button data-method="regular">Regular (In School)</button>
       <button data-method="summer">Summer School</button>
       <button data-method="elearning">CBe-learn (Online)</button>
-      <button id="modal-cancel" class="danger-btn">Cancel</button>
+      <button id="modal-cancel-delivery" class="danger-btn">Cancel</button>
     </div>
   </div>
+
+  <!-- Modal for viewing/removing a planned course -->
+  <div id="details-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3 id="details-modal-course-name">Course Details</h3>
+      <p>Credits: <span id="details-modal-credits"></span></p>
+      <p>Status: <span id="details-modal-status"></span></p>
+      <button id="details-modal-remove" class="danger-btn">Remove from Plan</button>
+      <button id="details-modal-close">Close</button>
+    </div>
+  </div>
+  
+  <div id="tooltip" class="tooltip" style="display: none;"></div>
 
   <script src="../assets/course-data.js"></script>
   <script src="../assets/planner-logic.js"></script>
