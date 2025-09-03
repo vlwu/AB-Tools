@@ -118,8 +118,9 @@ document.addEventListener("DOMContentLoaded", () => {
         .reduce((sum, c) => sum + c.credits, 0);
     gradRequirements['Option-30'].met = thirtyLevelCredits >= 10;
 
+    // --- MODIFIED LINE ---
     requirementsEl.innerHTML = Object.entries(gradRequirements)
-      .map(([_, req]) => `<div class="req-item ${req.met ? 'completed' : ''}">✅ ${req.label}</div>`)
+      .map(([_, req]) => `<div class="req-item ${req.met ? 'completed' : ''}">${req.met ? '✅' : '❌'} ${req.label}</div>`)
       .join('');
   }
 

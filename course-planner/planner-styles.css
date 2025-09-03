@@ -74,7 +74,7 @@
   font-weight: bold;
 }
 
-/* NEW: Prerequisite Highlight */
+/* Prerequisite Highlight */
 .course-card.highlight-prereq {
   box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.7);
   border-color: #ffc107;
@@ -114,12 +114,15 @@
   gap: 1rem;
 }
 
+/* --- MODIFIED STYLES --- */
 .req-item {
   margin-bottom: 0.5rem;
+  color: #6c757d; /* Default to a neutral/grey color */
+  transition: color 0.3s ease;
 }
 .req-item.completed {
-  text-decoration: line-through;
-  color: #6c757d;
+  color: #28a745; /* Green color to indicate success */
+  font-weight: 500;
 }
 
 /* Controls and Modals */
@@ -166,7 +169,7 @@
   margin-bottom: 0.5rem;
 }
 
-/* NEW: Grade Footer/Credit Counter */
+/* Grade Footer/Credit Counter */
 .grade-footer {
   text-align: right;
   padding-top: 1rem;
@@ -180,7 +183,7 @@
   font-weight: bold;
 }
 
-/* NEW: Tooltip for Locked Courses */
+/* Tooltip for Locked Courses */
 .tooltip {
   position: absolute;
   background-color: #343a40;
