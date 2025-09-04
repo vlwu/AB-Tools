@@ -1,12 +1,13 @@
 /* General Planner Layout */
 .planner-container {
-  max-width: 1200px;
+  max-width: 1400px; /* Increased width to accommodate summer columns */
 }
 
 #planner-grid {
   display: flex;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem; /* Reduced gap slightly */
+  align-items: flex-start;
 }
 
 .grade-column {
@@ -20,7 +21,15 @@
   flex-direction: column;
 }
 
-.grade-column h2 {
+.summer-column {
+  flex: 0.6; /* Make summer columns narrower */
+  padding: 1.5rem 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.grade-column h2, .summer-column h2 {
   text-align: center;
   margin-bottom: 1.5rem;
   color: #0056b3;
@@ -60,7 +69,7 @@
 }
 
 .add-course-placeholder:hover {
-  background-color: #f8f9fa;
+  background-color: #f1f3f5;
   border-color: #007bff;
   color: #007bff;
 }

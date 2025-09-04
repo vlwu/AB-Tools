@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- STATE MANAGEMENT ---
   let plannedCourses = []; // Array of objects: { id, delivery }
   let hasUnsavedChanges = false;
-  let targetGradeForAdding = null; // To track which grade column triggered the modal
+  let targetGradeForAdding = null; // To track which grade level of courses to show in the modal
 
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
@@ -11,6 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
     10: document.getElementById("grade-10-courses"),
     11: document.getElementById("grade-11-courses"),
     12: document.getElementById("grade-12-courses"),
+  };
+  const summerContainers = {
+    10: document.getElementById("summer-after-grade-10"),
+    11: document.getElementById("summer-after-grade-11"),
   };
   const creditCountEl = document.getElementById("credit-count");
   const gradeCreditEls = {
@@ -43,38 +47,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- INITIALIZATION ---
   function init() {
-    updateUI(); // This will call renderPlanner internally
+    updateUI();
     attachEventListeners();
   }
 
   // --- RENDERING & UI ---
   function renderPlanner() {
+    // Separate courses by delivery type
+    const regularCourses = plannedCourses.filter(pc => pc.delivery !== 'summer');
+    const summerCourses = plannedCourses.filter(pc => pc.delivery === 'summer');
+
+    // Render regular grade columns
     Object.entries(gradeContainers).forEach(([grade, container]) => {
-      container.innerHTML = ''; // Clear the column
-      const coursesForGrade = plannedCourses
+      container.innerHTML = '';
+      const coursesForGrade = regularCourses
         .map(pc => findCourseById(pc.id))
         .filter(c => c.grade === parseInt(grade));
 
-      // Render planned courses
-      coursesForGrade.forEach(course => {
-        const card = createCourseCard(course);
-        container.appendChild(card);
-      });
-
-      // Render placeholder slots
+      coursesForGrade.forEach(course => container.appendChild(createCourseCard(course)));
+      
       const emptySlots = 8 - coursesForGrade.length;
       for (let i = 0; i < emptySlots; i++) {
-        if(i >= 0){
-            const placeholder = createPlaceholderCard(grade);
-            container.appendChild(placeholder);
-        }
+        container.appendChild(createPlaceholderCard([parseInt(grade)]));
       }
     });
+
+    // Render summer columns
+    summerContainers[10].innerHTML = '';
+    summerContainers[11].innerHTML = '';
+
+    const summer10 = summerCourses.filter(pc => findCourseById(pc.id).grade === 10);
+    const summer11_12 = summerCourses.filter(pc => [11, 12].includes(findCourseById(pc.id).grade));
+
+    summer10.forEach(pc => summerContainers[10].appendChild(createCourseCard(findCourseById(pc.id))));
+    summer11_12.forEach(pc => summerContainers[11].appendChild(createCourseCard(findCourseById(pc.id))));
+
+    // MODIFICATION: Only show placeholder if the summer session is empty
+    if (summer10.length === 0) {
+      summerContainers[10].appendChild(createPlaceholderCard([10, 11]));
+    }
+    if (summer11_12.length === 0) {
+      summerContainers[11].appendChild(createPlaceholderCard([11, 12]));
+    }
   }
 
   function createCourseCard(course) {
     const card = document.createElement("div");
-    card.className = "course-card planned"; // All rendered cards are planned
+    card.className = "course-card planned";
     card.dataset.id = course.id;
     const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
     let deliveryIcon = '';
@@ -90,11 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return card;
   }
 
-  function createPlaceholderCard(grade) {
+  function createPlaceholderCard(gradesToShow) {
       const placeholder = document.createElement("div");
       placeholder.className = "add-course-placeholder";
       placeholder.textContent = "(+) Add Course";
-      placeholder.addEventListener("click", () => showCourseSelectionModal(grade));
+      placeholder.addEventListener("click", () => showCourseSelectionModal(gradesToShow));
       return placeholder;
   }
 
@@ -136,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateGradeCredits() {
     [10, 11, 12].forEach(grade => {
       const credits = plannedCourses
+        .filter(pc => pc.delivery !== 'summer') // Exclude summer courses from grade-specific credit count
         .map(pc => findCourseById(pc.id))
         .filter(c => c.grade === grade)
         .reduce((sum, c) => sum + c.credits, 0);
@@ -174,13 +194,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function attachEventListeners() {
-    // Planner controls
     document.getElementById("save-plan").addEventListener("click", savePlan);
     document.getElementById("load-plan").addEventListener("click", loadPlan);
     document.getElementById("export-pdf").addEventListener("click", exportPlan);
     document.getElementById("reset-plan").addEventListener("click", resetPlan);
     
-    // Modals
     setupDeliveryModal();
     setupDetailsModal();
     setupCourseSelectionModal();
@@ -194,8 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // --- MODAL MANAGEMENT ---
-  function showCourseSelectionModal(grade) {
-    targetGradeForAdding = parseInt(grade);
+  function showCourseSelectionModal(grades) {
+    targetGradeForAdding = grades;
     courseSearchInput.value = '';
     populateCourseSelectionModal();
     courseSelectionModal.style.display = "flex";
@@ -208,9 +226,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const availableCourses = courseData.filter(course => 
       !plannedIds.includes(course.id) &&
-      course.grade === targetGradeForAdding &&
+      targetGradeForAdding.includes(course.grade) &&
       (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm))
     );
+
+    availableCourses.sort((a, b) => a.grade - b.grade || a.name.localeCompare(b.name));
 
     if (availableCourses.length === 0) {
         modalCourseList.innerHTML = '<p style="text-align: center; margin-top: 1rem;">No matching courses found.</p>';
@@ -222,9 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
       item.className = 'modal-course-item';
       
       const isMet = arePrerequisitesMet(course, plannedIds);
-      if (!isMet) {
-        item.classList.add('locked');
-      }
+      if (!isMet) item.classList.add('locked');
 
       let prereqText = 'No prerequisites';
       if (course.prerequisites.length > 0) {
@@ -268,6 +286,25 @@ document.addEventListener("DOMContentLoaded", () => {
       const courseId = deliveryModal.dataset.courseId;
       
       if (method && courseId) {
+        // MODIFICATION: Add check for summer school limit before adding course
+        if (method === 'summer') {
+            const courseToAdd = findCourseById(courseId);
+            if (courseToAdd.grade === 10) {
+                const summer10Exists = plannedCourses.some(pc => pc.delivery === 'summer' && findCourseById(pc.id).grade === 10);
+                if (summer10Exists) {
+                    alert("You can only add one course to the summer session after Grade 10.");
+                    deliveryModal.style.display = "none";
+                    return;
+                }
+            } else if (courseToAdd.grade === 11 || courseToAdd.grade === 12) {
+                const summer11_12Exists = plannedCourses.some(pc => pc.delivery === 'summer' && [11, 12].includes(findCourseById(pc.id).grade));
+                if (summer11_12Exists) {
+                    alert("You can only add one course to the summer session after Grade 11.");
+                    deliveryModal.style.display = "none";
+                    return;
+                }
+            }
+        }
         addCourse(findCourseById(courseId), method);
       }
       
@@ -341,20 +378,31 @@ document.addEventListener("DOMContentLoaded", () => {
       y += 8;
       doc.setFontSize(10);
       const coursesInGrade = plannedCourses
+        .filter(pc => pc.delivery !== 'summer')
         .map(pc => findCourseById(pc.id))
         .filter(c => c.grade === grade);
       if (coursesInGrade.length > 0) {
         coursesInGrade.forEach(course => {
           const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
-          let deliveryText = '';
-          if (plannedCourse.delivery === 'summer') deliveryText = ' (Summer)';
-          if (plannedCourse.delivery === 'elearning') deliveryText = ' (CBe-learn)';
+          let deliveryText = plannedCourse.delivery === 'elearning' ? ' (CBe-learn)' : '';
           doc.text(`- ${course.name}${deliveryText}`, 15, y);
           y += 7;
         });
       } else {
-        doc.text("No courses planned for this grade.", 15, y);
+        doc.text("No regular courses planned for this grade.", 15, y);
         y += 7;
+      }
+      
+      const summerCourses = plannedCourses.filter(pc => pc.delivery === 'summer' && findCourseById(pc.id).grade === grade);
+      if (summerCourses.length > 0) {
+          doc.setFontSize(12);
+          doc.text(`Summer (after Grade ${grade})`, 10, y);
+          y += 8;
+          doc.setFontSize(10);
+          summerCourses.map(pc => findCourseById(pc.id)).forEach(course => {
+            doc.text(`- ${course.name} (Summer)`, 15, y);
+            y+=7;
+          });
       }
       y += 5;
     });
