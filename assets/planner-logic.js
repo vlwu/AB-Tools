@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let plannedCourses = []; // Array of objects: { id, delivery }
   let hasUnsavedChanges = false;
   let targetGradeForAdding = null; // To track which grade level of courses to show in the modal
+  let directDeliveryMethod = null; // To track if a delivery method is pre-selected
 
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
@@ -84,10 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // MODIFICATION: Only show placeholder if the summer session is empty
     if (summer10.length === 0) {
-      summerContainers[10].appendChild(createPlaceholderCard([10, 11]));
+      summerContainers[10].appendChild(createPlaceholderCard([10, 11], 'summer'));
     }
     if (summer11_12.length === 0) {
-      summerContainers[11].appendChild(createPlaceholderCard([11, 12]));
+      summerContainers[11].appendChild(createPlaceholderCard([11, 12], 'summer'));
     }
   }
 
@@ -109,11 +110,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return card;
   }
 
-  function createPlaceholderCard(gradesToShow) {
+  function createPlaceholderCard(gradesToShow, delivery = null) {
       const placeholder = document.createElement("div");
       placeholder.className = "add-course-placeholder";
       placeholder.textContent = "(+) Add Course";
-      placeholder.addEventListener("click", () => showCourseSelectionModal(gradesToShow));
+      placeholder.addEventListener("click", () => showCourseSelectionModal(gradesToShow, delivery));
       return placeholder;
   }
 
@@ -212,8 +213,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // --- MODAL MANAGEMENT ---
-  function showCourseSelectionModal(grades) {
+  function showCourseSelectionModal(grades, delivery = null) {
     targetGradeForAdding = grades;
+    directDeliveryMethod = delivery;
     courseSearchInput.value = '';
     populateCourseSelectionModal();
     courseSelectionModal.style.display = "flex";
@@ -257,11 +259,34 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isMet) {
         item.addEventListener('click', () => {
           courseSelectionModal.style.display = 'none';
-          showDeliveryModal(course);
+          if (directDeliveryMethod) {
+            handleDirectCourseAdd(course, directDeliveryMethod);
+          } else {
+            showDeliveryModal(course);
+          }
         });
       }
       modalCourseList.appendChild(item);
     });
+  }
+
+  function handleDirectCourseAdd(course, deliveryMethod) {
+    if (deliveryMethod === 'summer') {
+      if (course.grade === 10) {
+        const summer10Exists = plannedCourses.some(pc => pc.delivery === 'summer' && findCourseById(pc.id).grade === 10);
+        if (summer10Exists) {
+          alert("You can only add one course to the summer session after Grade 10.");
+          return;
+        }
+      } else if (course.grade === 11 || course.grade === 12) {
+        const summer11_12Exists = plannedCourses.some(pc => pc.delivery === 'summer' && [11, 12].includes(findCourseById(pc.id).grade));
+        if (summer11_12Exists) {
+          alert("You can only add one course to the summer session after Grade 11.");
+          return;
+        }
+      }
+    }
+    addCourse(course, deliveryMethod);
   }
   
   function setupCourseSelectionModal() {
