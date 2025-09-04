@@ -83,7 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
     summer10.forEach(pc => summerContainers[10].appendChild(createCourseCard(findCourseById(pc.id))));
     summer11_12.forEach(pc => summerContainers[11].appendChild(createCourseCard(findCourseById(pc.id))));
 
-    // MODIFICATION: Only show placeholder if the summer session is empty
     if (summer10.length === 0) {
       summerContainers[10].appendChild(createPlaceholderCard([10, 11], 'summer'));
     }
@@ -156,14 +155,14 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateGradeCredits() {
     [10, 11, 12].forEach(grade => {
       const credits = plannedCourses
-        .filter(pc => pc.delivery !== 'summer') // Exclude summer courses from grade-specific credit count
+        .filter(pc => pc.delivery !== 'summer')
         .map(pc => findCourseById(pc.id))
         .filter(c => c.grade === grade)
         .reduce((sum, c) => sum + c.credits, 0);
       gradeCreditEls[grade].textContent = credits;
       
       const footer = gradeCreditEls[grade].parentElement;
-      if (credits > 40) { // CBE standard is 40 credits/year
+      if (credits > 40) {
         footer.classList.add('warning');
       } else {
         footer.classList.remove('warning');
@@ -221,6 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
     courseSelectionModal.style.display = "flex";
   }
 
+  // MODIFICATION: Rewritten to group courses by category into toggle lists.
   function populateCourseSelectionModal() {
     modalCourseList.innerHTML = '';
     const plannedIds = plannedCourses.map(pc => pc.id);
@@ -229,45 +229,90 @@ document.addEventListener("DOMContentLoaded", () => {
     const availableCourses = courseData.filter(course => 
       !plannedIds.includes(course.id) &&
       targetGradeForAdding.includes(course.grade) &&
-      (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm))
+      (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm) || course.id.toLowerCase().includes(searchTerm))
     );
-
-    availableCourses.sort((a, b) => a.grade - b.grade || a.name.localeCompare(b.name));
 
     if (availableCourses.length === 0) {
         modalCourseList.innerHTML = '<p style="text-align: center; margin-top: 1rem;">No matching courses found.</p>';
         return;
     }
 
-    availableCourses.forEach(course => {
-      const item = document.createElement('div');
-      item.className = 'modal-course-item';
-      
-      const isMet = arePrerequisitesMet(course, plannedIds);
-      if (!isMet) item.classList.add('locked');
-
-      let prereqText = 'No prerequisites';
-      if (course.prerequisites.length > 0) {
-        prereqText = 'Requires: ' + course.prerequisites.map(p => findCourseById(p).name).join(', ');
+    // Group courses by category
+    const groupedCourses = availableCourses.reduce((acc, course) => {
+      const category = course.category;
+      if (!acc[category]) {
+        acc[category] = [];
       }
-      
-      item.innerHTML = `
-        <span class="name">${course.name}</span>
-        <span class="prereqs">${prereqText}</span>
-      `;
+      acc[category].push(course);
+      return acc;
+    }, {});
 
-      if (isMet) {
-        item.addEventListener('click', () => {
-          courseSelectionModal.style.display = 'none';
-          if (directDeliveryMethod) {
-            handleDirectCourseAdd(course, directDeliveryMethod);
-          } else {
-            showDeliveryModal(course);
-          }
-        });
-      }
-      modalCourseList.appendChild(item);
-    });
+    // Create a display name mapping for categories
+    const categoryDisplayNames = {
+      'ELA': 'English Language Arts', 'ELA-30': 'English Language Arts (30-Level)',
+      'Social': 'Social Studies', 'Social-30': 'Social Studies (30-Level)',
+      'Math': 'Mathematics', 'Science': 'Science', 'Science-30': 'Science (30-Level)',
+      'PE': 'Physical Education', 'CALM': 'CALM', 'FineArts': 'Fine Arts',
+      'CTS': 'Career & Technology Studies', 'Language': 'Languages', 'SocialScience': 'Social Sciences'
+    };
+
+    // Render each category as a collapsible toggle
+    for (const category in groupedCourses) {
+      const categoryContainer = document.createElement('div');
+      categoryContainer.className = 'modal-category';
+
+      const categoryHeader = document.createElement('button');
+      categoryHeader.className = 'modal-category-toggle';
+      const displayName = categoryDisplayNames[category] || category;
+      categoryHeader.textContent = `${displayName} (${groupedCourses[category].length})`;
+
+      const courseListDiv = document.createElement('div');
+      courseListDiv.className = 'modal-category-content';
+
+      categoryHeader.addEventListener('click', () => {
+        const isVisible = courseListDiv.style.display === 'block';
+        courseListDiv.style.display = isVisible ? 'none' : 'block';
+        categoryHeader.classList.toggle('active', !isVisible);
+      });
+
+      // Sort courses within the category
+      groupedCourses[category].sort((a,b) => a.name.localeCompare(b.name));
+
+      // Create and append course items
+      groupedCourses[category].forEach(course => {
+        const item = document.createElement('div');
+        item.className = 'modal-course-item';
+        
+        const isMet = arePrerequisitesMet(course, plannedIds);
+        if (!isMet) item.classList.add('locked');
+
+        let prereqText = 'No prerequisites';
+        if (course.prerequisites.length > 0) {
+          prereqText = 'Requires: ' + course.prerequisites.map(p => findCourseById(p).name).join(', ');
+        }
+        
+        item.innerHTML = `
+          <span class="name">${course.name}</span>
+          <span class="prereqs">${prereqText}</span>
+        `;
+
+        if (isMet) {
+          item.addEventListener('click', () => {
+            courseSelectionModal.style.display = 'none';
+            if (directDeliveryMethod) {
+              handleDirectCourseAdd(course, directDeliveryMethod);
+            } else {
+              showDeliveryModal(course);
+            }
+          });
+        }
+        courseListDiv.appendChild(item);
+      });
+
+      categoryContainer.appendChild(categoryHeader);
+      categoryContainer.appendChild(courseListDiv);
+      modalCourseList.appendChild(categoryContainer);
+    }
   }
 
   function handleDirectCourseAdd(course, deliveryMethod) {
@@ -311,7 +356,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const courseId = deliveryModal.dataset.courseId;
       
       if (method && courseId) {
-        // MODIFICATION: Add check for summer school limit before adding course
         if (method === 'summer') {
             const courseToAdd = findCourseById(courseId);
             if (courseToAdd.grade === 10) {

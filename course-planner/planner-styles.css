@@ -192,7 +192,7 @@
 }
 
 #course-selection-modal .modal-content {
-  max-width: 600px;
+  max-width: 800px; /* MODIFICATION: Increased width */
   text-align: left;
 }
 
@@ -201,11 +201,56 @@
 }
 
 #modal-course-list {
-  max-height: 40vh;
+  max-height: 60vh; /* MODIFICATION: Increased max-height */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+/* NEW: Styles for toggleable course categories */
+.modal-category {
+    margin-bottom: 0.5rem;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.modal-category-toggle {
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 0.75rem 1rem;
+    border: none;
+    text-align: left;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    color: #343a40;
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.modal-category-toggle::after {
+    content: '▼';
+    position: absolute;
+    right: 1rem;
+    transition: transform 0.2s ease;
+    color: #6c757d;
+}
+
+.modal-category-toggle.active::after {
+    transform: rotate(180deg);
+}
+
+.modal-category-toggle:hover {
+    background-color: #e9ecef;
+}
+
+.modal-category-content {
+    padding: 0.5rem 1rem;
+    display: none;
+    background-color: #ffffff;
+    border-top: 1px solid #e9ecef;
 }
 
 .modal-course-item {
@@ -214,6 +259,10 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+.modal-course-item:last-child {
+    margin-bottom: 0;
 }
 
 .modal-course-item:hover {
