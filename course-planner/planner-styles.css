@@ -201,11 +201,9 @@
 }
 
 #modal-course-list {
-  max-height: 60vh; /* MODIFICATION: Increased max-height */
+  max-height: 60vh;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  display: block; /* Changed from flex to block for standard flow */
 }
 
 /* NEW: Styles for toggleable course categories */
@@ -251,6 +249,7 @@
     display: none;
     background-color: #ffffff;
     border-top: 1px solid #e9ecef;
+    /* REMOVED max-height and overflow-y to allow natural expansion */
 }
 
 .modal-course-item {

@@ -270,9 +270,19 @@ document.addEventListener("DOMContentLoaded", () => {
       courseListDiv.className = 'modal-category-content';
 
       categoryHeader.addEventListener('click', () => {
-        const isVisible = courseListDiv.style.display === 'block';
-        courseListDiv.style.display = isVisible ? 'none' : 'block';
-        categoryHeader.classList.toggle('active', !isVisible);
+        const wasActive = categoryHeader.classList.contains('active');
+
+        // Close all categories first
+        modalCourseList.querySelectorAll('.modal-category-toggle').forEach(header => {
+            header.classList.remove('active');
+            header.nextElementSibling.style.display = 'none';
+        });
+
+        // If the clicked one wasn't the one that was active, open it
+        if (!wasActive) {
+            categoryHeader.classList.add('active');
+            courseListDiv.style.display = 'block';
+        }
       });
 
       // Sort courses within the category
