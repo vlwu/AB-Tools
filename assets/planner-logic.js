@@ -40,9 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
     'Math-20': { label: 'Math 20-level', met: false },
     'Science-20': { label: 'Science 20-level', met: false },
     'PE10': { label: 'Physical Education 10', met: false },
-    'CALM': { label: 'CALM 20', met: false },
-    'Option-10': { label: '10 Credits (Options)', met: false },
-    'Option-30': { label: '10 Credits (30-level)', met: false },
+    'CALM': { label: 'CALM (Career and Life Management)', met: false },
+    'Option-10': { label: '10 Credits (Any combination of electives)', met: false },
+    'Option-30': { label: '10 Credits (30-level other than ELA 30 & Social Studies 30)', met: false },
   };
 
   // --- INITIALIZATION ---
