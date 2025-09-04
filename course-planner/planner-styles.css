@@ -44,6 +44,27 @@
   overflow: hidden;
 }
 
+.add-course-placeholder {
+  padding: 0.8rem 1rem;
+  border: 2px dashed #ced4da;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-align: center;
+  color: #6c757d;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+}
+
+.add-course-placeholder:hover {
+  background-color: #f8f9fa;
+  border-color: #007bff;
+  color: #007bff;
+}
+
 .course-card .name {
   font-weight: 600;
 }
@@ -147,7 +168,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
-  display: flex;
+  display: none; /* Changed from flex to none */
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -159,6 +180,52 @@
   border-radius: 8px;
   text-align: center;
   max-width: 400px;
+}
+
+#course-selection-modal .modal-content {
+  max-width: 600px;
+  text-align: left;
+}
+
+#course-selection-modal input {
+  margin-bottom: 1rem;
+}
+
+#modal-course-list {
+  max-height: 40vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-course-item {
+  padding: 0.75rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.modal-course-item:hover {
+  background-color: #e7f5ff;
+  border-color: #007bff;
+}
+
+.modal-course-item.locked {
+  background-color: #f1f3f5;
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.modal-course-item .name {
+  font-weight: 600;
+}
+
+.modal-course-item .prereqs {
+  font-size: 0.8em;
+  color: #6c757d;
+  display: block;
 }
 
 .modal-content button {

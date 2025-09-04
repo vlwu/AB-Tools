@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- STATE MANAGEMENT ---
   let plannedCourses = []; // Array of objects: { id, delivery }
   let hasUnsavedChanges = false;
+  let targetGradeForAdding = null; // To track which grade column triggered the modal
 
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
@@ -20,9 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const progressBarEl = document.getElementById("progress-bar");
   const requirementsEl = document.getElementById("requirements-checklist");
   
-  // Modals & Tooltip
+  // Modals
   const deliveryModal = document.getElementById("delivery-modal");
   const detailsModal = document.getElementById("details-modal");
+  const courseSelectionModal = document.getElementById("course-selection-modal");
+  const modalCourseList = document.getElementById("modal-course-list");
+  const courseSearchInput = document.getElementById("course-search-input");
   const tooltip = document.getElementById("tooltip");
 
   // --- GRADUATION REQUIREMENTS ---
@@ -39,60 +43,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- INITIALIZATION ---
   function init() {
-    renderAllCourses();
-    updateUI();
+    updateUI(); // This will call renderPlanner internally
     attachEventListeners();
   }
 
   // --- RENDERING & UI ---
-  function renderAllCourses() {
-    Object.values(gradeContainers).forEach(c => c.innerHTML = '');
-    courseData.forEach(course => {
-      const card = createCourseCard(course);
-      gradeContainers[course.grade].appendChild(card);
+  function renderPlanner() {
+    Object.entries(gradeContainers).forEach(([grade, container]) => {
+      container.innerHTML = ''; // Clear the column
+      const coursesForGrade = plannedCourses
+        .map(pc => findCourseById(pc.id))
+        .filter(c => c.grade === parseInt(grade));
+
+      // Render planned courses
+      coursesForGrade.forEach(course => {
+        const card = createCourseCard(course);
+        container.appendChild(card);
+      });
+
+      // Render placeholder slots
+      const emptySlots = 8 - coursesForGrade.length;
+      for (let i = 0; i < emptySlots; i++) {
+        if(i >= 0){
+            const placeholder = createPlaceholderCard(grade);
+            container.appendChild(placeholder);
+        }
+      }
     });
   }
 
   function createCourseCard(course) {
     const card = document.createElement("div");
-    card.className = "course-card";
+    card.className = "course-card planned"; // All rendered cards are planned
     card.dataset.id = course.id;
+    const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
+    let deliveryIcon = '';
+    if (plannedCourse.delivery === 'summer') deliveryIcon = '☀️';
+    if (plannedCourse.delivery === 'elearning') deliveryIcon = '💻';
+
     card.innerHTML = `
       <span class="name">${course.name}</span>
       <span class="credits">${course.credits} Credits</span>
-      <span class="delivery-icon"></span>
+      <span class="delivery-icon">${deliveryIcon}</span>
     `;
     card.addEventListener("click", () => onCourseClick(course));
-    card.addEventListener("mouseover", (e) => onCourseHover(e, course));
-    card.addEventListener("mouseout", onCourseMouseOut);
     return card;
   }
 
+  function createPlaceholderCard(grade) {
+      const placeholder = document.createElement("div");
+      placeholder.className = "add-course-placeholder";
+      placeholder.textContent = "(+) Add Course";
+      placeholder.addEventListener("click", () => showCourseSelectionModal(grade));
+      return placeholder;
+  }
+
   function updateUI() {
-    updateCourseStates();
+    renderPlanner();
     updateGradTracker();
     updateGradeCredits();
     hasUnsavedChanges = true;
-  }
-
-  function updateCourseStates() {
-    const plannedIds = plannedCourses.map(pc => pc.id);
-    document.querySelectorAll(".course-card").forEach(card => {
-      const courseId = card.dataset.id;
-      const plannedCourse = plannedCourses.find(pc => pc.id === courseId);
-      card.classList.remove("locked", "available", "planned");
-      card.querySelector('.delivery-icon').textContent = '';
-
-      if (plannedCourse) {
-        card.classList.add("planned");
-        if (plannedCourse.delivery === 'summer') card.querySelector('.delivery-icon').textContent = '☀️';
-        if (plannedCourse.delivery === 'elearning') card.querySelector('.delivery-icon').textContent = '💻';
-      } else if (arePrerequisitesMet(findCourseById(courseId), plannedIds)) {
-        card.classList.add("available");
-      } else {
-        card.classList.add("locked");
-      }
-    });
   }
 
   function updateGradTracker() {
@@ -118,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .reduce((sum, c) => sum + c.credits, 0);
     gradRequirements['Option-30'].met = thirtyLevelCredits >= 10;
 
-    // --- MODIFIED LINE ---
     requirementsEl.innerHTML = Object.entries(gradRequirements)
       .map(([_, req]) => `<div class="req-item ${req.met ? 'completed' : ''}">${req.met ? '✅' : '❌'} ${req.label}</div>`)
       .join('');
@@ -161,37 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- EVENT HANDLERS ---
   function onCourseClick(course) {
-    const isPlanned = plannedCourses.some(pc => pc.id === course.id);
-    if (isPlanned) {
-      showDetailsModal(course);
-    } else if (arePrerequisitesMet(course, plannedCourses.map(pc => pc.id))) {
-      showDeliveryModal(course);
-    }
-  }
-
-  function onCourseHover(event, course) {
-    const plannedIds = plannedCourses.map(pc => pc.id);
-    // Prerequisite Highlighting
-    if (course.prerequisites && course.prerequisites.length > 0) {
-      course.prerequisites.forEach(prereqId => {
-        document.querySelector(`.course-card[data-id="${prereqId}"]`)?.classList.add('highlight-prereq');
-      });
-    }
-    // Tooltip for Locked Courses
-    if (!arePrerequisitesMet(course, plannedIds)) {
-      const missing = course.prerequisites.filter(p => !plannedIds.includes(p)).map(p => findCourseById(p).name);
-      if (missing.length > 0) {
-        tooltip.innerHTML = `Requires: ${missing.join(', ')}`;
-        tooltip.style.display = 'block';
-        tooltip.style.left = `${event.pageX + 10}px`;
-        tooltip.style.top = `${event.pageY + 10}px`;
-      }
-    }
-  }
-
-  function onCourseMouseOut() {
-    document.querySelectorAll('.highlight-prereq').forEach(card => card.classList.remove('highlight-prereq'));
-    tooltip.style.display = 'none';
+    showDetailsModal(course);
   }
 
   function attachEventListeners() {
@@ -204,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Modals
     setupDeliveryModal();
     setupDetailsModal();
+    setupCourseSelectionModal();
 
     window.addEventListener('beforeunload', (e) => {
       if (hasUnsavedChanges) {
@@ -214,6 +194,65 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // --- MODAL MANAGEMENT ---
+  function showCourseSelectionModal(grade) {
+    targetGradeForAdding = parseInt(grade);
+    courseSearchInput.value = '';
+    populateCourseSelectionModal();
+    courseSelectionModal.style.display = "flex";
+  }
+
+  function populateCourseSelectionModal() {
+    modalCourseList.innerHTML = '';
+    const plannedIds = plannedCourses.map(pc => pc.id);
+    const searchTerm = courseSearchInput.value.toLowerCase();
+    
+    const availableCourses = courseData.filter(course => 
+      !plannedIds.includes(course.id) &&
+      course.grade === targetGradeForAdding &&
+      (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm))
+    );
+
+    if (availableCourses.length === 0) {
+        modalCourseList.innerHTML = '<p style="text-align: center; margin-top: 1rem;">No matching courses found.</p>';
+        return;
+    }
+
+    availableCourses.forEach(course => {
+      const item = document.createElement('div');
+      item.className = 'modal-course-item';
+      
+      const isMet = arePrerequisitesMet(course, plannedIds);
+      if (!isMet) {
+        item.classList.add('locked');
+      }
+
+      let prereqText = 'No prerequisites';
+      if (course.prerequisites.length > 0) {
+        prereqText = 'Requires: ' + course.prerequisites.map(p => findCourseById(p).name).join(', ');
+      }
+      
+      item.innerHTML = `
+        <span class="name">${course.name}</span>
+        <span class="prereqs">${prereqText}</span>
+      `;
+
+      if (isMet) {
+        item.addEventListener('click', () => {
+          courseSelectionModal.style.display = 'none';
+          showDeliveryModal(course);
+        });
+      }
+      modalCourseList.appendChild(item);
+    });
+  }
+  
+  function setupCourseSelectionModal() {
+      courseSearchInput.addEventListener('input', populateCourseSelectionModal);
+      document.getElementById('modal-cancel-selection').addEventListener('click', () => {
+          courseSelectionModal.style.display = 'none';
+      });
+  }
+
   function showDeliveryModal(course) {
     deliveryModal.querySelector('#modal-course-name').textContent = course.name;
     deliveryModal.dataset.courseId = course.id;
@@ -222,12 +261,16 @@ document.addEventListener("DOMContentLoaded", () => {
   
   function setupDeliveryModal() {
     deliveryModal.addEventListener("click", (e) => {
-      if (e.target.tagName !== 'BUTTON') return;
-      const method = e.target.dataset.method;
+      const target = e.target;
+      if (target.tagName !== 'BUTTON') return;
+      
+      const method = target.dataset.method;
       const courseId = deliveryModal.dataset.courseId;
+      
       if (method && courseId) {
         addCourse(findCourseById(courseId), method);
       }
+      
       deliveryModal.style.display = "none";
     });
   }
@@ -271,7 +314,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (savedPlan) {
       if (confirm("This will overwrite your current plan. Are you sure?")) {
         plannedCourses = JSON.parse(savedPlan);
-        renderAllCourses();
         updateUI();
         hasUnsavedChanges = false;
       }
@@ -283,7 +325,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetPlan() {
     if (confirm("Are you sure you want to completely reset your plan? This cannot be undone.")) {
       plannedCourses = [];
-      renderAllCourses();
       updateUI();
     }
   }

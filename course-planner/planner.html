@@ -13,7 +13,7 @@
   <div class="container planner-container">
     <header>
       <h1>📋 Interactive Course Planner</h1>
-      <p>Plan your high school journey from Grade 10 to 12. Click on available courses to add them to your plan and track your graduation progress.</p>
+      <p>Plan your high school journey from Grade 10 to 12. Click on an empty slot to add a course and track your graduation progress.</p>
     </header>
 
     <main>
@@ -58,6 +58,18 @@
         </div>
       </div>
     </main>
+  </div>
+
+  <!-- Modal for selecting a new course to add -->
+  <div id="course-selection-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3>Add a Course</h3>
+      <input type="text" id="course-search-input" placeholder="Search by name or subject (e.g., 'Math', 'Art')">
+      <div id="modal-course-list">
+        <!-- Selectable courses will be injected here by JavaScript -->
+      </div>
+      <button id="modal-cancel-selection" class="danger-btn">Cancel</button>
+    </div>
   </div>
 
   <!-- Modal for selecting course delivery method -->
