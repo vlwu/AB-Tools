@@ -1,0 +1,111 @@
+#prerequisite-checker .checker-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 2rem;
+}
+
+#prerequisite-checker .control-group {
+  flex: 1;
+  min-width: 250px;
+}
+
+#prerequisite-checker label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #495057;
+}
+
+#prerequisite-checker button:disabled {
+  background-color: #ced4da;
+  cursor: not-allowed;
+}
+
+#checker-results h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
+#checker-results h3.met { color: #28a745; }
+#checker-results h3.missing { color: #dc3545; }
+#checker-results h3.notes { color: #6c757d; }
+
+#checker-results ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+#checker-results li {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+}
+
+#checker-results .course-met {
+  border-left: 5px solid #28a745;
+  font-weight: 500;
+}
+
+#checker-results .course-missing {
+  border-left: 5px solid #dc3545;
+}
+
+#checker-results .notes-section p {
+  margin-bottom: 0.5rem;
+}
+
+#checker-results .program-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-weight: bold;
+}
+
+/* --- NEW STYLES ADDED BELOW --- */
+
+/* Styles for the "No Plan Found" error message */
+.checker-error {
+  text-align: center;
+  padding: 2rem;
+  background-color: #fff3cd; /* Light yellow background */
+  border: 1px solid #ffeeba;
+  color: #856404; /* Dark yellow text */
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.checker-error h3 {
+  color: #856404;
+  border-bottom: none;
+  margin-bottom: 1rem;
+}
+
+.checker-error p {
+  margin-bottom: 1.5rem;
+}
+
+/* A simple class to make a link look like a button */
+.button-link {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.button-link:hover {
+  background-color: #0056b3;
+  color: white;
+  text-decoration: none;
+}

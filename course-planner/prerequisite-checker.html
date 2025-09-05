@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post-Secondary Prerequisite Checker</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="checker-styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎓 Post-Secondary Prerequisite Checker</h1>
+      <p>Select a university and program to see how your course plan measures up against official admission requirements. This tool uses your currently saved plan.</p>
+    </header>
+
+    <main>
+      <section id="prerequisite-checker" class="card">
+        <h2>Check Your Prerequisites</h2>
+        <div class="checker-controls">
+          <div class="control-group">
+            <label for="university-select">University:</label>
+            <select id="university-select">
+              <option value="">-- Loading Universities --</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="program-select">Program:</label>
+            <select id="program-select" disabled>
+              <option value="">-- Select a University First --</option>
+            </select>
+          </div>
+          <button id="check-plan-button" disabled>Check My Plan</button>
+        </div>
+        <div id="checker-results">
+          <!-- Results will be displayed here -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Prerequisite checker logic -->
+  <script src="../assets/course-data.js"></script>
+  <script src="prerequisite-checker.js"></script>
+</body>
+</html>
