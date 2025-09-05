@@ -1,23 +1,23 @@
 const courseData = [
-  // --- GRADE 10 CORE ---
+
   { id: 'ELA10-1', name: 'ELA 10-1', grade: 10, credits: 5, category: 'ELA', prerequisites: [] },
   { id: 'ELA10-2', name: 'ELA 10-2', grade: 10, credits: 5, category: 'ELA', prerequisites: [] },
   { id: 'SS10-1', name: 'Social Studies 10-1', grade: 10, credits: 5, category: 'Social', prerequisites: [] },
   { id: 'SS10-2', name: 'Social Studies 10-2', grade: 10, credits: 5, category: 'Social', prerequisites: [] },
   { id: 'MATH10C', name: 'Math 10C', grade: 10, credits: 5, category: 'Math', prerequisites: [] },
+  { id: 'MATH10-2', name: 'Math 10-2', grade: 10, credits: 5, category: 'Math', prerequisites: [] },
   { id: 'MATH10-3', name: 'Math 10-3', grade: 10, credits: 5, category: 'Math', prerequisites: [] },
   { id: 'SCI10', name: 'Science 10', grade: 10, credits: 5, category: 'Science', prerequisites: [] },
   { id: 'SCI14', name: 'Science 14', grade: 10, credits: 5, category: 'Science', prerequisites: [] },
   { id: 'PE10', name: 'Physical Education 10', grade: 10, credits: 5, category: 'PE', prerequisites: [] },
   { id: 'CALM', name: 'CALM 20', grade: 10, credits: 3, category: 'CALM', prerequisites: [] },
 
-  // --- GRADE 11 CORE ---
   { id: 'ELA20-1', name: 'ELA 20-1', grade: 11, credits: 5, category: 'ELA', prerequisites: ['ELA10-1'] },
   { id: 'ELA20-2', name: 'ELA 20-2', grade: 11, credits: 5, category: 'ELA', prerequisites: ['ELA10-2'] },
   { id: 'SS20-1', name: 'Social Studies 20-1', grade: 11, credits: 5, category: 'Social', prerequisites: ['SS10-1'] },
   { id: 'SS20-2', name: 'Social Studies 20-2', grade: 11, credits: 5, category: 'Social', prerequisites: ['SS10-2'] },
   { id: 'MATH20-1', name: 'Math 20-1', grade: 11, credits: 5, category: 'Math', prerequisites: ['MATH10C'] },
-  { id: 'MATH20-2', name: 'Math 20-2', grade: 11, credits: 5, category: 'Math', prerequisites: ['MATH10C'] },
+  { id: 'MATH20-2', name: 'Math 20-2', grade: 11, credits: 5, category: 'Math', prerequisites: ['MATH10-2'] },
   { id: 'MATH20-3', name: 'Math 20-3', grade: 11, credits: 5, category: 'Math', prerequisites: ['MATH10-3'] },
   { id: 'BIO20', name: 'Biology 20', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI10'] },
   { id: 'CHEM20', name: 'Chemistry 20', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI10'] },
@@ -25,8 +25,9 @@ const courseData = [
   { id: 'SCI20', name: 'Science 20', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI10'] },
   { id: 'SCI24', name: 'Science 24', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI14'] },
   { id: 'PE20', name: 'Physical Education 20', grade: 11, credits: 5, category: 'PE', prerequisites: ['PE10'] },
+  { id: 'AP-BIO20-30', name: 'AP Biology 20/30/35', grade: 11, credits: 10, category: 'Science', prerequisites: ['SCI10', 'BIO20'] },
 
-  // --- GRADE 12 CORE ---
+
   { id: 'ELA30-1', name: 'ELA 30-1', grade: 12, credits: 5, category: 'ELA-30', prerequisites: ['ELA20-1'] },
   { id: 'ELA30-2', name: 'ELA 30-2', grade: 12, credits: 5, category: 'ELA-30', prerequisites: ['ELA20-2'] },
   { id: 'SS30-1', name: 'Social Studies 30-1', grade: 12, credits: 5, category: 'Social-30', prerequisites: ['SS20-1'] },
@@ -40,8 +41,8 @@ const courseData = [
   { id: 'PHY30', name: 'Physics 30', grade: 12, credits: 5, category: 'Science-30', prerequisites: ['PHY20'] },
   { id: 'SCI30', name: 'Science 30', grade: 12, credits: 5, category: 'Science-30', prerequisites: ['SCI20'] },
   { id: 'PE30', name: 'Physical Education 30', grade: 12, credits: 5, category: 'PE', prerequisites: ['PE20'] },
+  { id: 'AP-CHEM30', name: 'AP Chemistry 30', grade: 12, credits: 10, category: 'Science-30', prerequisites: ['CHEM20', 'MATH20-1'] },
 
-  // --- FINE ARTS ---
   { id: 'ART10', name: 'Art 10', grade: 10, credits: 5, category: 'FineArts', prerequisites: [] },
   { id: 'ART20', name: 'Art 20', grade: 11, credits: 5, category: 'FineArts', prerequisites: ['ART10'] },
   { id: 'ART30', name: 'Art 30', grade: 12, credits: 5, category: 'FineArts', prerequisites: ['ART20'] },
@@ -52,7 +53,6 @@ const courseData = [
   { id: 'MUSIC20', name: 'Instrumental Music 20', grade: 11, credits: 5, category: 'FineArts', prerequisites: ['MUSIC10'] },
   { id: 'MUSIC30', name: 'Instrumental Music 30', grade: 12, credits: 5, category: 'FineArts', prerequisites: ['MUSIC20'] },
 
-  // --- CTS (Career & Technology Studies) ---
   { id: 'COMP10', name: 'Computing Science 10', grade: 10, credits: 5, category: 'CTS', prerequisites: [] },
   { id: 'COMP20', name: 'Computing Science 20', grade: 11, credits: 5, category: 'CTS', prerequisites: ['COMP10'] },
   { id: 'COMP30', name: 'Computing Science 30', grade: 12, credits: 5, category: 'CTS', prerequisites: ['COMP20'] },
@@ -74,18 +74,13 @@ const courseData = [
   { id: 'BIZ10', name: 'Business Studies 10', grade: 10, credits: 5, category: 'CTS', prerequisites: [] },
   { id: 'BIZ20', name: 'Business Studies 20', grade: 11, credits: 5, category: 'CTS', prerequisites: ['BIZ10'] },
   { id: 'BIZ30', name: 'Business Studies 30', grade: 12, credits: 5, category: 'CTS', prerequisites: ['BIZ20'] },
-  { id: 'LEGAL10', name: 'Legal Studies 10', grade: 10, credits: 5, category: 'CTS', prerequisites: [] },
-  { id: 'LEGAL20', name: 'Legal Studies 20', grade: 11, credits: 5, category: 'CTS', prerequisites: ['LEGAL10'] },
-  { id: 'LEGAL30', name: 'Legal Studies 30', grade: 12, credits: 5, category: 'CTS', prerequisites: ['LEGAL30'] },
+  { id: 'LEGAL10', name: 'Legal Studies', grade: 10, credits: 5, category: 'CTS', prerequisites: [] },
 
-  // --- LANGUAGES & SOCIAL SCIENCES (ELECTIVES) ---
   { id: 'FRENCH10', name: 'French 10', grade: 10, credits: 5, category: 'Language', prerequisites: [] },
   { id: 'FRENCH20', name: 'French 20', grade: 11, credits: 5, category: 'Language', prerequisites: ['FRENCH10'] },
   { id: 'FRENCH30', name: 'French 30', grade: 12, credits: 5, category: 'Language', prerequisites: ['FRENCH20'] },
   { id: 'SPANISH10', name: 'Spanish 10', grade: 10, credits: 5, category: 'Language', prerequisites: [] },
   { id: 'SPANISH20', name: 'Spanish 20', grade: 11, credits: 5, category: 'Language', prerequisites: ['SPANISH10'] },
   { id: 'SPANISH30', name: 'Spanish 30', grade: 12, credits: 5, category: 'Language', prerequisites: ['SPANISH20'] },
-  { id: 'PSYCH20', name: 'General Psychology 20', grade: 11, credits: 3, category: 'SocialScience', prerequisites: [] },
-  { id: 'PSYCH-PERS20', name: 'Personal Psychology 20', grade: 11, credits: 3, category: 'SocialScience', prerequisites: [] },
-  { id: 'PSYCH-EXP30', name: 'Experimental Psychology 30', grade: 12, credits: 3, category: 'SocialScience', prerequisites: ['PSYCH20'] },
+  { id: 'AP-PSYCH30', name: 'AP Psychology 30', grade: 12, credits: 5, category: 'SocialScience', prerequisites: [] },
 ];
