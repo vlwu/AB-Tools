@@ -6,7 +6,7 @@
   <title>EMHS Interactive Course Planner</title>
   <link rel="stylesheet" href="../assets/styles.css">
   <link rel="stylesheet" href="planner-styles.css">
-  <!-- jsPDF Library for Exporting -->
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
@@ -24,7 +24,7 @@
         </div>
         <p>Total Credits: <span id="credit-count">0</span> / 100</p>
         <div id="requirements-checklist">
-          <!-- Checklist items will be injected by JavaScript -->
+
         </div>
         <div class="planner-controls">
           <button id="save-plan">Save Plan</button>
@@ -72,19 +72,19 @@
     </main>
   </div>
 
-  <!-- Modal for selecting a new course to add -->
+
   <div id="course-selection-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3>Add a Course</h3>
       <input type="text" id="course-search-input" placeholder="Search by name or subject (e.g., 'Math', 'Art')">
       <div id="modal-course-list">
-        <!-- Selectable courses will be injected here by JavaScript -->
+
       </div>
       <button id="modal-cancel-selection" class="danger-btn">Cancel</button>
     </div>
   </div>
 
-  <!-- Modal for selecting course delivery method -->
+
   <div id="delivery-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3>Select Delivery Method</h3>
@@ -96,7 +96,7 @@
     </div>
   </div>
 
-  <!-- Modal for viewing/removing a planned course -->
+
   <div id="details-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3 id="details-modal-course-name">Course Details</h3>
@@ -106,7 +106,7 @@
       <button id="details-modal-close">Close</button>
     </div>
   </div>
-  
+
   <div id="tooltip" class="tooltip" style="display: none;"></div>
 
   <script src="../assets/course-data.js"></script>

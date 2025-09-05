@@ -1,12 +1,11 @@
-/* General Planner Layout */
 .planner-container {
-  max-width: 1400px; /* Increased width to accommodate summer columns */
+  max-width: 1400px;
 }
 
 #planner-grid {
   display: flex;
   justify-content: space-between;
-  gap: 1rem; /* Reduced gap slightly */
+  gap: 1rem;
   align-items: flex-start;
 }
 
@@ -22,7 +21,7 @@
 }
 
 .summer-column {
-  flex: 0.6; /* Make summer columns narrower */
+  flex: 0.6;
   padding: 1.5rem 1rem;
   background-color: #f8f9fa;
   border-radius: 8px;
@@ -39,10 +38,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  flex-grow: 1; /* Allows list to fill space */
+  flex-grow: 1;
 }
 
-/* Course Card Styles */
+
 .course-card {
   padding: 0.8rem 1rem;
   border: 1px solid #ced4da;
@@ -84,7 +83,7 @@
   display: block;
 }
 
-/* Course Card States */
+
 .course-card.locked {
   background-color: #f1f3f5;
   color: #adb5bd;
@@ -104,13 +103,13 @@
   font-weight: bold;
 }
 
-/* Prerequisite Highlight */
+
 .course-card.highlight-prereq {
   box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.7);
   border-color: #ffc107;
 }
 
-/* Delivery Method Indicators */
+
 .delivery-icon {
   position: absolute;
   top: 5px;
@@ -118,7 +117,7 @@
   font-size: 1.2em;
 }
 
-/* Graduation Tracker Styles */
+
 .progress-bar-container {
   width: 100%;
   background-color: #e9ecef;
@@ -144,18 +143,18 @@
   gap: 1rem;
 }
 
-/* --- MODIFIED STYLES --- */
+
 .req-item {
   margin-bottom: 0.5rem;
-  color: #6c757d; /* Default to a neutral/grey color */
+  color: #6c757d;
   transition: color 0.3s ease;
 }
 .req-item.completed {
-  color: #28a745; /* Green color to indicate success */
+  color: #28a745;
   font-weight: 500;
 }
 
-/* Controls and Modals */
+
 .planner-controls {
   margin-top: 1.5rem;
   display: flex;
@@ -177,7 +176,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
-  display: none; /* Changed from flex to none */
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -192,7 +191,7 @@
 }
 
 #course-selection-modal .modal-content {
-  max-width: 800px; /* MODIFICATION: Increased width */
+  max-width: 800px;
   text-align: left;
 }
 
@@ -203,10 +202,10 @@
 #modal-course-list {
   max-height: 60vh;
   overflow-y: auto;
-  display: block; /* Changed from flex to block for standard flow */
+  display: block;
 }
 
-/* NEW: Styles for toggleable course categories */
+
 .modal-category {
     margin-bottom: 0.5rem;
     border: 1px solid #e9ecef;
@@ -249,7 +248,7 @@
     display: none;
     background-color: #ffffff;
     border-top: 1px solid #e9ecef;
-    /* REMOVED max-height and overflow-y to allow natural expansion */
+
 }
 
 .modal-course-item {
@@ -293,7 +292,7 @@
   margin-bottom: 0.5rem;
 }
 
-/* Grade Footer/Credit Counter */
+
 .grade-footer {
   text-align: right;
   padding-top: 1rem;
@@ -307,7 +306,7 @@
   font-weight: bold;
 }
 
-/* Tooltip for Locked Courses */
+
 .tooltip {
   position: absolute;
   background-color: #343a40;
@@ -316,12 +315,31 @@
   border-radius: 6px;
   font-size: 0.9em;
   z-index: 1001;
-  pointer-events: none; /* Allows clicks to go through to the element below */
+  pointer-events: none;
   white-space: nowrap;
 }
 
 @media (max-width: 900px) {
   #planner-grid {
     flex-direction: column;
+  }
+
+  /* Make the graduation checklist a single column for readability */
+  #requirements-checklist {
+    columns: 1;
+  }
+
+  /* Make modals take up more screen width and less padding */
+  .modal-content, #course-selection-modal .modal-content {
+    width: 90vw;
+    padding: 1.5rem;
+  }
+
+  /* Stack buttons in modals vertically for easier tapping */
+  #delivery-modal .modal-content button, #details-modal .modal-content button {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
