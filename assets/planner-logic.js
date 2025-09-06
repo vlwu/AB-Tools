@@ -63,8 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
       coursesForGrade.forEach(course => container.appendChild(createCourseCard(course)));
 
       const slotsUsed = coursesForGrade.reduce((total, course) => {
-        // 10-credit courses use 2 slots, others use 1
-        return total + (course.credits === 10 ? 2 : 1);
+        // Full-year courses use 2 slots, others use 1
+        return total + (course.credits >= 10 || course.isFullYear ? 2 : 1);
       }, 0);
 
       const emptySlots = 8 - slotsUsed;
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Render summer columns
+
     summerContainers[10].innerHTML = '';
     summerContainers[11].innerHTML = '';
 
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     card.className = "course-card planned";
     card.dataset.id = course.id;
 
-    if (course.credits >= 10) {
+    if (course.credits >= 10 || course.isFullYear) {
       card.classList.add("full-year-course");
     }
 
