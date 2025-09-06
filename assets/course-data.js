@@ -25,7 +25,7 @@ const courseData = [
   { id: 'SCI20', name: 'Science 20', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI10'] },
   { id: 'SCI24', name: 'Science 24', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI14'] },
   { id: 'PE20', name: 'Physical Education 20', grade: 11, credits: 5, category: 'PE', prerequisites: ['PE10'] },
-  { id: 'AP-BIO20-30', name: 'AP Biology 20/30/35', grade: 11, credits: 10, category: 'Science', prerequisites: ['SCI10', 'BIO20'] },
+  { id: 'AP-BIO20-30', name: 'AP Biology 20/30/35', grade: 11, credits: 10, category: 'Science', prerequisites: ['SCI10'] },
 
 
   { id: 'ELA30-1', name: 'ELA 30-1', grade: 12, credits: 5, category: 'ELA-30', prerequisites: ['ELA20-1'] },

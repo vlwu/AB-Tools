@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- STATE MANAGEMENT ---
-  let plannedCourses = []; // Array of objects: { id, delivery }
+
+  let plannedCourses = [];
   let hasUnsavedChanges = false;
-  let targetGradeForAdding = null; // To track which grade level of courses to show in the modal
-  let directDeliveryMethod = null; // To track if a delivery method is pre-selected
+  let targetGradeForAdding = null;
+  let directDeliveryMethod = null;
 
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
-  // --- DOM ELEMENTS ---
+
   const gradeContainers = {
     10: document.getElementById("grade-10-courses"),
     11: document.getElementById("grade-11-courses"),
@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const progressBarEl = document.getElementById("progress-bar");
   const requirementsEl = document.getElementById("requirements-checklist");
-  
-  // Modals
+
+
   const deliveryModal = document.getElementById("delivery-modal");
   const detailsModal = document.getElementById("details-modal");
   const courseSelectionModal = document.getElementById("course-selection-modal");
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const courseSearchInput = document.getElementById("course-search-input");
   const tooltip = document.getElementById("tooltip");
 
-  // --- GRADUATION REQUIREMENTS ---
+
   const gradRequirements = {
     'ELA-30': { label: 'ELA 30-1 or 30-2', met: false },
     'Social-30': { label: 'Social 30-1 or 30-2', met: false },
@@ -46,19 +46,19 @@ document.addEventListener("DOMContentLoaded", () => {
     'Option-30': { label: '10 Credits (30-level other than ELA 30 & Social Studies 30)', met: false },
   };
 
-  // --- INITIALIZATION ---
+
   function init() {
     updateUI();
     attachEventListeners();
   }
 
-  // --- RENDERING & UI ---
+
   function renderPlanner() {
-    // Separate courses by delivery type
+
     const regularCourses = plannedCourses.filter(pc => pc.delivery !== 'summer');
     const summerCourses = plannedCourses.filter(pc => pc.delivery === 'summer');
 
-    // Render regular grade columns
+
     Object.entries(gradeContainers).forEach(([grade, container]) => {
       container.innerHTML = '';
       const coursesForGrade = regularCourses
@@ -66,10 +66,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(c => c.grade === parseInt(grade));
 
       coursesForGrade.forEach(course => container.appendChild(createCourseCard(course)));
-      
+
       const emptySlots = 8 - coursesForGrade.length;
       for (let i = 0; i < emptySlots; i++) {
-        container.appendChild(createPlaceholderCard([parseInt(grade)]));
+        container.appendChild(createPlaceholderCard([parseInt(grade)], 'regular'));
       }
     });
 
@@ -136,12 +136,12 @@ document.addEventListener("DOMContentLoaded", () => {
     gradRequirements['Science-20'].met = plannedCourseObjects.some(c => c.category === 'Science' && ['SCI20', 'BIO20', 'CHEM20', 'PHY20'].includes(c.id));
     gradRequirements['PE10'].met = plannedCourseObjects.some(c => c.id === 'PE10');
     gradRequirements['CALM'].met = plannedCourseObjects.some(c => c.id === 'CALM');
-    
+
     const optionCredits = plannedCourseObjects
         .filter(c => !['ELA', 'Social', 'Math', 'Science', 'PE', 'CALM', 'ELA-30', 'Social-30'].includes(c.category))
         .reduce((sum, c) => sum + c.credits, 0);
     gradRequirements['Option-10'].met = optionCredits >= 10;
-    
+
     const thirtyLevelCredits = plannedCourseObjects
         .filter(c => c.name.includes('30') || c.id.includes('31'))
         .reduce((sum, c) => sum + c.credits, 0);
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .filter(c => c.grade === grade)
         .reduce((sum, c) => sum + c.credits, 0);
       gradeCreditEls[grade].textContent = credits;
-      
+
       const footer = gradeCreditEls[grade].parentElement;
       if (credits > 40) {
         footer.classList.add('warning');
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- LOGIC ---
+
   function arePrerequisitesMet(course, plannedIds) {
     if (!course.prerequisites || course.prerequisites.length === 0) return true;
     return course.prerequisites.every(prereqId => plannedIds.includes(prereqId));
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateUI();
   }
 
-  // --- EVENT HANDLERS ---
+
   function onCourseClick(course) {
     showDetailsModal(course);
   }
@@ -198,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("load-plan").addEventListener("click", loadPlan);
     document.getElementById("export-pdf").addEventListener("click", exportPlan);
     document.getElementById("reset-plan").addEventListener("click", resetPlan);
-    
+
     setupDeliveryModal();
     setupDetailsModal();
     setupCourseSelectionModal();
@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  
+
   // --- MODAL MANAGEMENT ---
   function showCourseSelectionModal(grades, delivery = null) {
     targetGradeForAdding = grades;
@@ -225,8 +225,8 @@ document.addEventListener("DOMContentLoaded", () => {
     modalCourseList.innerHTML = '';
     const plannedIds = plannedCourses.map(pc => pc.id);
     const searchTerm = courseSearchInput.value.toLowerCase();
-    
-    const availableCourses = courseData.filter(course => 
+
+    const availableCourses = courseData.filter(course =>
       !plannedIds.includes(course.id) &&
       targetGradeForAdding.includes(course.grade) &&
       (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm) || course.id.toLowerCase().includes(searchTerm))
@@ -256,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
       'CTS': 'Career & Technology Studies', 'Language': 'Languages', 'SocialScience': 'Social Sciences'
     };
 
-    // Render each category as a collapsible toggle
+
     for (const category in groupedCourses) {
       const categoryContainer = document.createElement('div');
       categoryContainer.className = 'modal-category';
@@ -272,27 +272,27 @@ document.addEventListener("DOMContentLoaded", () => {
       categoryHeader.addEventListener('click', () => {
         const wasActive = categoryHeader.classList.contains('active');
 
-        // Close all categories first
+
         modalCourseList.querySelectorAll('.modal-category-toggle').forEach(header => {
             header.classList.remove('active');
             header.nextElementSibling.style.display = 'none';
         });
 
-        // If the clicked one wasn't the one that was active, open it
+
         if (!wasActive) {
             categoryHeader.classList.add('active');
             courseListDiv.style.display = 'block';
         }
       });
 
-      // Sort courses within the category
+
       groupedCourses[category].sort((a,b) => a.name.localeCompare(b.name));
 
-      // Create and append course items
+
       groupedCourses[category].forEach(course => {
         const item = document.createElement('div');
         item.className = 'modal-course-item';
-        
+
         const isMet = arePrerequisitesMet(course, plannedIds);
         if (!isMet) item.classList.add('locked');
 
@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (course.prerequisites.length > 0) {
           prereqText = 'Requires: ' + course.prerequisites.map(p => findCourseById(p).name).join(', ');
         }
-        
+
         item.innerHTML = `
           <span class="name">${course.name}</span>
           <span class="prereqs">${prereqText}</span>
@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     addCourse(course, deliveryMethod);
   }
-  
+
   function setupCourseSelectionModal() {
       courseSearchInput.addEventListener('input', populateCourseSelectionModal);
       document.getElementById('modal-cancel-selection').addEventListener('click', () => {
@@ -356,15 +356,15 @@ document.addEventListener("DOMContentLoaded", () => {
     deliveryModal.dataset.courseId = course.id;
     deliveryModal.style.display = "flex";
   }
-  
+
   function setupDeliveryModal() {
     deliveryModal.addEventListener("click", (e) => {
       const target = e.target;
       if (target.tagName !== 'BUTTON') return;
-      
+
       const method = target.dataset.method;
       const courseId = deliveryModal.dataset.courseId;
-      
+
       if (method && courseId) {
         if (method === 'summer') {
             const courseToAdd = findCourseById(courseId);
@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         addCourse(findCourseById(courseId), method);
       }
-      
+
       deliveryModal.style.display = "none";
     });
   }
@@ -400,13 +400,34 @@ document.addEventListener("DOMContentLoaded", () => {
     if (plannedCourse.delivery === 'elearning') deliveryText = 'CBe-learn';
     if (plannedCourse.delivery === 'summer') deliveryText = 'Summer School';
     detailsModal.querySelector('#details-modal-status').textContent = `Planned (${deliveryText})`;
+
+    const switchDeliveryBtn = detailsModal.querySelector('#details-modal-switch-delivery');
+    if (plannedCourse.delivery === 'elearning') {
+      switchDeliveryBtn.textContent = 'Switch to In-School';
+    } else {
+      switchDeliveryBtn.textContent = 'Switch to Online';
+    }
+
     detailsModal.style.display = 'flex';
   }
-  
+
   function setupDetailsModal() {
       detailsModal.querySelector('#details-modal-remove').addEventListener('click', () => {
           const courseId = detailsModal.dataset.courseId;
           removeCourse(courseId);
+          detailsModal.style.display = 'none';
+      });
+      detailsModal.querySelector('#details-modal-switch-delivery').addEventListener('click', () => {
+          const courseId = detailsModal.dataset.courseId;
+          const plannedCourse = plannedCourses.find(pc => pc.id === courseId);
+          if (plannedCourse) {
+              if (plannedCourse.delivery === 'elearning') {
+                  plannedCourse.delivery = 'regular';
+              } else {
+                  plannedCourse.delivery = 'elearning';
+              }
+              updateUI();
+          }
           detailsModal.style.display = 'none';
       });
       detailsModal.querySelector('#details-modal-close').addEventListener('click', () => {
@@ -414,7 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // --- SAVE, LOAD, EXPORT ---
+
   function savePlan() {
     if (plannedCourses.length === 0) {
       alert("Your plan is empty. Add some courses before saving.");
@@ -471,7 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
         doc.text("No regular courses planned for this grade.", 15, y);
         y += 7;
       }
-      
+
       const summerCourses = plannedCourses.filter(pc => pc.delivery === 'summer' && findCourseById(pc.id).grade === grade);
       if (summerCourses.length > 0) {
           doc.setFontSize(12);
@@ -488,6 +509,6 @@ document.addEventListener("DOMContentLoaded", () => {
     doc.save("emhs-course-plan.pdf");
   }
 
-  // --- START THE APP ---
+
   init();
 });
