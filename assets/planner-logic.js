@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const requirementsEl = document.getElementById("requirements-checklist");
 
 
-  const deliveryModal = document.getElementById("delivery-modal");
   const detailsModal = document.getElementById("details-modal");
   const courseSelectionModal = document.getElementById("course-selection-modal");
   const modalCourseList = document.getElementById("modal-course-list");
@@ -199,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("export-pdf").addEventListener("click", exportPlan);
     document.getElementById("reset-plan").addEventListener("click", resetPlan);
 
-    setupDeliveryModal();
     setupDetailsModal();
     setupCourseSelectionModal();
 
@@ -309,11 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isMet) {
           item.addEventListener('click', () => {
             courseSelectionModal.style.display = 'none';
-            if (directDeliveryMethod) {
-              handleDirectCourseAdd(course, directDeliveryMethod);
-            } else {
-              showDeliveryModal(course);
-            }
+            handleDirectCourseAdd(course, directDeliveryMethod);
           });
         }
         courseListDiv.appendChild(item);
@@ -349,46 +343,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('modal-cancel-selection').addEventListener('click', () => {
           courseSelectionModal.style.display = 'none';
       });
-  }
-
-  function showDeliveryModal(course) {
-    deliveryModal.querySelector('#modal-course-name').textContent = course.name;
-    deliveryModal.dataset.courseId = course.id;
-    deliveryModal.style.display = "flex";
-  }
-
-  function setupDeliveryModal() {
-    deliveryModal.addEventListener("click", (e) => {
-      const target = e.target;
-      if (target.tagName !== 'BUTTON') return;
-
-      const method = target.dataset.method;
-      const courseId = deliveryModal.dataset.courseId;
-
-      if (method && courseId) {
-        if (method === 'summer') {
-            const courseToAdd = findCourseById(courseId);
-            if (courseToAdd.grade === 10) {
-                const summer10Exists = plannedCourses.some(pc => pc.delivery === 'summer' && findCourseById(pc.id).grade === 10);
-                if (summer10Exists) {
-                    alert("You can only add one course to the summer session after Grade 10.");
-                    deliveryModal.style.display = "none";
-                    return;
-                }
-            } else if (courseToAdd.grade === 11 || courseToAdd.grade === 12) {
-                const summer11_12Exists = plannedCourses.some(pc => pc.delivery === 'summer' && [11, 12].includes(findCourseById(pc.id).grade));
-                if (summer11_12Exists) {
-                    alert("You can only add one course to the summer session after Grade 11.");
-                    deliveryModal.style.display = "none";
-                    return;
-                }
-            }
-        }
-        addCourse(findCourseById(courseId), method);
-      }
-
-      deliveryModal.style.display = "none";
-    });
   }
 
   function showDetailsModal(course) {
@@ -508,7 +462,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     doc.save("emhs-course-plan.pdf");
   }
-
 
   init();
 });
