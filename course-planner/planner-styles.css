@@ -11,11 +11,11 @@
 
 .grade-column {
   flex: 1;
-  background: #ffffff;
+  background: #374e73;
   padding: 1.5rem;
   border-radius: 8px;
-  border: 1px solid #dee2e6;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #7b96c2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
 }
@@ -23,15 +23,15 @@
 .summer-column {
   flex: 0.6;
   padding: 1.5rem 1rem;
-  background-color: #f8f9fa;
+  background-color: #25344f;
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid #7b96c2;
 }
 
 .grade-column h2, .summer-column h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #0056b3;
+  color: #E1E1E1;
 }
 
 .course-list {
@@ -41,10 +41,9 @@
   flex-grow: 1;
 }
 
-
 .course-card {
   padding: 0.8rem 1rem;
-  border: 1px solid #ced4da;
+  border: 1px solid #7b96c2;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -54,12 +53,12 @@
 
 .add-course-placeholder {
   padding: 0.8rem 1rem;
-  border: 2px dashed #ced4da;
+  border: 2px dashed #7b96c2;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-align: center;
-  color: #6c757d;
+  color: #9B9B9B;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -68,9 +67,9 @@
 }
 
 .add-course-placeholder:hover {
-  background-color: #f1f3f5;
-  border-color: #007bff;
-  color: #007bff;
+  background-color: #25344f;
+  border-color: #E1E1E1;
+  color: #E1E1E1;
 }
 
 .course-card .name {
@@ -79,33 +78,33 @@
 
 .course-card .credits {
   font-size: 0.9em;
-  color: #6c757d;
+  color: #9B9B9B;
   display: block;
 }
 
-
 .course-card.locked {
-  background-color: #f1f3f5;
-  color: #adb5bd;
+  background-color: #25344f;
+  color: #9B9B9B;
   cursor: not-allowed;
-  border-color: #e9ecef;
+  border-color: #7b96c2;
 }
 
 .course-card.available:hover {
-  background-color: #e7f5ff;
-  border-color: #007bff;
+  background-color: #374e73;
+  border-color: #E1E1E1;
   transform: translateY(-2px);
 }
 
 .course-card.planned {
-  background-color: #d4edda;
-  border-color: #28a745;
+  background-color: #3d6a7f;
+  border-color: #5ab2d6;
   font-weight: bold;
+  color: #E1E1E1;
 }
 
 .course-card.full-year-course {
-    /* Calculated based on 2x placeholder height (70px) + 1x gap (0.75rem ~ 12px) */
-    min-height: 152px; 
+
+    min-height: 152px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -117,7 +116,6 @@
   border-color: #ffc107;
 }
 
-
 .delivery-icon {
   position: absolute;
   top: 5px;
@@ -125,10 +123,9 @@
   font-size: 1.2em;
 }
 
-
 .progress-bar-container {
   width: 100%;
-  background-color: #e9ecef;
+  background-color: #25344f;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
@@ -136,10 +133,10 @@
 .progress-bar {
   height: 20px;
   width: 0%;
-  background-color: #28a745;
+  background-color: #7b96c2;
   border-radius: 8px;
   text-align: center;
-  color: white;
+  color: #25344f;
   line-height: 20px;
   font-weight: bold;
   transition: width 0.3s ease-in-out;
@@ -151,17 +148,15 @@
   gap: 1rem;
 }
 
-
 .req-item {
   margin-bottom: 0.5rem;
-  color: #6c757d;
+  color: #9B9B9B;
   transition: color 0.3s ease;
 }
 .req-item.completed {
-  color: #28a745;
+  color: #E1E1E1;
   font-weight: 500;
 }
-
 
 .planner-controls {
   margin-top: 1.5rem;
@@ -172,9 +167,11 @@
 
 .danger-btn {
   background-color: #dc3545;
+  color: #E1E1E1;
 }
 .danger-btn:hover {
   background-color: #c82333;
+  color: #E1E1E1;
 }
 
 .modal-overlay {
@@ -183,7 +180,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   display: none;
   justify-content: center;
   align-items: center;
@@ -191,9 +188,10 @@
 }
 
 .modal-content {
-  background: white;
+  background: #25344f;
   padding: 2rem;
   border-radius: 8px;
+  border: 1px solid #7b96c2;
   text-align: center;
   max-width: 400px;
 }
@@ -213,24 +211,23 @@
   display: block;
 }
 
-
 .modal-category {
     margin-bottom: 0.5rem;
-    border: 1px solid #e9ecef;
+    border: 1px solid #7b96c2;
     border-radius: 6px;
     overflow: hidden;
 }
 
 .modal-category-toggle {
     width: 100%;
-    background-color: #f8f9fa;
+    background-color: #374e73;
     padding: 0.75rem 1rem;
     border: none;
     text-align: left;
     font-size: 1.1em;
     font-weight: 600;
     cursor: pointer;
-    color: #343a40;
+    color: #E1E1E1;
     transition: background-color 0.2s ease;
     position: relative;
 }
@@ -240,7 +237,7 @@
     position: absolute;
     right: 1rem;
     transition: transform 0.2s ease;
-    color: #6c757d;
+    color: #9B9B9B;
 }
 
 .modal-category-toggle.active::after {
@@ -248,20 +245,20 @@
 }
 
 .modal-category-toggle:hover {
-    background-color: #e9ecef;
+    background-color: #25344f;
 }
 
 .modal-category-content {
     padding: 0.5rem 1rem;
     display: none;
-    background-color: #ffffff;
-    border-top: 1px solid #e9ecef;
+    background-color: #374e73;
+    border-top: 1px solid #7b96c2;
 
 }
 
 .modal-course-item {
   padding: 0.75rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid #7b96c2;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -272,13 +269,13 @@
 }
 
 .modal-course-item:hover {
-  background-color: #e7f5ff;
-  border-color: #007bff;
+  background-color: #25344f;
+  border-color: #E1E1E1;
 }
 
 .modal-course-item.locked {
-  background-color: #f1f3f5;
-  color: #adb5bd;
+  background-color: #374e73;
+  color: #9B9B9B;
   cursor: not-allowed;
 }
 
@@ -288,7 +285,7 @@
 
 .modal-course-item .prereqs {
   font-size: 0.8em;
-  color: #6c757d;
+  color: #9B9B9B;
   display: block;
 }
 
@@ -300,12 +297,11 @@
   margin-bottom: 0.5rem;
 }
 
-
 .grade-footer {
   text-align: right;
   padding-top: 1rem;
   margin-top: 1rem;
-  border-top: 2px solid #e9ecef;
+  border-top: 2px solid #7b96c2;
   font-size: 1.1em;
 }
 
@@ -314,11 +310,10 @@
   font-weight: bold;
 }
 
-
 .tooltip {
   position: absolute;
-  background-color: #343a40;
-  color: white;
+  background-color: #E1E1E1;
+  color: #25344f;
   padding: 0.5rem 0.8rem;
   border-radius: 6px;
   font-size: 0.9em;
@@ -332,18 +327,15 @@
     flex-direction: column;
   }
 
-  /* Make the graduation checklist a single column for readability */
   #requirements-checklist {
     columns: 1;
   }
 
-  /* Make modals take up more screen width and less padding */
   .modal-content, #course-selection-modal .modal-content {
     width: 90vw;
     padding: 1.5rem;
   }
 
-  /* Stack buttons in modals vertically for easier tapping */
   #delivery-modal .modal-content button, #details-modal .modal-content button {
     display: block;
     width: 100%;

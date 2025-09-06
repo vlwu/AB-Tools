@@ -5,9 +5,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #343a40;
+  font-family: "Cabin", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #25344f;
+  color: #E1E1E1;
   line-height: 1.6;
 }
 
@@ -23,25 +23,32 @@ header {
 }
 
 h1 {
+  font-family: "Crimson Text", serif;
   font-size: 2.5rem;
-  color: #212529;
+  color: #E1E1E1;
   margin-bottom: 0.5rem;
 }
 
-/* UPDATED: h2 style to match the calculator forms */
+
 h2 {
+  font-family: "Crimson Text", serif;
   font-size: 1.75rem;
-  color: #0056b3;
-  border-bottom: 2px solid #e9ecef;
+  color: #E1E1E1;
+  border-bottom: 2px solid #7b96c2;
   padding-bottom: 0.5rem;
-  text-align: center;     /* Center the title text */
-  max-width: 550px;       /* Match the width of the calculator form */
-  margin: 0 auto 1.5rem;  /* Center the block element and add bottom margin */
+  text-align: center;
+  max-width: 550px;
+  margin: 0 auto 1.5rem;
 }
 
 p {
   margin-bottom: 1rem;
   font-size: 1.1rem;
+  color: #E1E1E1;
+}
+
+header p {
+    color: #9B9B9B;
 }
 
 ul {
@@ -54,29 +61,29 @@ ul li {
 }
 
 a {
-  color: #007bff;
+  color: #7b96c2;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease-in-out;
 }
 
 a:hover {
-  color: #0056b3;
+  color: #E1E1E1;
   text-decoration: underline;
 }
 
 .card {
-  background: #ffffff;
+  background: #374e73;
   padding: 2rem;
   margin-bottom: 2rem;
   border-radius: 8px;
-  border: 1px solid #dee2e6;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #7b96c2;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
 }
 
@@ -84,7 +91,9 @@ input, select {
   padding: 0.75rem;
   margin-bottom: 1rem;
   width: 100%;
-  border: 1px solid #ced4da;
+  border: 1px solid #7b96c2;
+  background-color: #25344f;
+  color: #E1E1E1;
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -98,8 +107,8 @@ input, select {
 
 input:focus {
   outline: none;
-  border-color: #80bdff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: #E1E1E1;
+  box-shadow: none;
 }
 
 .invalid-input, .invalid-input:focus {
@@ -109,35 +118,36 @@ input:focus {
 }
 
 button {
-  background-color: #007bff;
-  color: white;
+  background-color: #7b96c2;
+  color: #25344f;
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-top: 0.5rem;
   transition: background-color 0.2s ease-in-out;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #374e73;
+  color: #E1E1E1;
 }
 
 footer {
   text-align: center;
   margin-top: 3rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e9ecef;
-  color: #6c757d;
+  border-top: 1px solid #7b96c2;
+  color: #9B9B9B;
 }
 
 @media (max-width: 600px) {
   .container {
     padding: 1.5rem;
   }
-  
+
   h1 {
     font-size: 2rem;
   }
