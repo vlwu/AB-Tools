@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
-
   const gradeContainers = {
     10: document.getElementById("grade-10-courses"),
     11: document.getElementById("grade-11-courses"),
@@ -45,18 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
     'Option-30': { label: '10 Credits (30-level other than ELA 30 & Social Studies 30)', met: false },
   };
 
-
   function init() {
     updateUI();
     attachEventListeners();
   }
 
-
   function renderPlanner() {
 
     const regularCourses = plannedCourses.filter(pc => pc.delivery !== 'summer');
     const summerCourses = plannedCourses.filter(pc => pc.delivery === 'summer');
-
 
     Object.entries(gradeContainers).forEach(([grade, container]) => {
       container.innerHTML = '';
@@ -100,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     card.className = "course-card planned";
     card.dataset.id = course.id;
 
-    if (course.credits === 10) {
+    if (course.credits >= 10) {
       card.classList.add("full-year-course");
     }
 
