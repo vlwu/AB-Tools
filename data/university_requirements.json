@@ -8,7 +8,7 @@
         "notes": "Admission is highly competitive. A mandatory Online Student Profile is required, which includes a video interview and written responses. Strong extracurriculars and a clear interest in the program are expected."
       },
       "Rotman Commerce": {
-        "url": "https://rotmancommerce.utoronto.ca/future-students/admissions/",
+        "url": "https://rotmancommerce.utoronto.ca/future-students/",
         "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
         "min_avg_range": "Low to mid-90s",
         "notes": "A supplementary application is required, which includes written and video responses. Admission considers academic performance, extracurricular activities, and leadership potential."
@@ -54,7 +54,7 @@
         "notes": "A personal profile is a required part of the application, where students showcase their non-academic achievements and skills."
       },
       "Bachelor of Science": {
-        "url": "https://science.ubc.ca/students/admissions",
+        "url": "https://you.ubc.ca/applying-ubc/requirements/canadian-high-schools#alberta",
         "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
         "group_requirements": [
           {
