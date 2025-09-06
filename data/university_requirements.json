@@ -1,6 +1,5 @@
 {
   "University of Calgary": {
-    "last_scraped": "2025-09-05T22:43:00Z",
     "programs": {
       "Bachelor of Science in Engineering": {
         "url": "https://schulich.ucalgary.ca/future-students/undergraduate/admissions",
@@ -31,7 +30,6 @@
     }
   },
   "University of Alberta": {
-    "last_scraped": "2025-09-05T22:43:00Z",
     "programs": {
       "Bachelor of Science (Honors) in Computing Science": {
         "url": "https://www.ualberta.ca/computing-science/undergraduate-studies/programs-and-admissions/bachelor-of-science-honors.html",
