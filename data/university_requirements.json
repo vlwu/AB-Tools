@@ -38,5 +38,61 @@
         "notes": "Five 30-level courses must be presented for admission."
       }
     }
+  },
+    "University of British Columbia": {
+    "programs": {
+      "General Undergraduate Admission (Canadian HS)": {
+        "url": "https://you.ubc.ca/applying-ubc/requirements/canadian-high-schools/",
+        "requirements": {
+          "Alberta": {
+            "mandatory": ["High school diploma", "Grade 11 or 12 English (≥ 70%)", "At least six academic Grade 11/12 courses"]
+          }
+        },
+        "min_avg_range": "Approx. 80%+ (competitive: 90s)",
+        "notes": "Meeting minimum does not guarantee admission; program-specific prerequisites may apply.",
+        "last_verified": "2025-09"
+      }
+    }
+  },
+  "University of Waterloo": {
+    "programs": {
+      "Computer Science (Alberta)": {
+        "url": "https://uwaterloo.ca/undergraduate-admissions/admissions/admission-requirements/computer-science/canada/alberta",
+        "requirements": {
+          "Alberta": {
+            "mandatory": ["MATH 30-1", "MATH 31", "ELA 30-1", "Five academic 30/31-level courses"]
+          }
+        },
+        "min_avg_range": "Low to mid-90s",
+        "notes": "An Admission Information Form (AIF) is required.",
+        "last_verified": "2025-09"
+      },
+      "General Undergraduate (Alberta)": {
+        "url": "https://www.schoolfinder.com/Schools/Admissions/University/uwatl08/University-of-Waterloo",
+        "requirements": {
+          "Alberta": {
+            "mandatory": ["High School Diploma", "Best six Grade 12 courses including program-specific ones"]
+          }
+        },
+        "min_avg_range": "Approx. 80%+, but highly competitive programs often require 90%+",
+        "notes": "Programs like Engineering, Math, and CS have much higher effective thresholds and require AIF.",
+        "last_verified": "2025-09"
+      }
+    }
+  },
+  "University of Toronto": {
+    "programs": {
+      "General Undergraduate Admission (Canadian HS)": {
+        "url": "https://www.utoronto.ca/admissions/undergraduate/admission-requirements",
+        "requirements": {
+          "Alberta": {
+            "mandatory": ["High school diploma", "5–6 Grade 12 academic courses including English"]
+          }
+        },
+        "min_avg_range": "Often mid-80s to low-90s (program-dependent)",
+        "notes": "Exact requirements vary by faculty and program—check the specific program page.",
+        "last_verified": "2025-09 (estimate)"
+      }
+    }
   }
 }
