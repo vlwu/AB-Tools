@@ -4,7 +4,7 @@
   gap: 1.5rem;
   align-items: flex-end;
   margin-bottom: 2rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #7b96c2;
   padding-bottom: 2rem;
 }
 
@@ -17,11 +17,11 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #495057;
+  color: #E1E1E1;
 }
 
 #prerequisite-checker button:disabled {
-  background-color: #ced4da;
+  background-color: #9B9B9B;
   cursor: not-allowed;
 }
 
@@ -30,12 +30,12 @@
   margin-bottom: 1rem;
   font-size: 1.5rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid #7b96c2;
 }
 
-#checker-results h3.met { color: #28a745; }
-#checker-results h3.missing { color: #dc3545; }
-#checker-results h3.notes { color: #6c757d; }
+#checker-results h3.met { color: #5cb85c; }
+#checker-results h3.missing { color: #d9534f; }
+#checker-results h3.notes { color: #9B9B9B; }
 
 #checker-results ul {
   list-style: none;
@@ -46,17 +46,18 @@
   padding: 0.75rem;
   margin-bottom: 0.5rem;
   border-radius: 6px;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background-color: #25344f;
+  border: 1px solid #7b96c2;
+  color: #E1E1E1;
 }
 
 #checker-results .course-met {
-  border-left: 5px solid #28a745;
+  border-left: 5px solid #5cb85c;
   font-weight: 500;
 }
 
 #checker-results .course-missing {
-  border-left: 5px solid #dc3545;
+  border-left: 5px solid #d9534f;
 }
 
 #checker-results .notes-section p {
@@ -69,21 +70,18 @@
   font-weight: bold;
 }
 
-/* --- NEW STYLES ADDED BELOW --- */
-
-/* Styles for the "No Plan Found" error message */
 .checker-error {
   text-align: center;
   padding: 2rem;
-  background-color: #fff3cd; /* Light yellow background */
-  border: 1px solid #ffeeba;
-  color: #856404; /* Dark yellow text */
+  background-color: #4a2c2c;
+  border: 1px solid #d9534f;
+  color: #E1E1E1;
   border-radius: 8px;
   margin-top: 1rem;
 }
 
 .checker-error h3 {
-  color: #856404;
+  color: #E1E1E1;
   border-bottom: none;
   margin-bottom: 1rem;
 }
@@ -92,20 +90,19 @@
   margin-bottom: 1.5rem;
 }
 
-/* A simple class to make a link look like a button */
 .button-link {
   display: inline-block;
-  background-color: #007bff;
-  color: white;
+  background-color: #7b96c2;
+  color: #25344f;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
   text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.2s ease-in-out;
+  font-weight: 700;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 .button-link:hover {
-  background-color: #0056b3;
-  color: white;
+  background-color: #374e73;
+  color: #E1E1E1;
   text-decoration: none;
 }
