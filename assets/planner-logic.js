@@ -66,7 +66,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       coursesForGrade.forEach(course => container.appendChild(createCourseCard(course)));
 
-      const emptySlots = 8 - coursesForGrade.length;
+      const slotsUsed = coursesForGrade.reduce((total, course) => {
+        // 10-credit courses use 2 slots, others use 1
+        return total + (course.credits === 10 ? 2 : 1);
+      }, 0);
+
+      const emptySlots = 8 - slotsUsed;
       for (let i = 0; i < emptySlots; i++) {
         container.appendChild(createPlaceholderCard([parseInt(grade)], 'regular'));
       }
@@ -94,6 +99,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const card = document.createElement("div");
     card.className = "course-card planned";
     card.dataset.id = course.id;
+
+    if (course.credits === 10) {
+      card.classList.add("full-year-course");
+    }
+
     const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
     let deliveryIcon = '';
     if (plannedCourse.delivery === 'summer') deliveryIcon = '☀️';

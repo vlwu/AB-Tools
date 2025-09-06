@@ -103,6 +103,14 @@
   font-weight: bold;
 }
 
+.course-card.full-year-course {
+    /* Calculated based on 2x placeholder height (70px) + 1x gap (0.75rem ~ 12px) */
+    min-height: 152px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
 .course-card.highlight-prereq {
   box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.7);
