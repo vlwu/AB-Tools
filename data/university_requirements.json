@@ -1,4 +1,162 @@
 {
+  "University of Toronto": {
+    "programs": {
+      "Engineering Science": {
+        "url": "https://discover.engineering.utoronto.ca/programs/engineering-science/",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31", "CHEM30", "PHY30"],
+        "min_avg_range": "Mid-90s",
+        "notes": "Admission is highly competitive. A mandatory Online Student Profile is required, which includes a video interview and written responses. Strong extracurriculars and a clear interest in the program are expected."
+      },
+      "Rotman Commerce": {
+        "url": "https://rotmancommerce.utoronto.ca/future-students/admissions/",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
+        "min_avg_range": "Low to mid-90s",
+        "notes": "A supplementary application is required, which includes written and video responses. Admission considers academic performance, extracurricular activities, and leadership potential."
+      },
+      "Life Sciences": {
+        "url": "https://www.artsci.utoronto.ca/future/academics/life-sciences",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31", "CHEM30"],
+        "group_requirements": [
+          {
+            "id": "group_a",
+            "description": "One of Biology 30 or Physics 30",
+            "courses": ["BIO30", "PHY30"],
+            "how_many": 1
+          }
+        ],
+        "min_avg_range": "High 80s to low 90s",
+        "notes": "Admission is to a general Life Sciences stream in first year, with specialization in later years. The competitive average depends on the chosen college within the university."
+      }
+    }
+  },
+  "McGill University": {
+    "programs": {
+      "Bachelor of Science - Biological, Biomedical & Life Sciences": {
+        "url": "https://www.mcgill.ca/undergraduate-admissions/programs/bachelor-science-bsc-biological-biomedical-and-life-sciences",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31", "CHEM30", "PHY30"],
+        "min_avg_range": "95%+",
+        "notes": "Two of Biology 30, Chemistry 30, Math 31, or Physics 30 must be presented. Admission is highly competitive."
+      },
+      "Bachelor of Engineering": {
+        "url": "https://www.mcgill.ca/undergraduate-admissions/programs/bachelor-engineering-beng",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31", "CHEM30", "PHY30"],
+        "min_avg_range": "Low to mid-90s",
+        "notes": "Admission is to a general first year, with placement into specific engineering disciplines based on first-year performance."
+      }
+    }
+  },
+  "University of British Columbia": {
+    "programs": {
+      "Bachelor of Applied Science (Engineering)": {
+        "url": "https://engineering.ubc.ca/admissions/undergraduate",
+        "required_courses": ["ELA30-1", "CHEM30", "PHY30", "MATH30-1", "MATH31"],
+        "min_avg_range": "Low to mid-90s",
+        "notes": "A personal profile is a required part of the application, where students showcase their non-academic achievements and skills."
+      },
+      "Bachelor of Science": {
+        "url": "https://science.ubc.ca/students/admissions",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
+        "group_requirements": [
+          {
+            "id": "group_b",
+            "description": "Two of Biology 30, Chemistry 30, or Physics 30",
+            "courses": ["BIO30", "CHEM30", "PHY30"],
+            "how_many": 2
+          }
+        ],
+        "min_avg_range": "Low to mid-90s",
+        "notes": "Admission is competitive and based on a combination of academic standing and a personal profile."
+      }
+    }
+  },
+  "University of Alberta": {
+    "programs": {
+      "Bachelor of Science in Engineering": {
+        "url": "https://www.ualberta.ca/engineering/future-students/undergraduate/admissions/index.html",
+        "required_courses": ["ELA30-1", "CHEM30", "MATH30-1", "MATH31", "PHY30"],
+        "min_avg_range": "High 80s to low 90s",
+        "notes": "Admission is to a common first year. A higher average may be required for early admission offers."
+      },
+      "Bachelor of Science (Honors) in Computing Science": {
+        "url": "https://www.ualberta.ca/computing-science/undergraduate-studies/programs-and-admissions/bachelor-of-science-honors.html",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
+        "group_requirements": [
+          {
+            "id": "group_c",
+            "description": "Two courses from Biology 30, Chemistry 30, Physics 30, or Computing Science 30",
+            "courses": ["BIO30", "CHEM30", "PHY30", "COMP30"],
+            "how_many": 2
+          }
+        ],
+        "min_avg_range": "High 80s to low 90s",
+        "notes": "Five 30-level courses must be presented for admission."
+      }
+    }
+  },
+  "McMaster University": {
+    "programs": {
+      "Health Sciences": {
+        "url": "https://bhsc.mcmaster.ca/future-students/",
+        "required_courses": ["ELA30-1", "BIO30", "CHEM30", "MATH30-1"],
+        "group_requirements": [
+          {
+            "id": "group_d",
+            "description": "One non-math, non-science, non-technology 30-level course",
+            "courses": ["SS30-1", "ART30", "DRAMA30", "MUSIC30", "FRENCH30", "SPANISH30"],
+            "how_many": 1
+          }
+        ],
+        "min_avg_range": "Low to mid-90s",
+        "notes": "Admission is extremely competitive. A mandatory supplementary application with written essays is a major component of the admission decision."
+      },
+      "Integrated Biomedical Engineering and Health Sciences": {
+        "url": "https://www.eng.mcmaster.ca/ibehs/",
+        "required_courses": ["ELA30-1", "BIO30", "CHEM30", "PHY30", "MATH30-1", "MATH31"],
+        "min_avg_range": "Mid-90s",
+        "notes": "A supplementary application is required. This is a highly competitive, interdisciplinary program."
+      }
+    }
+  },
+  "University of Waterloo": {
+    "programs": {
+      "Software Engineering": {
+        "url": "https://uwaterloo.ca/future-students/programs/software-engineering",
+        "required_courses": ["ELA30-1", "CHEM30", "PHY30", "MATH30-1", "MATH31"],
+        "min_avg_range": "Mid to high-90s",
+        "notes": "An Admission Information Form (AIF) is required. Admission is extremely competitive, with a strong emphasis on extracurriculars, programming experience, and contest results."
+      },
+      "Computer Science": {
+        "url": "https://uwaterloo.ca/future-students/programs/computer-science",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
+        "group_requirements": [
+          {
+            "id": "group_e",
+            "description": "One of Biology 30, Chemistry 30, or Physics 30",
+            "courses": ["BIO30", "CHEM30", "PHY30"],
+            "how_many": 1
+          }
+        ],
+        "min_avg_range": "Mid-90s",
+        "notes": "An Admission Information Form (AIF) is required. Strong performance in math and programming contests is highly recommended."
+      }
+    }
+  },
+  "Western University": {
+    "programs": {
+      "Medical Sciences": {
+        "url": "https://www.schulich.uwo.ca/bmsc/",
+        "required_courses": ["ELA30-1", "BIO30", "CHEM30", "MATH30-1"],
+        "min_avg_range": "Low 90s",
+        "notes": "Physics 30 and Math 31 are recommended. Admission is to a common first year, with progression to specific modules based on academic performance."
+      },
+      "Ivey Business School (AEO)": {
+        "url": "https://www.ivey.uwo.ca/hba/admission/high-school-students-aeo/",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
+        "min_avg_range": "Low 90s",
+        "notes": "Requires a separate application for Advanced Entry Opportunity (AEO) status. Focuses heavily on leadership, extracurriculars, and work experience. Students complete two years in another faculty before entering Ivey."
+      }
+    }
+  },
   "University of Calgary": {
     "programs": {
       "Bachelor of Science in Engineering": {
@@ -7,91 +165,53 @@
         "min_avg_range": "Low 90s",
         "notes": "Admission is competitive. Possession of the minimum average does not guarantee admission."
       },
-      "Bachelor of Arts in Psychology": {
-        "url": "https://arts.ucalgary.ca/psychology/future-students/undergraduate/programs/bachelor-arts-psychology",
-        "required_courses": ["ELA30-1"],
+      "Bachelor of Health Sciences": {
+        "url": "https://cumming.ucalgary.ca/bhsc",
+        "required_courses": ["ELA30-1", "BIO30", "CHEM30", "MATH30-1"],
         "group_requirements": [
           {
-            "id": "group_a",
-            "description": "One course from Group A (Fine Arts)",
-            "courses": ["SS30-1", "ART30", "DRAMA30", "MUSIC30", "FRENCH30", "SPANISH30"],
+            "id": "group_f",
+            "description": "One course from an approved list, including Math 31 or an option from the arts or social sciences.",
+            "courses": ["MATH31", "SS30-1", "ART30", "DRAMA30"],
             "how_many": 1
-          },
-          {
-            "id": "group_c",
-            "description": "Two courses from Group C (Sciences)",
-            "courses": ["MATH30-1", "MATH30-2", "MATH31", "BIO30", "CHEM30", "PHY30"],
-            "how_many": 2
           }
         ],
-        "min_avg_range": "Mid 80s",
-        "notes": "A competitive average is calculated based on the 5 required courses for admission."
-      }
-    }
-  },
-  "University of Alberta": {
-    "programs": {
-      "Bachelor of Science (Honors) in Computing Science": {
-        "url": "https://www.ualberta.ca/computing-science/undergraduate-studies/programs-and-admissions/bachelor-of-science-honors.html",
-        "required_courses": ["ELA30-1", "CHEM30", "MATH30-1", "MATH31", "PHY30"],
-        "min_avg_range": "High 80s",
-        "notes": "Five 30-level courses must be presented for admission."
-      }
-    }
-  },
-    "University of British Columbia": {
-    "programs": {
-      "General Undergraduate Admission (Canadian HS)": {
-        "url": "https://you.ubc.ca/applying-ubc/requirements/canadian-high-schools/",
-        "requirements": {
-          "Alberta": {
-            "mandatory": ["High school diploma", "Grade 11 or 12 English (≥ 70%)", "At least six academic Grade 11/12 courses"]
-          }
-        },
-        "min_avg_range": "Approx. 80%+ (competitive: 90s)",
-        "notes": "Meeting minimum does not guarantee admission; program-specific prerequisites may apply.",
-        "last_verified": "2025-09"
-      }
-    }
-  },
-  "University of Waterloo": {
-    "programs": {
-      "Computer Science (Alberta)": {
-        "url": "https://uwaterloo.ca/undergraduate-admissions/admissions/admission-requirements/computer-science/canada/alberta",
-        "requirements": {
-          "Alberta": {
-            "mandatory": ["MATH 30-1", "MATH 31", "ELA 30-1", "Five academic 30/31-level courses"]
-          }
-        },
         "min_avg_range": "Low to mid-90s",
-        "notes": "An Admission Information Form (AIF) is required.",
-        "last_verified": "2025-09"
-      },
-      "General Undergraduate (Alberta)": {
-        "url": "https://www.schoolfinder.com/Schools/Admissions/University/uwatl08/University-of-Waterloo",
-        "requirements": {
-          "Alberta": {
-            "mandatory": ["High School Diploma", "Best six Grade 12 courses including program-specific ones"]
-          }
-        },
-        "min_avg_range": "Approx. 80%+, but highly competitive programs often require 90%+",
-        "notes": "Programs like Engineering, Math, and CS have much higher effective thresholds and require AIF.",
-        "last_verified": "2025-09"
+        "notes": "A supplementary application is required, focusing on research interests and critical thinking skills. Admission is highly competitive."
       }
     }
   },
-  "University of Toronto": {
+  "University of Ottawa": {
     "programs": {
-      "General Undergraduate Admission (Canadian HS)": {
-        "url": "https://www.utoronto.ca/admissions/undergraduate/admission-requirements",
-        "requirements": {
-          "Alberta": {
-            "mandatory": ["High school diploma", "5–6 Grade 12 academic courses including English"]
+      "Health Sciences": {
+        "url": "https://www.uottawa.ca/study/undergraduate-studies/health-sciences",
+        "required_courses": ["ELA30-1", "BIO30", "CHEM30"],
+        "group_requirements": [
+          {
+            "id": "group_g",
+            "description": "One of Math 30-1, Math 30-2, or Math 31",
+            "courses": ["MATH30-1", "MATH30-2", "MATH31"],
+            "how_many": 1
           }
-        },
-        "min_avg_range": "Often mid-80s to low-90s (program-dependent)",
-        "notes": "Exact requirements vary by faculty and program—check the specific program page.",
-        "last_verified": "2025-09 (estimate)"
+        ],
+        "min_avg_range": "Mid-80s",
+        "notes": "Program is offered in English and French. The university calculates an admission average based on the top six 30-level courses, including prerequisites."
+      }
+    }
+  },
+  "Queen's University": {
+    "programs": {
+      "Bachelor of Commerce": {
+        "url": "https://smith.queensu.ca/bcom/index.php",
+        "required_courses": ["ELA30-1", "MATH30-1", "MATH31"],
+        "min_avg_range": "Low 90s",
+        "notes": "A mandatory Personal Statement of Experience (PSE) and a supplementary essay are required. Strong academics and demonstrated leadership are key."
+      },
+      "Bachelor of Applied Science (Engineering)": {
+        "url": "https://engineering.queensu.ca/future-students/index.html",
+        "required_courses": ["ELA30-1", "CHEM30", "PHY30", "MATH30-1", "MATH31"],
+        "min_avg_range": "Low 90s",
+        "notes": "A supplementary application is required. Admission is to a common first year."
       }
     }
   }
