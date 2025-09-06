@@ -25,11 +25,12 @@ const courseData = [
   { id: 'SCI20', name: 'Science 20', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI10'] },
   { id: 'SCI24', name: 'Science 24', grade: 11, credits: 5, category: 'Science', prerequisites: ['SCI14'] },
   { id: 'PE20', name: 'Physical Education 20', grade: 11, credits: 5, category: 'PE', prerequisites: ['PE10'] },
-  { id: 'AP-BIO20-30', name: 'AP Biology 20/30/35', grade: 11, credits: 10, category: 'Science', prerequisites: ['SCI10'] },
-  { id: 'AP Physics 1 20/25', name: 'AP Physics 1 20/25', grade: 11, credits: 8, category: 'Science', prerequisites: ['SCI10', 'MATH10C'] },
+  { id: 'AP-BIO20-30', name: 'AP Biology 20/30/35', grade: 11, credits: 13, category: 'Science', prerequisites: ['SCI10'] },
+  { id: 'AP-PHYS20-25', name: 'AP Physics 1 20/25', grade: 11, credits: 8, category: 'Science', prerequisites: ['SCI10', 'MATH10C'] },
 
   { id: 'ELA30-1', name: 'ELA 30-1', grade: 12, credits: 5, category: 'ELA-30', prerequisites: ['ELA20-1'] },
   { id: 'ELA30-2', name: 'ELA 30-2', grade: 12, credits: 5, category: 'ELA-30', prerequisites: ['ELA20-2'] },
+  { id: 'ELA30-1-35', name: 'ELA 30-1/35', grade: 12, credits: 10, category: 'ELA-30', prerequisites: ['ELA20-1'] },
   { id: 'SS30-1', name: 'Social Studies 30-1', grade: 12, credits: 5, category: 'Social-30', prerequisites: ['SS20-1'] },
   { id: 'SS30-2', name: 'Social Studies 30-2', grade: 12, credits: 5, category: 'Social-30', prerequisites: ['SS20-2'] },
   { id: 'MATH30-1', name: 'Math 30-1', grade: 12, credits: 5, category: 'Math', prerequisites: ['MATH20-1'] },
@@ -41,7 +42,7 @@ const courseData = [
   { id: 'PHY30', name: 'Physics 30', grade: 12, credits: 5, category: 'Science-30', prerequisites: ['PHY20'] },
   { id: 'SCI30', name: 'Science 30', grade: 12, credits: 5, category: 'Science-30', prerequisites: ['SCI20'] },
   { id: 'PE30', name: 'Physical Education 30', grade: 12, credits: 5, category: 'PE', prerequisites: ['PE20'] },
-  { id: 'AP-CHEM30', name: 'AP Chemistry 30', grade: 12, credits: 10, category: 'Science-30', prerequisites: ['CHEM20', 'MATH20-1'] },
+  { id: 'AP-CHEM30', name: 'AP Chemistry 30', grade: 12, credits: 8, category: 'Science-30', prerequisites: ['CHEM20'] },
 
   { id: 'ART10', name: 'Art 10', grade: 10, credits: 5, category: 'FineArts', prerequisites: [] },
   { id: 'ART20', name: 'Art 20', grade: 11, credits: 5, category: 'FineArts', prerequisites: ['ART10'] },
