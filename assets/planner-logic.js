@@ -50,20 +50,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderPlanner() {
-
     const regularCourses = plannedCourses.filter(pc => pc.delivery !== 'summer');
     const summerCourses = plannedCourses.filter(pc => pc.delivery === 'summer');
 
     Object.entries(gradeContainers).forEach(([grade, container]) => {
       container.innerHTML = '';
       const coursesForGrade = regularCourses
-        .map(pc => findCourseById(pc.id))
-        .filter(c => c.grade === parseInt(grade));
+        .filter(pc => (pc.placedInGrade || findCourseById(pc.id).grade) === parseInt(grade))
+        .map(pc => findCourseById(pc.id));
 
       coursesForGrade.forEach(course => container.appendChild(createCourseCard(course)));
 
       const slotsUsed = coursesForGrade.reduce((total, course) => {
-        // Full-year courses use 2 slots, others use 1
         return total + (course.credits >= 10 || course.isFullYear ? 2 : 1);
       }, 0);
 
@@ -72,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(createPlaceholderCard([parseInt(grade)], 'regular'));
       }
     });
-
 
     summerContainers[10].innerHTML = '';
     summerContainers[11].innerHTML = '';
@@ -161,8 +158,8 @@ document.addEventListener("DOMContentLoaded", () => {
     [10, 11, 12].forEach(grade => {
       const credits = plannedCourses
         .filter(pc => pc.delivery !== 'summer')
+        .filter(pc => (pc.placedInGrade || findCourseById(pc.id).grade) === grade)
         .map(pc => findCourseById(pc.id))
-        .filter(c => c.grade === grade)
         .reduce((sum, c) => sum + c.credits, 0);
       gradeCreditEls[grade].textContent = credits;
 
@@ -181,9 +178,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return course.prerequisites.every(prereqId => plannedIds.includes(prereqId));
   }
 
-  function addCourse(course, deliveryMethod) {
+  function addCourse(course, deliveryMethod, placementGrade) {
     if (!plannedCourses.some(pc => pc.id === course.id)) {
-      plannedCourses.push({ id: course.id, delivery: deliveryMethod });
+      plannedCourses.push({ id: course.id, delivery: deliveryMethod, placedInGrade: placementGrade });
       updateUI();
     }
   }
@@ -224,26 +221,31 @@ document.addEventListener("DOMContentLoaded", () => {
     courseSelectionModal.style.display = "flex";
   }
 
-  // MODIFICATION: Rewritten to group courses by category into toggle lists.
   function populateCourseSelectionModal() {
     modalCourseList.innerHTML = '';
     const plannedIds = plannedCourses.map(pc => pc.id);
     const searchTerm = courseSearchInput.value.toLowerCase();
 
-    const availableCourses = courseData.filter(course =>
-      !plannedIds.includes(course.id) &&
-      targetGradeForAdding.includes(course.grade) &&
-      (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm) || course.id.toLowerCase().includes(searchTerm))
-    );
+    const availableCourses = courseData.filter(course => {
+      const isGrade12Column = targetGradeForAdding.length === 1 && targetGradeForAdding[0] === 12;
+      const gradeMatch = targetGradeForAdding.includes(course.grade) || (isGrade12Column && course.grade === 11);
+
+      return !plannedIds.includes(course.id) &&
+        gradeMatch &&
+        (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm) || course.id.toLowerCase().includes(searchTerm));
+    });
 
     if (availableCourses.length === 0) {
         modalCourseList.innerHTML = '<p style="text-align: center; margin-top: 1rem;">No matching courses found.</p>';
         return;
     }
 
-    // Group courses by category
     const groupedCourses = availableCourses.reduce((acc, course) => {
-      const category = course.category;
+      let category = course.category;
+      if (category === 'Science-30') {
+        category = 'Science';
+      }
+
       if (!acc[category]) {
         acc[category] = [];
       }
@@ -251,11 +253,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return acc;
     }, {});
 
-    // Create a display name mapping for categories
     const categoryDisplayNames = {
       'ELA': 'English Language Arts', 'ELA-30': 'English Language Arts (30-Level)',
       'Social': 'Social Studies', 'Social-30': 'Social Studies (30-Level)',
-      'Math': 'Mathematics', 'Science': 'Science', 'Science-30': 'Science (30-Level)',
+      'Math': 'Mathematics', 'Science': 'Science',
       'PE': 'Physical Education', 'CALM': 'CALM', 'FineArts': 'Fine Arts',
       'CTS': 'Career & Technology Studies', 'Language': 'Languages', 'SocialScience': 'Social Sciences'
     };
@@ -341,7 +342,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     }
-    addCourse(course, deliveryMethod);
+    const placementGrade = (deliveryMethod === 'regular') ? targetGradeForAdding[0] : course.grade;
+    addCourse(course, deliveryMethod, placementGrade);
   }
 
   function setupCourseSelectionModal() {
@@ -439,8 +441,9 @@ document.addEventListener("DOMContentLoaded", () => {
       doc.setFontSize(10);
       const coursesInGrade = plannedCourses
         .filter(pc => pc.delivery !== 'summer')
-        .map(pc => findCourseById(pc.id))
-        .filter(c => c.grade === grade);
+        .filter(pc => (pc.placedInGrade || findCourseById(pc.id).grade) === grade)
+        .map(pc => findCourseById(pc.id));
+        
       if (coursesInGrade.length > 0) {
         coursesInGrade.forEach(course => {
           const plannedCourse = plannedCourses.find(pc => pc.id === course.id);
