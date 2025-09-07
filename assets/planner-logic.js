@@ -419,9 +419,11 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmModalMessage.textContent = message;
     confirmModal.style.display = 'flex';
 
-    // Clone and replace the button to remove old event listeners
-    const newConfirmButton = confirmModalButton.cloneNode(true);
-    confirmModalButton.parentNode.replaceChild(newConfirmButton, confirmModalButton);
+    // The constant `confirmModalButton` can become a stale reference.
+    // We must re-query the DOM for the button that is currently attached.
+    const buttonInDom = document.getElementById('confirm-modal-button');
+    const newConfirmButton = buttonInDom.cloneNode(true);
+    buttonInDom.parentNode.replaceChild(newConfirmButton, buttonInDom);
     
     // Add the new event listener
     newConfirmButton.addEventListener('click', () => {
@@ -464,7 +466,9 @@ document.addEventListener("DOMContentLoaded", () => {
       "Are you sure you want to completely reset your plan? This cannot be undone.",
       () => {
         plannedCourses = [];
+        localStorage.removeItem("emhsCoursePlan");
         updateUI();
+        hasUnsavedChanges = false;
       }
     );
   }
