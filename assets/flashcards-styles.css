@@ -203,3 +203,39 @@
 #import-modal input[type="file"] {
     margin-top: 1rem;
 }
+
+/* Green for "add" actions */
+#create-deck-btn, #add-card-btn {
+  background-color: #5cb85c;
+  color: #E1E1E1;
+}
+#create-deck-btn:hover, #add-card-btn:hover {
+  background-color: #4a9d4a;
+}
+
+/* Yellow/Orange for "study" action */
+#study-deck-btn {
+  background-color: #f0ad4e;
+  color: #E1E1E1;
+}
+#study-deck-btn:hover {
+  background-color: #ec971f;
+}
+
+/* Purple for "import" action */
+#import-deck-btn {
+  background-color: #8a63d2;
+  color: #E1E1E1;
+}
+#import-deck-btn:hover {
+  background-color: #724bb8;
+}
+
+/* Specific study mode controls */
+.study-controls #flip-card-btn {
+    background-color: #f0ad4e;
+    color: #E1E1E1;
+}
+.study-controls #flip-card-btn:hover {
+    background-color: #ec971f;
+}
