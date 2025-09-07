@@ -35,7 +35,7 @@
 
 #checker-results h3.met { color: #5cb85c; }
 #checker-results h3.missing { color: #d9534f; }
-#checker-results h3.notes { color: #9B9B9B; }
+#checker-results h3.notes { color: #E1E1E1; }
 
 #checker-results ul {
   list-style: none;

@@ -48,7 +48,7 @@ p {
 }
 
 header p {
-    color: #9B9B9B;
+    color: #E1E1E1;
 }
 
 ul {
@@ -61,7 +61,7 @@ ul li {
 }
 
 a {
-  color: #7b96c2;
+  color: #FFC107;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s ease-in-out;
@@ -140,7 +140,7 @@ footer {
   margin-top: 3rem;
   padding-top: 1.5rem;
   border-top: 1px solid #7b96c2;
-  color: #9B9B9B;
+  color: #E1E1E1;
 }
 
 @media (max-width: 600px) {
@@ -261,7 +261,7 @@ footer {
 
 .grade-result-card.ineligible {
   background-color: #374e73;
-  border-left: 5px solid #9B9B9B;
+  border-left: 5px solid #7b96c2;
 }
 
 .grade-result-card h3 {

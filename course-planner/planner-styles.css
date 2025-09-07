@@ -58,7 +58,7 @@
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   text-align: center;
-  color: #9B9B9B;
+  color: #E1E1E1;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -78,13 +78,13 @@
 
 .course-card .credits {
   font-size: 0.9em;
-  color: #9B9B9B;
+  color: #E1E1E1;
   display: block;
 }
 
 .course-card.locked {
   background-color: #25344f;
-  color: #9B9B9B;
+  color: #E1E1E1;
   cursor: not-allowed;
   border-color: #7b96c2;
 }
@@ -150,7 +150,7 @@
 
 .req-item {
   margin-bottom: 0.5rem;
-  color: #9B9B9B;
+  color: #E1E1E1;
   transition: color 0.3s ease;
 }
 .req-item.completed {
@@ -237,7 +237,7 @@
     position: absolute;
     right: 1rem;
     transition: transform 0.2s ease;
-    color: #9B9B9B;
+    color: #E1E1E1;
 }
 
 .modal-category-toggle.active::after {
@@ -275,7 +275,7 @@
 
 .modal-course-item.locked {
   background-color: #374e73;
-  color: #9B9B9B;
+  color: #E1E1E1;
   cursor: not-allowed;
 }
 
@@ -285,7 +285,7 @@
 
 .modal-course-item .prereqs {
   font-size: 0.8em;
-  color: #9B9B9B;
+  color: #E1E1E1;
   display: block;
 }
 
