@@ -32,6 +32,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const courseSearchInput = document.getElementById("course-search-input");
   const tooltip = document.getElementById("tooltip");
 
+  // New Modal Elements
+  const confirmModal = document.getElementById('confirm-modal');
+  const confirmModalTitle = document.getElementById('confirm-modal-title');
+  const confirmModalMessage = document.getElementById('confirm-modal-message');
+  const confirmModalButton = document.getElementById('confirm-modal-button');
+  const confirmModalCancel = document.getElementById('confirm-modal-cancel');
+
+  const infoModal = document.getElementById('info-modal');
+  const infoModalTitle = document.getElementById('info-modal-title');
+  const infoModalMessage = document.getElementById('info-modal-message');
+  const infoModalClose = document.getElementById('info-modal-close');
+
 
   const gradRequirements = {
     'ELA-30': { label: 'ELA 30-1 or 30-2', met: false },
@@ -203,13 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupDetailsModal();
     setupCourseSelectionModal();
-
-    window.addEventListener('beforeunload', (e) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = '';
-      }
-    });
+    setupCustomModals();
   }
 
   // --- MODAL MANAGEMENT ---
@@ -331,13 +337,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (course.grade === 10) {
         const summer10Exists = plannedCourses.some(pc => pc.delivery === 'summer' && findCourseById(pc.id).grade === 10);
         if (summer10Exists) {
-          alert("You can only add one course to the summer session after Grade 10.");
+          showInfoModal("Action Denied", "You can only add one course to the summer session after Grade 10.");
           return;
         }
       } else if (course.grade === 11 || course.grade === 12) {
         const summer11_12Exists = plannedCourses.some(pc => pc.delivery === 'summer' && [11, 12].includes(findCourseById(pc.id).grade));
         if (summer11_12Exists) {
-          alert("You can only add one course to the summer session after Grade 11.");
+          showInfoModal("Action Denied", "You can only add one course to the summer session after Grade 11.");
           return;
         }
       }
@@ -397,35 +403,70 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  function setupCustomModals() {
+    confirmModalCancel.addEventListener('click', () => confirmModal.style.display = 'none');
+    infoModalClose.addEventListener('click', () => infoModal.style.display = 'none');
+  }
+
+  function showInfoModal(title, message) {
+    infoModalTitle.textContent = title;
+    infoModalMessage.textContent = message;
+    infoModal.style.display = 'flex';
+  }
+
+  function showConfirmModal(title, message, onConfirm) {
+    confirmModalTitle.textContent = title;
+    confirmModalMessage.textContent = message;
+    confirmModal.style.display = 'flex';
+
+    // Clone and replace the button to remove old event listeners
+    const newConfirmButton = confirmModalButton.cloneNode(true);
+    confirmModalButton.parentNode.replaceChild(newConfirmButton, confirmModalButton);
+    
+    // Add the new event listener
+    newConfirmButton.addEventListener('click', () => {
+      onConfirm();
+      confirmModal.style.display = 'none';
+    });
+  }
+
 
   function savePlan() {
     if (plannedCourses.length === 0) {
-      alert("Your plan is empty. Add some courses before saving.");
+      showInfoModal("Cannot Save", "Your plan is empty. Add some courses before saving.");
       return;
     }
     localStorage.setItem("emhsCoursePlan", JSON.stringify(plannedCourses));
     hasUnsavedChanges = false;
-    alert("Plan saved successfully to your browser!");
+    showInfoModal("Success!", "Plan saved successfully to your browser!");
   }
 
   function loadPlan() {
     const savedPlan = localStorage.getItem("emhsCoursePlan");
     if (savedPlan) {
-      if (confirm("This will overwrite your current plan. Are you sure?")) {
-        plannedCourses = JSON.parse(savedPlan);
-        updateUI();
-        hasUnsavedChanges = false;
-      }
+      showConfirmModal(
+        "Load Plan", 
+        "This will overwrite your current plan. Are you sure?", 
+        () => {
+          plannedCourses = JSON.parse(savedPlan);
+          updateUI();
+          hasUnsavedChanges = false;
+        }
+      );
     } else {
-      alert("No saved plan found.");
+      showInfoModal("No Saved Plan", "No saved plan was found in your browser.");
     }
   }
 
   function resetPlan() {
-    if (confirm("Are you sure you want to completely reset your plan? This cannot be undone.")) {
-      plannedCourses = [];
-      updateUI();
-    }
+    showConfirmModal(
+      "Reset Plan",
+      "Are you sure you want to completely reset your plan? This cannot be undone.",
+      () => {
+        plannedCourses = [];
+        updateUI();
+      }
+    );
   }
 
   function exportPlan() {
