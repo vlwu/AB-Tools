@@ -1,0 +1,172 @@
+/* --- Exam Selection --- */
+#exam-selection-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.exam-checkbox-item {
+  display: flex;
+  align-items: center;
+  background-color: #25344f;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #7b96c2;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.exam-checkbox-item:hover {
+  background-color: #374e73;
+}
+
+.exam-checkbox-item input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.75rem;
+  accent-color: #7b96c2;
+  transform: scale(1.2);
+}
+
+.exam-checkbox-item label {
+  font-weight: 500;
+  color: #E1E1E1;
+  cursor: pointer;
+}
+
+/* --- Schedule Timeline --- */
+.schedule-controls {
+  text-align: right;
+  margin-bottom: 1.5rem;
+}
+
+#schedule-timeline {
+  border-left: 3px solid #7b96c2;
+  padding-left: 2rem;
+  position: relative;
+}
+
+.timeline-item {
+  background-color: #374e73;
+  border: 1px solid #7b96c2;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+/* Timeline dot */
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 1.5rem;
+  transform: translateX(-50%);
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #E1E1E1;
+  border: 3px solid #25344f;
+}
+
+.timeline-item.exam-item {
+  border-left: 5px solid #5ab2d6;
+}
+.timeline-item.exam-item::before { background-color: #5ab2d6; }
+
+.timeline-item.study-item {
+  border-left: 5px solid #5cb85c;
+}
+.timeline-item.study-item::before { background-color: #5cb85c; }
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-header h4 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #E1E1E1;
+}
+
+.timeline-countdown {
+  background-color: #25344f;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.timeline-details {
+  font-size: 1rem;
+  color: #9B9B9B;
+  margin-bottom: 1rem;
+}
+
+.timeline-actions a {
+  margin-right: 1rem;
+}
+
+.timeline-actions button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  background: none;
+  border: none;
+  color: #d9534f;
+  cursor: pointer;
+}
+.timeline-actions button:hover {
+  text-decoration: underline;
+  background: none;
+}
+
+.empty-schedule-message {
+  text-align: center;
+  padding: 2rem;
+  color: #9B9B9B;
+}
+
+/* --- Modal Styles --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #25344f;
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid #7b96c2;
+  text-align: left;
+  max-width: 450px;
+  width: 90%;
+}
+
+.modal-content h3 {
+  text-align: center;
+  margin-top: 0;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.modal-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

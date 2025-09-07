@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diploma Exam Scheduler & Study Planner</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/diploma-planner-styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🗓️ Diploma Exam Scheduler & Study Planner</h1>
+      <p>Select your diploma exams to generate a personalized timeline. Add your own study blocks to plan your time effectively.</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>1. Select Your Diploma Exams</h2>
+        <div id="exam-selection-list">
+          <!-- Checkboxes will be injected by JS -->
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>2. Your Personalized Schedule</h2>
+        <div class="schedule-controls">
+          <button id="add-study-block-btn">➕ Add Custom Study Block</button>
+        </div>
+        <div id="schedule-timeline">
+          <!-- The dynamic timeline will be built here by JS -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal for adding custom study blocks -->
+  <div id="study-block-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3>Add a Study Block</h3>
+      <form id="study-block-form">
+        <label for="event-title">Task Description:</label>
+        <input type="text" id="event-title" required placeholder="e.g., Review Chemistry Unit 3">
+        
+        <label for="event-date">Date:</label>
+        <input type="date" id="event-date" required>
+        
+        <div class="modal-buttons">
+          <button type="submit">Save Block</button>
+          <button type="button" id="modal-cancel-btn" class="danger-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/diploma-planner.js"></script>
+</body>
+</html>
