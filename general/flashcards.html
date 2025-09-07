@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Flashcard Creator</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+  <link rel="stylesheet" href="../assets/flashcards-styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🧠 Digital Flashcard Creator</h1>
+      <p>Create, study, and manage your own flashcard decks. All data is saved to your browser—no account needed.</p>
+    </header>
+
+    <main>
+      <!-- View: List of all decks -->
+      <section id="deck-list-view" class="card">
+        <div class="view-header">
+          <h2>My Decks</h2>
+          <div class="deck-controls">
+            <button id="import-deck-btn">Import Deck</button>
+            <button id="create-deck-btn">Create New Deck</button>
+          </div>
+        </div>
+        <div id="deck-list-container">
+          <!-- Decks will be rendered here by JS -->
+        </div>
+      </section>
+
+      <!-- View: A single deck's contents -->
+      <section id="deck-view" class="card" style="display: none;">
+        <div class="view-header">
+          <h2 id="deck-view-title"></h2>
+          <div class="deck-controls">
+            <button id="back-to-decks-btn">&larr; Back to Decks</button>
+            <button id="add-card-btn">Add Card</button>
+            <button id="study-deck-btn">Study Deck</button>
+          </div>
+        </div>
+        <p id="deck-view-description" class="deck-description"></p>
+        <div id="card-list-container">
+          <!-- Cards for the selected deck will be rendered here -->
+        </div>
+      </section>
+
+      <!-- View: Study mode -->
+      <section id="study-view" style="display: none;">
+        <div class="study-header">
+            <h2 id="study-deck-title"></h2>
+            <button id="exit-study-btn">&times; Exit Study Mode</button>
+        </div>
+        <div class="study-area">
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="card-face card-front" id="card-front"></div>
+                    <div class="card-face card-back" id="card-back"></div>
+                </div>
+            </div>
+            <p class="card-counter" id="card-counter"></p>
+        </div>
+        <div class="study-controls">
+            <button id="prev-card-btn">Previous</button>
+            <button id="flip-card-btn">Flip Card</button>
+            <button id="next-card-btn">Next</button>
+        </div>
+         <div class="study-options">
+            <button id="shuffle-deck-btn">Shuffle Deck</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <!-- Modals -->
+  <div id="deck-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3 id="deck-modal-title">Create New Deck</h3>
+      <form id="deck-form">
+        <input type="hidden" id="deck-id">
+        <label for="deck-name">Deck Name:</label>
+        <input type="text" id="deck-name" required>
+        <label for="deck-description">Description (Optional):</label>
+        <input type="text" id="deck-description">
+        <div class="modal-buttons">
+          <button type="submit">Save Deck</button>
+          <button type="button" class="modal-cancel-btn danger-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="card-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3 id="card-modal-title">Add New Card</h3>
+      <form id="card-form">
+        <input type="hidden" id="card-id">
+        <label for="card-front-input">Front:</label>
+        <textarea id="card-front-input" rows="4" required></textarea>
+        <label for="card-back-input">Back:</label>
+        <textarea id="card-back-input" rows="4" required></textarea>
+        <div class="modal-buttons">
+          <button type="submit">Save Card</button>
+          <button type="button" class="modal-cancel-btn danger-btn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="import-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3>Import Deck</h3>
+      <p>Import from Anki (.apkg) or a plain text file (.txt). For .txt files, each line should be "Front [Tab] Back".</p>
+      <input type="file" id="import-file-input" accept=".apkg,.txt">
+       <div class="modal-buttons">
+          <button type="button" id="start-import-btn" disabled>Import</button>
+          <button type="button" class="modal-cancel-btn danger-btn">Cancel</button>
+        </div>
+    </div>
+  </div>
+
+  <!-- Libraries for APKG import -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+  <script src="../assets/flashcards.js"></script>
+</body>
+</html>

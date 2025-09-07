@@ -1,0 +1,205 @@
+/* --- Deck List View --- */
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.view-header h2 {
+  margin: 0;
+  border-bottom: none;
+  text-align: left;
+}
+
+#deck-list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.deck-card {
+  background: #25344f;
+  border: 1px solid #7b96c2;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+}
+
+.deck-card:hover {
+  transform: translateY(-3px);
+  border-color: #E1E1E1;
+}
+
+.deck-card h3 {
+  margin: 0 0 0.5rem;
+}
+
+.deck-card p {
+  color: #E1E1E1;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.deck-card-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.deck-card-actions button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.empty-message {
+  text-align: center;
+  grid-column: 1 / -1;
+  padding: 2rem;
+}
+
+/* --- Deck View --- */
+.deck-description {
+    color: #E1E1E1;
+    margin-bottom: 2rem;
+}
+.card-list-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 6px;
+  background-color: #25344f;
+  border: 1px solid #7b96c2;
+  margin-bottom: 1rem;
+}
+
+.card-text {
+  padding-right: 1rem;
+  border-right: 1px solid #7b96c2;
+}
+.card-text:last-of-type {
+    border-right: none;
+}
+
+.card-list-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+.card-list-actions button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* --- Study View --- */
+#study-view {
+    background-color: #374e73;
+    padding: 2rem;
+    border-radius: 8px;
+}
+.study-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+.study-header h2 {
+    border-bottom: none;
+    margin: 0;
+}
+.study-header button {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #E1E1E1;
+    cursor: pointer;
+}
+
+.flashcard-container {
+  width: 100%;
+  max-width: 600px;
+  height: 350px;
+  perspective: 1000px;
+  margin: 0 auto 1rem;
+}
+
+.flashcard {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+
+.flashcard.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-size: 1.5rem;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #7b96c2;
+  background-color: #25344f;
+  white-space: pre-wrap; /* Allows newlines to render */
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background-color: #2e5a5a;
+}
+
+.card-counter {
+    text-align: center;
+    color: #E1E1E1;
+    font-weight: bold;
+}
+
+.study-controls, .study-options {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.study-controls button {
+    padding: 0.75rem 2rem;
+}
+
+/* --- Modal Overrides --- */
+.modal-content textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #7b96c2;
+  background-color: #25344f;
+  color: #E1E1E1;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.modal-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+#import-modal input[type="file"] {
+    margin-top: 1rem;
+}
