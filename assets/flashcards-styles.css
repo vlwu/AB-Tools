@@ -275,3 +275,11 @@
 .study-controls #flip-card-btn:hover {
     background-color: #ec971f;
 }
+
+.danger-btn {
+  background-color: #dc3545;
+  color: #E1E1E1;
+}
+.danger-btn:hover {
+  background-color: #c82333;
+}

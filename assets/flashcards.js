@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const deckModal = document.getElementById("deck-modal");
   const cardModal = document.getElementById("card-modal");
   const importModal = document.getElementById("import-modal");
+  const confirmDeleteModal = document.getElementById("confirm-delete-modal");
 
   // --- STATE ---
   let state = {
@@ -131,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!deckCard) return;
       const deckId = deckCard.dataset.deckId;
       if (e.target.matches('.edit-deck-btn')) showDeckModal(deckId);
-      else if (e.target.matches('.delete-deck-btn')) deleteDeck(deckId);
+      else if (e.target.matches('.delete-deck-btn')) showConfirmDeleteModal(deckId);
       else navigate('deck', deckId);
     });
 
@@ -146,9 +147,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Modals
     document.querySelectorAll('.modal-cancel-btn').forEach(btn => btn.addEventListener('click', hideModals));
+    document.getElementById('cancel-delete-btn').addEventListener('click', hideModals);
     deckModal.addEventListener('click', e => { if (e.target === deckModal) hideModals(); });
     cardModal.addEventListener('click', e => { if (e.target === cardModal) hideModals(); });
     importModal.addEventListener('click', e => { if(e.target === importModal) hideModals(); });
+    confirmDeleteModal.addEventListener('click', e => { if(e.target === confirmDeleteModal) hideModals(); });
     
     document.getElementById('deck-form').addEventListener('submit', handleDeckForm);
     document.getElementById('card-form').addEventListener('submit', handleCardForm);
@@ -202,12 +205,31 @@ document.addEventListener("DOMContentLoaded", () => {
     hideModals();
   }
   
+  function showConfirmDeleteModal(deckId) {
+    const deck = state.decks.find(d => d.id === deckId);
+    if (!deck) return;
+
+    const messageEl = document.getElementById('confirm-delete-message');
+    messageEl.innerHTML = `Are you sure you want to permanently delete the "<strong>${deck.name}</strong>" deck? This cannot be undone.`;
+
+    // Clone and replace the confirm button to remove old event listeners
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+    // Add the event listener for this specific deletion
+    newConfirmBtn.addEventListener('click', () => {
+        deleteDeck(deckId);
+        hideModals();
+    });
+
+    confirmDeleteModal.style.display = 'flex';
+  }
+  
   function deleteDeck(deckId) {
-    if(confirm('Are you sure you want to delete this entire deck?')) {
-        state.decks = state.decks.filter(d => d.id !== deckId);
-        saveState();
-        renderDeckList();
-    }
+    state.decks = state.decks.filter(d => d.id !== deckId);
+    saveState();
+    renderDeckList();
   }
 
   // Card CRUD
@@ -399,6 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
     deckModal.style.display = 'none';
     cardModal.style.display = 'none';
     importModal.style.display = 'none';
+    confirmDeleteModal.style.display = 'none';
   }
   
   // --- START THE APP ---
