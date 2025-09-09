@@ -20,7 +20,7 @@
         <div class="view-header">
           <h2>My Decks</h2>
           <div class="deck-controls">
-            <button id="import-deck-btn">Import Deck</button>
+            <button id="import-deck-btn" title="Import a deck from a file">Import Deck</button>
             <button id="create-deck-btn">Create New Deck</button>
           </div>
         </div>
@@ -72,7 +72,7 @@
     </main>
   </div>
   
-  <!-- Modals -->
+  <!-- MODAL FOR CREATING/EDITING DECKS -->
   <div id="deck-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3 id="deck-modal-title">Create New Deck</h3>
@@ -90,6 +90,7 @@
     </div>
   </div>
 
+  <!-- MODAL FOR CREATING/EDITING CARDS -->
   <div id="card-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3 id="card-modal-title">Add New Card</h3>
@@ -107,18 +108,21 @@
     </div>
   </div>
 
+  <!-- MODAL FOR IMPORTING DECKS -->
   <div id="import-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3>Import Deck</h3>
       <p>Import from Anki (.apkg) or a plain text file (.txt). For .txt files, each line should be "Front [Tab] Back".</p>
       <input type="file" id="import-file-input" accept=".apkg,.txt">
+      <div id="import-status" style="margin-top: 1rem; font-weight: bold;"></div>
        <div class="modal-buttons">
-          <button type="button" id="start-import-btn" disabled>Import</button>
+          <button type="button" id="start-import-btn" disabled>Import File</button>
           <button type="button" class="modal-cancel-btn danger-btn">Cancel</button>
         </div>
     </div>
   </div>
 
+  <!-- MODAL FOR CONFIRMING DELETION -->
   <div id="confirm-delete-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3 id="confirm-delete-title">Delete Deck</h3>
@@ -130,9 +134,10 @@
     </div>
   </div>
 
-  <!-- Libraries for APKG import -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+  <!-- External library for APKG import. Placed before the main script. -->
+  <script src="https://cdn.jsdelivr.net/npm/anki-apkg-parser@1.2.1/dist/anki-apkg-parser.js"></script>
+  
+  <!-- Main application script -->
   <script src="../assets/flashcards.js"></script>
 </body>
 </html>

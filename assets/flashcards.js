@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+  // --- SCRIPT INITIALIZATION CHECK ---
+  const mainView = document.getElementById("deck-list-view");
+  if (!mainView) {
+    return; // Abort if not on the flashcards page
+  }
+
   // --- PRE-BUILT DECKS DATA ---
   const starterDecks = [
     {
@@ -31,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- DOM ELEMENTS ---
   const views = {
-    deckList: document.getElementById("deck-list-view"),
+    deckList: mainView,
     deck: document.getElementById("deck-view"),
     study: document.getElementById("study-view"),
   };
@@ -55,6 +62,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- INITIALIZATION ---
   function init() {
+    // **NEW**: Check for Anki parser library and disable import if unavailable.
+    const importBtn = document.getElementById('import-deck-btn');
+    if (typeof AnkiApkgParser === 'undefined') {
+      importBtn.disabled = true;
+      importBtn.style.cursor = 'not-allowed';
+      importBtn.title = 'APKG import is unavailable. Please check your network connection or ad-blocker.';
+      console.warn("AnkiApkgParser library not found. Disabling .apkg import functionality.");
+    }
+    
     loadState();
     renderDeckList();
     attachEventListeners();
@@ -70,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (savedDecks) {
       state.decks = JSON.parse(savedDecks);
     } else {
-      // First time user, load starter decks
       state.decks = starterDecks.map(deck => ({...deck, cards: deck.cards.map((card, i) => ({...card, id: `starter-card-${i}`}))}));
       saveState();
     }
@@ -124,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- EVENT HANDLERS & LOGIC ---
   function attachEventListeners() {
-    // Deck List View
     document.getElementById('create-deck-btn').addEventListener('click', () => showDeckModal());
     document.getElementById('import-deck-btn').addEventListener('click', showImportModal);
     deckListContainer.addEventListener('click', e => {
@@ -136,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
       else navigate('deck', deckId);
     });
 
-    // Deck View
     document.getElementById('back-to-decks-btn').addEventListener('click', () => navigate('deckList'));
     document.getElementById('add-card-btn').addEventListener('click', () => showCardModal());
     document.getElementById('study-deck-btn').addEventListener('click', () => navigate('study', state.currentDeckId));
@@ -145,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if(e.target.matches('.delete-card-btn')) deleteCard(e.target.dataset.cardId);
     });
 
-    // Modals
     document.querySelectorAll('.modal-cancel-btn').forEach(btn => btn.addEventListener('click', hideModals));
     document.getElementById('cancel-delete-btn').addEventListener('click', hideModals);
     deckModal.addEventListener('click', e => { if (e.target === deckModal) hideModals(); });
@@ -156,21 +168,19 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('deck-form').addEventListener('submit', handleDeckForm);
     document.getElementById('card-form').addEventListener('submit', handleCardForm);
     
-    // Study View
     document.getElementById('exit-study-btn').addEventListener('click', () => navigate('deck', state.currentDeckId));
     document.getElementById('flip-card-btn').addEventListener('click', () => document.getElementById('flashcard').classList.toggle('is-flipped'));
     document.getElementById('next-card-btn').addEventListener('click', () => showNextCard(1));
     document.getElementById('prev-card-btn').addEventListener('click', () => showNextCard(-1));
     document.getElementById('shuffle-deck-btn').addEventListener('click', shuffleStudyDeck);
 
-    // Import Modal
     document.getElementById('import-file-input').addEventListener('change', e => {
         document.getElementById('start-import-btn').disabled = !e.target.files.length;
     });
     document.getElementById('start-import-btn').addEventListener('click', handleImport);
   }
 
-  // Deck CRUD
+  // --- DECK & CARD CRUD ---
   function showDeckModal(deckId = null) {
     const form = document.getElementById('deck-form');
     form.reset();
@@ -193,11 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const description = document.getElementById('deck-description').value.trim();
     if (!name) return;
     
-    if (id) { // Edit
+    if (id) {
       const deck = state.decks.find(d => d.id === id);
       deck.name = name;
       deck.description = description;
-    } else { // Create
+    } else {
       state.decks.push({ id: `deck-${Date.now()}`, name, description, cards: [] });
     }
     saveState();
@@ -212,12 +222,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const messageEl = document.getElementById('confirm-delete-message');
     messageEl.innerHTML = `Are you sure you want to permanently delete the "<strong>${deck.name}</strong>" deck? This cannot be undone.`;
 
-    // Clone and replace the confirm button to remove old event listeners
     const confirmBtn = document.getElementById('confirm-delete-btn');
     const newConfirmBtn = confirmBtn.cloneNode(true);
     confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
 
-    // Add the event listener for this specific deletion
     newConfirmBtn.addEventListener('click', () => {
         deleteDeck(deckId);
         hideModals();
@@ -232,7 +240,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDeckList();
   }
 
-  // Card CRUD
   function showCardModal(cardId = null) {
     const form = document.getElementById('card-form');
     form.reset();
@@ -257,11 +264,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!front || !back) return;
     
     const deck = state.decks.find(d => d.id === state.currentDeckId);
-    if (id) { // Edit
+    if (id) {
         const card = deck.cards.find(c => c.id === id);
         card.front = front;
         card.back = back;
-    } else { // Create
+    } else {
         deck.cards.push({ id: `card-${Date.now()}`, front, back });
     }
     saveState();
@@ -276,14 +283,14 @@ document.addEventListener("DOMContentLoaded", () => {
       renderDeckView();
   }
 
-  // Study Mode Logic
+  // --- STUDY MODE LOGIC ---
   function startStudySession(deckId) {
       const deck = state.decks.find(d => d.id === deckId);
       if(!deck || !deck.cards.length) return navigate('deck', deckId);
       
       state.studySession = {
           isActive: true,
-          deck: [...deck.cards], // Create a copy to shuffle
+          deck: [...deck.cards],
           currentIndex: 0
       };
       
@@ -316,104 +323,124 @@ document.addEventListener("DOMContentLoaded", () => {
       let deck = state.studySession.deck;
       for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]]; // Swap
+        [deck[i], deck[j]] = [deck[j], deck[i]];
       }
       state.studySession.currentIndex = 0;
       displayCurrentCard();
   }
   
-  // Import Logic
+  // --- ROBUST IMPORT LOGIC ---
   function showImportModal() {
-      document.getElementById('import-file-input').value = '';
-      document.getElementById('start-import-btn').disabled = true;
+      const fileInput = document.getElementById('import-file-input');
+      const importBtn = document.getElementById('start-import-btn');
+      const statusEl = document.getElementById('import-status');
+
+      fileInput.value = '';
+      importBtn.disabled = true;
+      importBtn.textContent = 'Import File';
+      statusEl.textContent = '';
+      statusEl.style.color = '';
+
       importModal.style.display = 'flex';
   }
 
   async function handleImport() {
       const fileInput = document.getElementById('import-file-input');
+      const importBtn = document.getElementById('start-import-btn');
+      const statusEl = document.getElementById('import-status');
       const file = fileInput.files[0];
       if (!file) return;
 
-      const deckName = file.name.replace(/\.(apkg|txt)$/i, '');
-      
+      importBtn.disabled = true;
+      importBtn.textContent = 'Processing...';
+      statusEl.style.color = '#E1E1E1';
+      statusEl.textContent = 'Parsing file, please wait...';
+
       try {
-          let cards = [];
-          if (file.name.endsWith('.txt')) {
+          const fileName = file.name || 'Unnamed File';
+          let cards;
+
+          if (fileName.toLowerCase().endsWith('.txt')) {
               cards = await parseTxtFile(file);
-          } else if (file.name.endsWith('.apkg')) {
+          } else if (fileName.toLowerCase().endsWith('.apkg')) {
               cards = await parseApkgFile(file);
-          }
-          
-          if (cards.length > 0) {
-              const newDeck = {
-                  id: `deck-${Date.now()}`,
-                  name: deckName,
-                  description: `Imported from ${file.name}`,
-                  cards: cards
-              };
-              state.decks.push(newDeck);
-              saveState();
-              renderDeckList();
-              alert(`Successfully imported ${cards.length} cards into new deck "${deckName}"!`);
           } else {
-              alert('Could not find any valid cards in the file.');
+              throw new Error('Unsupported file type. Please select a .txt or .apkg file.');
           }
+
+          if (!cards || cards.length === 0) {
+              throw new Error('No valid cards were found in the file.');
+          }
+
+          createDeckFromImport(cards, fileName);
+          statusEl.style.color = '#5cb85c';
+          statusEl.textContent = `Success! Imported ${cards.length} cards.`;
+          
+          setTimeout(hideModals, 1500);
+
       } catch (error) {
           console.error('Import failed:', error);
-          alert('An error occurred during import. Check the console for details.');
+          statusEl.style.color = '#dc3545';
+          statusEl.textContent = `Error: ${error.message}`;
       } finally {
-          hideModals();
+          if (statusEl.style.color === 'rgb(220, 53, 69)') { // #dc3545
+             importBtn.disabled = false;
+             importBtn.textContent = 'Import File';
+          }
       }
+  }
+
+  function createDeckFromImport(cards, sourceFileName) {
+    const deckName = sourceFileName.replace(/\.(apkg|txt)$/i, '');
+    const newDeck = {
+        id: `deck-${Date.now()}`,
+        name: deckName,
+        description: `Imported from ${sourceFileName}`,
+        cards: cards
+    };
+    state.decks.push(newDeck);
+    saveState();
+    renderDeckList();
   }
 
   function parseTxtFile(file) {
       return new Promise((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = event => {
-              const text = event.target.result;
-              const cards = text.split('\n').map((line, i) => {
-                  const parts = line.split('\t');
-                  if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
-                      return { id: `import-txt-${Date.now()}-${i}`, front: parts[0], back: parts[1] };
-                  }
-                  return null;
-              }).filter(Boolean);
-              resolve(cards);
+              try {
+                const text = event.target.result;
+                const cards = text.split('\n').map((line, i) => {
+                    const parts = line.split('\t');
+                    if (parts.length >= 2 && parts[0].trim() && parts[1].trim()) {
+                        return { id: `import-txt-${Date.now()}-${i}`, front: parts[0].trim(), back: parts[1].trim() };
+                    }
+                    return null;
+                }).filter(Boolean);
+                resolve(cards);
+              } catch (e) {
+                reject(new Error("Could not read the text file."));
+              }
           };
-          reader.onerror = reject;
+          reader.onerror = () => reject(new Error("File reading failed."));
           reader.readAsText(file);
       });
   }
 
   async function parseApkgFile(file) {
-      // 1. Initialize SQL.js
-      const SQL = await initSqlJs({ locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}` });
-      
-      // 2. Unzip the .apkg file
-      const zip = await JSZip.loadAsync(file);
-      const dbFile = zip.file('collection.anki2') || zip.file('collection.anki21');
-      if (!dbFile) throw new Error('Database file not found in .apkg');
-      const dbData = await dbFile.async('uint8array');
+    if (typeof AnkiApkgParser === 'undefined') {
+        throw new Error("Anki parser library not loaded. Check internet connection.");
+    }
+    
+    const parser = new AnkiApkgParser();
+    const deck = await parser.parse(file);
 
-      // 3. Load the database
-      const db = new SQL.Database(dbData);
-      
-      // 4. Query the database for notes (card content)
-      // The `flds` column contains front and back, separated by a `\x1f` character.
-      const stmt = db.prepare("SELECT flds FROM notes");
-      let cards = [];
-      let i = 0;
-      while (stmt.step()) {
-          const row = stmt.getAsObject();
-          const fields = row.flds.split('\x1f');
-          if (fields.length >= 2) {
-              cards.push({ id: `import-apkg-${Date.now()}-${i++}`, front: fields[0], back: fields[1] });
-          }
-      }
-      stmt.free();
-      db.close();
-      
-      return cards;
+    return deck.notes
+        .filter(note => note.fields && note.fields.length >= 2)
+        .map((note, i) => ({
+            id: `import-apkg-${Date.now()}-${i}`,
+            front: note.fields[0],
+            back: note.fields[1]
+        }));
   }
 
   // --- UTILITY ---
