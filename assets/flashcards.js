@@ -62,13 +62,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- INITIALIZATION ---
   function init() {
-    // **NEW**: Check for Anki parser library and disable import if unavailable.
     const importBtn = document.getElementById('import-deck-btn');
-    if (typeof AnkiApkgParser === 'undefined') {
-      importBtn.disabled = true;
-      importBtn.style.cursor = 'not-allowed';
-      importBtn.title = 'APKG import is unavailable. Please check your network connection or ad-blocker.';
-      console.warn("AnkiApkgParser library not found. Disabling .apkg import functionality.");
+    const ankiScript = document.querySelector('script[src*="anki-apkg-parser"]');
+
+    // Disable the import button by default. It will only be enabled if the script loads.
+    importBtn.disabled = true;
+    importBtn.style.cursor = 'not-allowed';
+    importBtn.title = 'APKG import is unavailable. Please check your network or ad-blocker.';
+
+    if (ankiScript) {
+      // Success case: The external script has loaded.
+      ankiScript.onload = () => {
+        importBtn.disabled = false;
+        importBtn.style.cursor = 'pointer';
+        importBtn.title = 'Import a deck from a file';
+        console.log("AnkiApkgParser library successfully loaded.");
+      };
+      
+      // Failure case: The external script failed to load.
+      ankiScript.onerror = () => {
+        console.error("AnkiApkgParser library failed to load. The import button will remain disabled.");
+      };
+    } else {
+        console.error("Could not find the Anki parser script tag. The import button will remain disabled.");
     }
     
     loadState();
