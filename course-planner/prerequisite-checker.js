@@ -84,8 +84,7 @@ function checkPrerequisites() {
         resultsDiv.innerHTML = `
             <div class="checker-error">
                 <h3>No Saved Plan Found</h3>
-                <p>We couldn't find a saved course plan in your browser. Please create one using the Interactive Course Planner, save it, and then return to this page.</p>
-                <a href="planner.html" class="button-link">Go to Course Planner</a>
+                <p>We couldn't find a saved course plan in your browser. Please create and save a plan from the Interactive Course Planner. You can click on the link at the top of the page to navigate there.</p>
             </div>
         `;
         return;
