@@ -5,6 +5,22 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!mainView) {
     return; // Abort if not on the flashcards page
   }
+  
+  // --- SRS CONSTANTS ---
+  const SRS_DEFAULTS = {
+    EASE_FACTOR: 2.5,
+    INTERVAL_MODIFIERS: {
+      AGAIN: 0,   // Resets interval
+      HARD: 0.8,
+      GOOD: 1.0,
+      EASY: 1.3
+    },
+    LEARNING_STEPS: { // in minutes
+      AGAIN: 1,
+      GOOD: 10,
+      EASY: 4 * 24 * 60 // 4 days
+    }
+  };
 
   // --- PRE-BUILT DECKS DATA ---
   const starterDecks = [
@@ -48,6 +64,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardModal = document.getElementById("card-modal");
   const importModal = document.getElementById("import-modal");
   const confirmDeleteModal = document.getElementById("confirm-delete-modal");
+  const studyControls = document.querySelector('.study-controls');
+  const studyAnswerControls = document.querySelector('.study-answer-controls');
+  const studyArea = document.querySelector('.study-area');
+  const studyCompleteMessage = document.getElementById('study-complete-message');
+
 
   // --- STATE ---
   let state = {
@@ -103,8 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
       state.decks = JSON.parse(savedDecks);
     } else {
       state.decks = starterDecks.map(deck => ({...deck, cards: deck.cards.map((card, i) => ({...card, id: `starter-card-${i}`}))}));
-      saveState();
     }
+    // Backward compatibility: Add SRS properties to any cards that don't have them
+    state.decks.forEach(deck => {
+        deck.cards.forEach(card => {
+            if (card.dueDate === undefined) {
+                initializeCardSrs(card);
+            }
+        });
+    });
+    saveState();
   }
   
   // --- VIEW MANAGEMENT ---
@@ -122,16 +151,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- RENDERING ---
   function renderDeckList() {
-    deckListContainer.innerHTML = state.decks.length ? state.decks.map(deck => `
+    deckListContainer.innerHTML = state.decks.length ? state.decks.map(deck => {
+        const now = new Date();
+        const dueCount = deck.cards.filter(c => new Date(c.dueDate) <= now).length;
+        return `
       <div class="deck-card" data-deck-id="${deck.id}">
         <h3>${deck.name}</h3>
         <p>${deck.cards.length} cards</p>
+        <div class="deck-card-stats">
+          ${dueCount > 0 ? `${dueCount} cards due` : 'All caught up!'}
+        </div>
         <div class="deck-card-actions">
           <button class="edit-deck-btn">Edit</button>
           <button class="delete-deck-btn danger-btn">Delete</button>
         </div>
       </div>
-    `).join('') : '<p class="empty-message">No decks yet. Create one to get started!</p>';
+    `}).join('') : '<p class="empty-message">No decks yet. Create one to get started!</p>';
   }
   
   function renderDeckView() {
@@ -166,7 +201,10 @@ document.addEventListener("DOMContentLoaded", () => {
       else navigate('deck', deckId);
     });
 
-    document.getElementById('back-to-decks-btn').addEventListener('click', () => navigate('deckList'));
+    document.getElementById('back-to-decks-btn').addEventListener('click', () => {
+        navigate('deckList');
+        renderDeckList(); // Refresh due counts
+    });
     document.getElementById('add-card-btn').addEventListener('click', () => showCardModal());
     document.getElementById('study-deck-btn').addEventListener('click', () => navigate('study', state.currentDeckId));
     cardListContainer.addEventListener('click', e => {
@@ -184,10 +222,20 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('deck-form').addEventListener('submit', handleDeckForm);
     document.getElementById('card-form').addEventListener('submit', handleCardForm);
     
-    document.getElementById('exit-study-btn').addEventListener('click', () => navigate('deck', state.currentDeckId));
-    document.getElementById('flip-card-btn').addEventListener('click', () => document.getElementById('flashcard').classList.toggle('is-flipped'));
-    document.getElementById('next-card-btn').addEventListener('click', () => showNextCard(1));
-    document.getElementById('prev-card-btn').addEventListener('click', () => showNextCard(-1));
+    // --- Study View Listeners ---
+    document.getElementById('exit-study-btn').addEventListener('click', () => {
+        navigate('deck', state.currentDeckId)
+        renderDeckList(); // Refresh due counts
+    });
+    document.getElementById('show-answer-btn').addEventListener('click', showAnswer);
+    studyAnswerControls.addEventListener('click', (e) => {
+        const button = e.target.closest('.srs-btn');
+        if (button) {
+            const rating = parseInt(button.dataset.rating, 10);
+            updateCardSrs(rating);
+            showNextCard();
+        }
+    });
     document.getElementById('shuffle-deck-btn').addEventListener('click', shuffleStudyDeck);
 
     document.getElementById('import-file-input').addEventListener('change', e => {
@@ -285,7 +333,9 @@ document.addEventListener("DOMContentLoaded", () => {
         card.front = front;
         card.back = back;
     } else {
-        deck.cards.push({ id: `card-${Date.now()}`, front, back });
+        const newCard = { id: `card-${Date.now()}`, front, back };
+        initializeCardSrs(newCard);
+        deck.cards.push(newCard);
     }
     saveState();
     renderDeckView();
@@ -299,39 +349,146 @@ document.addEventListener("DOMContentLoaded", () => {
       renderDeckView();
   }
 
-  // --- STUDY MODE LOGIC ---
+  // --- STUDY MODE & SRS LOGIC ---
+  function initializeCardSrs(card) {
+      card.dueDate = new Date().toISOString();
+      card.interval = 0; // in days
+      card.easeFactor = SRS_DEFAULTS.EASE_FACTOR;
+      card.isLearning = true;
+  }
+
   function startStudySession(deckId) {
       const deck = state.decks.find(d => d.id === deckId);
-      if(!deck || !deck.cards.length) return navigate('deck', deckId);
+      if(!deck) return navigate('deck', deckId);
+
+      const now = new Date();
+      const dueCards = deck.cards.filter(c => new Date(c.dueDate) <= now);
       
       state.studySession = {
           isActive: true,
-          deck: [...deck.cards],
+          deck: dueCards,
           currentIndex: 0
       };
       
       document.getElementById('study-deck-title').textContent = `Studying: ${deck.name}`;
-      displayCurrentCard();
+      
+      if (dueCards.length === 0) {
+          studyArea.style.display = 'none';
+          studyControls.style.display = 'none';
+          studyAnswerControls.style.display = 'none';
+          studyCompleteMessage.style.display = 'block';
+      } else {
+          studyArea.style.display = 'block';
+          studyCompleteMessage.style.display = 'none';
+          displayCurrentCard();
+      }
   }
   
   function displayCurrentCard() {
       const { deck, currentIndex } = state.studySession;
+      if (currentIndex >= deck.length) {
+          // No more cards to study in this session
+          startStudySession(state.currentDeckId); // Re-check for any final due cards or show complete
+          return;
+      }
       const card = deck[currentIndex];
       
       document.getElementById('flashcard').classList.remove('is-flipped');
-      document.getElementById('card-front').textContent = card.front;
-      document.getElementById('card-back').textContent = card.back;
-      document.getElementById('card-counter').textContent = `${currentIndex + 1} / ${deck.length}`;
+      setTimeout(() => {
+        document.getElementById('card-front').textContent = card.front;
+        document.getElementById('card-back').textContent = card.back;
+        document.getElementById('card-counter').textContent = `${currentIndex + 1} / ${deck.length}`;
+        
+        updateSrsButtonLabels(card);
+
+        studyControls.style.display = 'flex';
+        studyAnswerControls.style.display = 'none';
+      }, 150);
+  }
+  
+  function formatInterval(minutes) {
+    if (minutes < 60) return `<${Math.ceil(minutes)}m`;
+    if (minutes < 24 * 60) return `~${Math.round(minutes / 60)}h`;
+    const days = minutes / (24 * 60);
+    if (days < 30) return `~${Math.round(days)}d`;
+    if (days < 365) return `~${Math.round(days / 30)}mo`;
+    return `~${Math.round(days / 365)}y`;
   }
 
-  function showNextCard(direction) {
-      const { deck, currentIndex } = state.studySession;
-      let newIndex = currentIndex + direction;
+  function updateSrsButtonLabels(card) {
+    let intervals;
+    if (card.isLearning) {
+        intervals = {
+            1: SRS_DEFAULTS.LEARNING_STEPS.AGAIN,
+            2: Math.round(SRS_DEFAULTS.LEARNING_STEPS.GOOD / 2),
+            3: SRS_DEFAULTS.LEARNING_STEPS.GOOD,
+            4: SRS_DEFAULTS.LEARNING_STEPS.EASY,
+        };
+    } else {
+        const lastInterval = card.interval * 24 * 60; // convert days to minutes
+        intervals = {
+            1: SRS_DEFAULTS.LEARNING_STEPS.AGAIN, // 'Again' always resets
+            2: lastInterval * SRS_DEFAULTS.INTERVAL_MODIFIERS.HARD,
+            3: lastInterval * card.easeFactor,
+            4: lastInterval * card.easeFactor * SRS_DEFAULTS.INTERVAL_MODIFIERS.EASY,
+        };
+    }
+
+    document.querySelector('.srs-btn.again-btn .srs-interval').textContent = formatInterval(intervals[1]);
+    document.querySelector('.srs-btn.hard-btn .srs-interval').textContent = formatInterval(intervals[2]);
+    document.querySelector('.srs-btn.good-btn .srs-interval').textContent = formatInterval(intervals[3]);
+    document.querySelector('.srs-btn.easy-btn .srs-interval').textContent = formatInterval(intervals[4]);
+  }
+
+  function updateCardSrs(rating) {
+      const card = state.studySession.deck[state.studySession.currentIndex];
+      let newInterval; // in days
       
-      if (newIndex >= deck.length) newIndex = 0;
-      if (newIndex < 0) newIndex = deck.length - 1;
+      if (card.isLearning) {
+          if (rating === 1) { // Again
+              newInterval = SRS_DEFAULTS.LEARNING_STEPS.AGAIN / (24 * 60);
+          } else if (rating === 3) { // Good
+              card.isLearning = false;
+              newInterval = 1; // Graduate to 1 day
+          } else { // Hard or Easy in learning
+              card.isLearning = false;
+              newInterval = (rating === 4 ? SRS_DEFAULTS.LEARNING_STEPS.EASY : SRS_DEFAULTS.LEARNING_STEPS.GOOD) / (24 * 60);
+          }
+      } else { // Card is in review phase
+          if (rating === 1) { // Again
+              card.easeFactor = Math.max(1.3, card.easeFactor - 0.2);
+              card.isLearning = true; // Lapse, return to learning
+              newInterval = SRS_DEFAULTS.LEARNING_STEPS.AGAIN / (24 * 60);
+          } else {
+              if (rating === 2) card.easeFactor = Math.max(1.3, card.easeFactor - 0.15);
+              if (rating === 4) card.easeFactor += 0.15;
+              
+              newInterval = card.interval === 0 ? 1 : card.interval * card.easeFactor * (rating === 2 ? 0.8 : 1);
+          }
+      }
       
-      state.studySession.currentIndex = newIndex;
+      const now = new Date();
+      const newDueDate = new Date(now.getTime() + newInterval * 24 * 60 * 60 * 1000);
+      
+      // Update the card in the main state.decks array
+      const deck = state.decks.find(d => d.id === state.currentDeckId);
+      const cardInDeck = deck.cards.find(c => c.id === card.id);
+      cardInDeck.interval = newInterval;
+      cardInDeck.dueDate = newDueDate.toISOString();
+      cardInDeck.easeFactor = card.easeFactor;
+      cardInDeck.isLearning = card.isLearning;
+      
+      saveState();
+  }
+
+  function showAnswer() {
+    document.getElementById('flashcard').classList.add('is-flipped');
+    studyControls.style.display = 'none';
+    studyAnswerControls.style.display = 'flex';
+  }
+
+  function showNextCard() {
+      state.studySession.currentIndex++;
       displayCurrentCard();
   }
   
@@ -414,6 +571,7 @@ document.addEventListener("DOMContentLoaded", () => {
         description: `Imported from ${sourceFileName}`,
         cards: cards
     };
+    newDeck.cards.forEach(initializeCardSrs);
     state.decks.push(newDeck);
     saveState();
     renderDeckList();

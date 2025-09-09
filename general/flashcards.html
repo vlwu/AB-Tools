@@ -49,7 +49,13 @@
       <section id="study-view" style="display: none;">
         <div class="study-header">
             <h2 id="study-deck-title"></h2>
-            <button id="exit-study-btn">&times; Exit Study Mode</button>
+            <div>
+              <button id="shuffle-deck-btn">Shuffle</button>
+              <button id="exit-study-btn">&times; Exit Study Mode</button>
+            </div>
+        </div>
+        <div id="study-complete-message" class="empty-message" style="display: none;">
+            Congratulations! You have finished this deck for now.
         </div>
         <div class="study-area">
             <div class="flashcard-container">
@@ -61,12 +67,13 @@
             <p class="card-counter" id="card-counter"></p>
         </div>
         <div class="study-controls">
-            <button id="prev-card-btn">Previous</button>
-            <button id="flip-card-btn">Flip Card</button>
-            <button id="next-card-btn">Next</button>
+            <button id="show-answer-btn">Show Answer</button>
         </div>
-         <div class="study-options">
-            <button id="shuffle-deck-btn">Shuffle Deck</button>
+        <div class="study-answer-controls" style="display: none;">
+            <button class="srs-btn again-btn" data-rating="1">Again<br><span class="srs-interval"></span></button>
+            <button class="srs-btn hard-btn" data-rating="2">Hard<br><span class="srs-interval"></span></button>
+            <button class="srs-btn good-btn" data-rating="3">Good<br><span class="srs-interval"></span></button>
+            <button class="srs-btn easy-btn" data-rating="4">Easy<br><span class="srs-interval"></span></button>
         </div>
       </section>
     </main>
