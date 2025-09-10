@@ -15,7 +15,7 @@
     </header>
 
     <main>
-      <!-- View: List of all decks -->
+
       <section id="deck-list-view" class="card">
         <div class="view-header">
           <h2>My Decks</h2>
@@ -25,27 +25,28 @@
           </div>
         </div>
         <div id="deck-list-container">
-          <!-- Decks will be rendered here by JS -->
+
         </div>
       </section>
 
-      <!-- View: A single deck's contents -->
+
       <section id="deck-view" class="card" style="display: none;">
         <div class="view-header">
           <h2 id="deck-view-title"></h2>
           <div class="deck-controls">
             <button id="back-to-decks-btn">&larr; Back to Decks</button>
             <button id="add-card-btn">Add Card</button>
+            <button id="quick-study-btn">Quick Study All</button>
             <button id="study-deck-btn">Study Deck</button>
           </div>
         </div>
         <p id="deck-view-description" class="deck-description"></p>
         <div id="card-list-container">
-          <!-- Cards for the selected deck will be rendered here -->
+
         </div>
       </section>
 
-      <!-- View: Study mode -->
+
       <section id="study-view" style="display: none;">
         <div class="study-header">
             <h2 id="study-deck-title"></h2>
@@ -78,8 +79,8 @@
       </section>
     </main>
   </div>
-  
-  <!-- MODAL FOR CREATING/EDITING DECKS -->
+
+
   <div id="deck-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3 id="deck-modal-title">Create New Deck</h3>
@@ -97,7 +98,7 @@
     </div>
   </div>
 
-  <!-- MODAL FOR CREATING/EDITING CARDS -->
+
   <div id="card-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3 id="card-modal-title">Add New Card</h3>
@@ -115,7 +116,7 @@
     </div>
   </div>
 
-  <!-- MODAL FOR IMPORTING DECKS -->
+
   <div id="import-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3>Import Deck</h3>
@@ -129,7 +130,7 @@
     </div>
   </div>
 
-  <!-- MODAL FOR CONFIRMING DELETION -->
+
   <div id="confirm-delete-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
       <h3 id="confirm-delete-title">Delete Deck</h3>
@@ -141,10 +142,10 @@
     </div>
   </div>
 
-  <!-- External library for APKG import. Placed before the main script. -->
+
   <script src="https://cdn.jsdelivr.net/npm/anki-apkg-parser@1.2.1/dist/anki-apkg-parser.js" defer></script>
-  
-  <!-- Main application script -->
+
+
   <script src="../assets/flashcards.js" defer></script>
 </body>
 </html>

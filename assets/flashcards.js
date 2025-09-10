@@ -1,28 +1,28 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // --- SCRIPT INITIALIZATION CHECK ---
+
   const mainView = document.getElementById("deck-list-view");
   if (!mainView) {
-    return; // Abort if not on the flashcards page
+    return;
   }
-  
-  // --- SRS CONSTANTS ---
+
+
   const SRS_DEFAULTS = {
     EASE_FACTOR: 2.5,
     INTERVAL_MODIFIERS: {
-      AGAIN: 0,   // Resets interval
+      AGAIN: 0,
       HARD: 0.8,
       GOOD: 1.0,
       EASY: 1.3
     },
-    LEARNING_STEPS: { // in minutes
+    LEARNING_STEPS: {
       AGAIN: 1,
       GOOD: 10,
-      EASY: 4 * 24 * 60 // 4 days
+      EASY: 4 * 24 * 60
     }
   };
 
-  // --- PRE-BUILT DECKS DATA ---
+
   const starterDecks = [
     {
       id: "starter-chem30",
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   ];
 
-  // --- DOM ELEMENTS ---
+
   const views = {
     deckList: mainView,
     deck: document.getElementById("deck-view"),
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const studyCompleteMessage = document.getElementById('study-complete-message');
 
 
-  // --- STATE ---
+
   let state = {
     decks: [],
     currentDeckId: null,
@@ -81,39 +81,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // --- INITIALIZATION ---
+
   function init() {
     const importBtn = document.getElementById('import-deck-btn');
     const ankiScript = document.querySelector('script[src*="anki-apkg-parser"]');
 
-    // Disable the import button by default. It will only be enabled if the script loads.
+
     importBtn.disabled = true;
     importBtn.style.cursor = 'not-allowed';
     importBtn.title = 'APKG import is unavailable. Please check your network or ad-blocker.';
 
     if (ankiScript) {
-      // Success case: The external script has loaded.
+
       ankiScript.onload = () => {
         importBtn.disabled = false;
         importBtn.style.cursor = 'pointer';
         importBtn.title = 'Import a deck from a file';
         console.log("AnkiApkgParser library successfully loaded.");
       };
-      
-      // Failure case: The external script failed to load.
+
+
       ankiScript.onerror = () => {
         console.error("AnkiApkgParser library failed to load. The import button will remain disabled.");
       };
     } else {
         console.error("Could not find the Anki parser script tag. The import button will remain disabled.");
     }
-    
+
     loadState();
     renderDeckList();
     attachEventListeners();
   }
 
-  // --- STATE MANAGEMENT ---
+
   function saveState() {
     localStorage.setItem("flashcardDecks", JSON.stringify(state.decks));
   }
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       state.decks = starterDecks.map(deck => ({...deck, cards: deck.cards.map((card, i) => ({...card, id: `starter-card-${i}`}))}));
     }
-    // Backward compatibility: Add SRS properties to any cards that don't have them
+
     state.decks.forEach(deck => {
         deck.cards.forEach(card => {
             if (card.dueDate === undefined) {
@@ -135,9 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     saveState();
   }
-  
-  // --- VIEW MANAGEMENT ---
-  function navigate(viewName, deckId = null) {
+
+
+  function navigate(viewName, deckId = null, quickStudy = false) {
       Object.values(views).forEach(view => view.style.display = 'none');
       views[viewName].style.display = 'block';
 
@@ -145,11 +145,11 @@ document.addEventListener("DOMContentLoaded", () => {
           state.currentDeckId = deckId;
           renderDeckView();
       } else if (viewName === 'study' && deckId) {
-          startStudySession(deckId);
+          startStudySession(deckId, quickStudy);
       }
   }
 
-  // --- RENDERING ---
+
   function renderDeckList() {
     deckListContainer.innerHTML = state.decks.length ? state.decks.map(deck => {
         const now = new Date();
@@ -168,14 +168,14 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `}).join('') : '<p class="empty-message">No decks yet. Create one to get started!</p>';
   }
-  
+
   function renderDeckView() {
       const deck = state.decks.find(d => d.id === state.currentDeckId);
       if (!deck) return navigate('deckList');
-      
+
       document.getElementById('deck-view-title').textContent = deck.name;
       document.getElementById('deck-view-description').textContent = deck.description || '';
-      
+
       cardListContainer.innerHTML = deck.cards.length ? deck.cards.map(card => `
         <div class="card-list-item">
           <div class="card-text">${card.front}</div>
@@ -207,6 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     document.getElementById('add-card-btn').addEventListener('click', () => showCardModal());
     document.getElementById('study-deck-btn').addEventListener('click', () => navigate('study', state.currentDeckId));
+    document.getElementById('quick-study-btn').addEventListener('click', () => navigate('study', state.currentDeckId, true));
     cardListContainer.addEventListener('click', e => {
         if(e.target.matches('.edit-card-btn')) showCardModal(e.target.dataset.cardId);
         if(e.target.matches('.delete-card-btn')) deleteCard(e.target.dataset.cardId);
@@ -218,10 +219,10 @@ document.addEventListener("DOMContentLoaded", () => {
     cardModal.addEventListener('click', e => { if (e.target === cardModal) hideModals(); });
     importModal.addEventListener('click', e => { if(e.target === importModal) hideModals(); });
     confirmDeleteModal.addEventListener('click', e => { if(e.target === confirmDeleteModal) hideModals(); });
-    
+
     document.getElementById('deck-form').addEventListener('submit', handleDeckForm);
     document.getElementById('card-form').addEventListener('submit', handleCardForm);
-    
+
     // --- Study View Listeners ---
     document.getElementById('exit-study-btn').addEventListener('click', () => {
         navigate('deck', state.currentDeckId)
@@ -259,14 +260,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     deckModal.style.display = 'flex';
   }
-  
+
   function handleDeckForm(e) {
     e.preventDefault();
     const id = document.getElementById('deck-id').value;
     const name = document.getElementById('deck-name').value.trim();
     const description = document.getElementById('deck-description').value.trim();
     if (!name) return;
-    
+
     if (id) {
       const deck = state.decks.find(d => d.id === id);
       deck.name = name;
@@ -278,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDeckList();
     hideModals();
   }
-  
+
   function showConfirmDeleteModal(deckId) {
     const deck = state.decks.find(d => d.id === deckId);
     if (!deck) return;
@@ -297,7 +298,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     confirmDeleteModal.style.display = 'flex';
   }
-  
+
   function deleteDeck(deckId) {
     state.decks = state.decks.filter(d => d.id !== deckId);
     saveState();
@@ -326,7 +327,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const front = document.getElementById('card-front-input').value.trim();
     const back = document.getElementById('card-back-input').value.trim();
     if (!front || !back) return;
-    
+
     const deck = state.decks.find(d => d.id === state.currentDeckId);
     if (id) {
         const card = deck.cards.find(c => c.id === id);
@@ -341,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDeckView();
     hideModals();
   }
-  
+
   function deleteCard(cardId) {
       const deck = state.decks.find(d => d.id === state.currentDeckId);
       deck.cards = deck.cards.filter(c => c.id !== cardId);
@@ -357,22 +358,28 @@ document.addEventListener("DOMContentLoaded", () => {
       card.isLearning = true;
   }
 
-  function startStudySession(deckId) {
+  function startStudySession(deckId, studyAllCards = false) {
       const deck = state.decks.find(d => d.id === deckId);
       if(!deck) return navigate('deck', deckId);
 
-      const now = new Date();
-      const dueCards = deck.cards.filter(c => new Date(c.dueDate) <= now);
-      
+      let cardsToStudy;
+      if (studyAllCards) {
+          cardsToStudy = deck.cards;
+      } else {
+          const now = new Date();
+          cardsToStudy = deck.cards.filter(c => new Date(c.dueDate) <= now);
+      }
+
+
       state.studySession = {
           isActive: true,
-          deck: dueCards,
+          deck: cardsToStudy,
           currentIndex: 0
       };
-      
+
       document.getElementById('study-deck-title').textContent = `Studying: ${deck.name}`;
-      
-      if (dueCards.length === 0) {
+
+      if (cardsToStudy.length === 0) {
           studyArea.style.display = 'none';
           studyControls.style.display = 'none';
           studyAnswerControls.style.display = 'none';
@@ -383,7 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
           displayCurrentCard();
       }
   }
-  
+
   function displayCurrentCard() {
       const { deck, currentIndex } = state.studySession;
       if (currentIndex >= deck.length) {
@@ -392,20 +399,20 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
       }
       const card = deck[currentIndex];
-      
+
       document.getElementById('flashcard').classList.remove('is-flipped');
       setTimeout(() => {
         document.getElementById('card-front').textContent = card.front;
         document.getElementById('card-back').textContent = card.back;
         document.getElementById('card-counter').textContent = `${currentIndex + 1} / ${deck.length}`;
-        
+
         updateSrsButtonLabels(card);
 
         studyControls.style.display = 'flex';
         studyAnswerControls.style.display = 'none';
       }, 150);
   }
-  
+
   function formatInterval(minutes) {
     if (minutes < 60) return `<${Math.ceil(minutes)}m`;
     if (minutes < 24 * 60) return `~${Math.round(minutes / 60)}h`;
@@ -425,9 +432,9 @@ document.addEventListener("DOMContentLoaded", () => {
             4: SRS_DEFAULTS.LEARNING_STEPS.EASY,
         };
     } else {
-        const lastInterval = card.interval * 24 * 60; // convert days to minutes
+        const lastInterval = card.interval * 24 * 60;
         intervals = {
-            1: SRS_DEFAULTS.LEARNING_STEPS.AGAIN, // 'Again' always resets
+            1: SRS_DEFAULTS.LEARNING_STEPS.AGAIN,
             2: lastInterval * SRS_DEFAULTS.INTERVAL_MODIFIERS.HARD,
             3: lastInterval * card.easeFactor,
             4: lastInterval * card.easeFactor * SRS_DEFAULTS.INTERVAL_MODIFIERS.EASY,
@@ -442,42 +449,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateCardSrs(rating) {
       const card = state.studySession.deck[state.studySession.currentIndex];
-      let newInterval; // in days
-      
+      let newInterval;
+
       if (card.isLearning) {
-          if (rating === 1) { // Again
+          if (rating === 1) {
               newInterval = SRS_DEFAULTS.LEARNING_STEPS.AGAIN / (24 * 60);
-          } else if (rating === 3) { // Good
+          } else if (rating === 3) {
               card.isLearning = false;
-              newInterval = 1; // Graduate to 1 day
-          } else { // Hard or Easy in learning
+              newInterval = 1;
+          } else {
               card.isLearning = false;
               newInterval = (rating === 4 ? SRS_DEFAULTS.LEARNING_STEPS.EASY : SRS_DEFAULTS.LEARNING_STEPS.GOOD) / (24 * 60);
           }
-      } else { // Card is in review phase
-          if (rating === 1) { // Again
+      } else {
+          if (rating === 1) {
               card.easeFactor = Math.max(1.3, card.easeFactor - 0.2);
-              card.isLearning = true; // Lapse, return to learning
+              card.isLearning = true;
               newInterval = SRS_DEFAULTS.LEARNING_STEPS.AGAIN / (24 * 60);
           } else {
               if (rating === 2) card.easeFactor = Math.max(1.3, card.easeFactor - 0.15);
               if (rating === 4) card.easeFactor += 0.15;
-              
+
               newInterval = card.interval === 0 ? 1 : card.interval * card.easeFactor * (rating === 2 ? 0.8 : 1);
           }
       }
-      
+
       const now = new Date();
       const newDueDate = new Date(now.getTime() + newInterval * 24 * 60 * 60 * 1000);
-      
-      // Update the card in the main state.decks array
+
+
       const deck = state.decks.find(d => d.id === state.currentDeckId);
       const cardInDeck = deck.cards.find(c => c.id === card.id);
       cardInDeck.interval = newInterval;
       cardInDeck.dueDate = newDueDate.toISOString();
       cardInDeck.easeFactor = card.easeFactor;
       cardInDeck.isLearning = card.isLearning;
-      
+
       saveState();
   }
 
@@ -491,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
       state.studySession.currentIndex++;
       displayCurrentCard();
   }
-  
+
   function shuffleStudyDeck() {
       let deck = state.studySession.deck;
       for (let i = deck.length - 1; i > 0; i--) {
@@ -501,8 +508,8 @@ document.addEventListener("DOMContentLoaded", () => {
       state.studySession.currentIndex = 0;
       displayCurrentCard();
   }
-  
-  // --- ROBUST IMPORT LOGIC ---
+
+
   function showImportModal() {
       const fileInput = document.getElementById('import-file-input');
       const importBtn = document.getElementById('start-import-btn');
@@ -548,7 +555,7 @@ document.addEventListener("DOMContentLoaded", () => {
           createDeckFromImport(cards, fileName);
           statusEl.style.color = '#5cb85c';
           statusEl.textContent = `Success! Imported ${cards.length} cards.`;
-          
+
           setTimeout(hideModals, 1500);
 
       } catch (error) {
@@ -556,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
           statusEl.style.color = '#dc3545';
           statusEl.textContent = `Error: ${error.message}`;
       } finally {
-          if (statusEl.style.color === 'rgb(220, 53, 69)') { // #dc3545
+          if (statusEl.style.color === 'rgb(220, 53, 69)') {
              importBtn.disabled = false;
              importBtn.textContent = 'Import File';
           }
@@ -604,7 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof AnkiApkgParser === 'undefined') {
         throw new Error("Anki parser library not loaded. Check internet connection.");
     }
-    
+
     const parser = new AnkiApkgParser();
     const deck = await parser.parse(file);
 
@@ -617,14 +624,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }));
   }
 
-  // --- UTILITY ---
+
   function hideModals() {
     deckModal.style.display = 'none';
     cardModal.style.display = 'none';
     importModal.style.display = 'none';
     confirmDeleteModal.style.display = 'none';
   }
-  
-  // --- START THE APP ---
+
+
   init();
 });
