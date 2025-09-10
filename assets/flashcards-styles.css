@@ -1,4 +1,3 @@
-/* --- Deck List View --- */
 .view-header {
   display: flex;
   justify-content: space-between;
@@ -73,7 +72,7 @@
   border: 1px solid #7b96c2;
 }
 
-/* --- Deck View --- */
+
 .deck-description {
     color: #E1E1E1;
     margin-bottom: 2rem;
@@ -107,7 +106,7 @@
     font-size: 0.9rem;
 }
 
-/* --- Study View --- */
+
 #study-view {
     background-color: #374e73;
     padding: 2rem;
@@ -124,7 +123,7 @@
     margin: 0;
 }
 .study-header button {
-    font-size: 1rem; /* Adjusted for multiple buttons */
+    font-size: 1rem;
     background: none;
     border: 1px solid #7b96c2;
     color: #E1E1E1;
@@ -176,7 +175,7 @@
   border-radius: 8px;
   border: 1px solid #7b96c2;
   background-color: #25344f;
-  white-space: pre-wrap; /* Allows newlines to render */
+  white-space: pre-wrap;
 }
 
 .card-back {
@@ -210,7 +209,7 @@
     font-weight: normal;
 }
 
-/* --- Modal Styles --- */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -229,7 +228,7 @@
   padding: 2rem;
   border-radius: 8px;
   border: 1px solid #7b96c2;
-  text-align: center; /* Center content by default */
+  text-align: center;
   max-width: 450px;
   width: 90%;
 }
@@ -243,10 +242,10 @@
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  text-align: left; /* Re-align labels to the left for forms */
+  text-align: left;
 }
 
-/* --- Modal Overrides --- */
+
 .modal-content textarea {
   width: 100%;
   padding: 0.75rem;
@@ -269,7 +268,7 @@
     margin-top: 1rem;
 }
 
-/* Green for "add" actions */
+
 #create-deck-btn, #add-card-btn {
   background-color: #5cb85c;
   color: #E1E1E1;
@@ -278,7 +277,7 @@
   background-color: #4a9d4a;
 }
 
-/* Yellow/Orange for "study" action */
+
 #study-deck-btn {
   background-color: #f0ad4e;
   color: #E1E1E1;
@@ -287,7 +286,24 @@
   background-color: #ec971f;
 }
 
-/* Purple for "import" action */
+
+#quick-study-btn {
+  background-color: #8a63d2;
+  color: #E1E1E1;
+}
+#quick-study-btn:hover {
+  background-color: #724bb8;
+}
+
+#export-deck-btn {
+  background-color: #5bc0de;
+  color: #E1E1E1;
+}
+#export-deck-btn:hover {
+  background-color: #31b0d5;
+}
+
+
 #import-deck-btn {
   background-color: #8a63d2;
   color: #E1E1E1;
@@ -296,7 +312,7 @@
   background-color: #724bb8;
 }
 
-/* Specific study mode controls */
+
 .study-controls #show-answer-btn {
     background-color: #5bc0de;
     color: #E1E1E1;

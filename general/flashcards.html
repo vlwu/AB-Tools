@@ -36,6 +36,7 @@
           <div class="deck-controls">
             <button id="back-to-decks-btn">&larr; Back to Decks</button>
             <button id="add-card-btn">Add Card</button>
+            <button id="export-deck-btn">Export Deck</button>
             <button id="quick-study-btn">Quick Study All</button>
             <button id="study-deck-btn">Study Deck</button>
           </div>
@@ -142,8 +143,21 @@
     </div>
   </div>
 
+  <div id="export-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3>Export Deck</h3>
+      <p>Choose your desired export format. PDF is ideal for printing, while TXT is a simple text format compatible with other apps.</p>
+      <div class="modal-buttons">
+        <button id="export-pdf-btn">Export as PDF</button>
+        <button id="export-txt-btn">Export as TXT</button>
+        <button type="button" class="modal-cancel-btn danger-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/anki-apkg-parser@1.2.1/dist/anki-apkg-parser.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js" defer></script>
 
 
   <script src="../assets/flashcards.js" defer></script>

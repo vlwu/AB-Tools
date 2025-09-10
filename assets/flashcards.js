@@ -64,6 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardModal = document.getElementById("card-modal");
   const importModal = document.getElementById("import-modal");
   const confirmDeleteModal = document.getElementById("confirm-delete-modal");
+  const exportModal = document.getElementById("export-modal");
   const studyControls = document.querySelector('.study-controls');
   const studyAnswerControls = document.querySelector('.study-answer-controls');
   const studyArea = document.querySelector('.study-area');
@@ -206,6 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderDeckList(); // Refresh due counts
     });
     document.getElementById('add-card-btn').addEventListener('click', () => showCardModal());
+    document.getElementById('export-deck-btn').addEventListener('click', showExportModal);
     document.getElementById('study-deck-btn').addEventListener('click', () => navigate('study', state.currentDeckId));
     document.getElementById('quick-study-btn').addEventListener('click', () => navigate('study', state.currentDeckId, true));
     cardListContainer.addEventListener('click', e => {
@@ -219,6 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
     cardModal.addEventListener('click', e => { if (e.target === cardModal) hideModals(); });
     importModal.addEventListener('click', e => { if(e.target === importModal) hideModals(); });
     confirmDeleteModal.addEventListener('click', e => { if(e.target === confirmDeleteModal) hideModals(); });
+    exportModal.addEventListener('click', e => { if(e.target === exportModal) hideModals(); });
 
     document.getElementById('deck-form').addEventListener('submit', handleDeckForm);
     document.getElementById('card-form').addEventListener('submit', handleCardForm);
@@ -625,11 +628,71 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
+  function showExportModal() {
+    const deck = state.decks.find(d => d.id === state.currentDeckId);
+    if (!deck) return;
+
+    // Clone and replace buttons to remove old listeners and attach new ones
+    const pdfBtn = document.getElementById('export-pdf-btn');
+    const newPdfBtn = pdfBtn.cloneNode(true);
+    pdfBtn.parentNode.replaceChild(newPdfBtn, pdfBtn);
+    newPdfBtn.addEventListener('click', () => handleExport('pdf', deck));
+
+    const txtBtn = document.getElementById('export-txt-btn');
+    const newTxtBtn = txtBtn.cloneNode(true);
+    txtBtn.parentNode.replaceChild(newTxtBtn, txtBtn);
+    newTxtBtn.addEventListener('click', () => handleExport('txt', deck));
+
+    exportModal.style.display = 'flex';
+  }
+
+  function handleExport(format, deck) {
+    const deckName = deck.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+    if (format === 'txt') {
+      const content = deck.cards.map(card => `${card.front}\t${card.back}`).join('\n');
+      const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${deckName}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === 'pdf') {
+      if (typeof jspdf === 'undefined' || typeof jspdf.jsPDF === 'undefined' || typeof jspdf.jsPDF.API.autoTable === 'undefined') {
+        alert('PDF library not fully loaded. Please check your internet connection and try again.');
+        return;
+      }
+      const { jsPDF } = jspdf;
+      const doc = new jsPDF();
+
+      const head = [['Front (Question)', 'Back (Answer)']];
+      const body = deck.cards.map(card => [card.front, card.back]);
+
+      doc.text(`Flashcard Deck: ${deck.name}`, 14, 15);
+      doc.autoTable({
+        head: head,
+        body: body,
+        startY: 20,
+        styles: { cellPadding: 3, fontSize: 10, valign: 'middle' },
+        headStyles: { fillColor: [37, 52, 79], textColor: 240 }, // #25344f
+        alternateRowStyles: { fillColor: [55, 78, 115], textColor: 240 }, // #374e73
+        theme: 'grid'
+      });
+
+      doc.save(`${deckName}.pdf`);
+    }
+
+    hideModals();
+  }
+
+
   function hideModals() {
     deckModal.style.display = 'none';
     cardModal.style.display = 'none';
     importModal.style.display = 'none';
     confirmDeleteModal.style.display = 'none';
+    exportModal.style.display = 'none';
   }
 
 
