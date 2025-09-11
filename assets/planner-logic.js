@@ -323,7 +323,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let prereqText = 'No prerequisites';
         if (course.prerequisites.length > 0) {
-          prereqText = 'Requires: ' + course.prerequisites.map(p => findCourseById(p).name).join(', ');
+          prereqText = 'Requires: ' + course.prerequisites.map(prereqCondition => {
+            return prereqCondition.split('|').map(pId => {
+              const prereqCourse = findCourseById(pId);
+              // If the course is found, use its name. Otherwise, just show the ID.
+              return prereqCourse ? prereqCourse.name : pId;
+            }).join(' or ');
+          }).join(', ');
         }
 
         item.innerHTML = `
