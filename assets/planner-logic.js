@@ -186,8 +186,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   function arePrerequisitesMet(course, plannedIds) {
-    if (!course.prerequisites || course.prerequisites.length === 0) return true;
-    return course.prerequisites.every(prereqId => plannedIds.includes(prereqId));
+    if (!course.prerequisites || course.prerequisites.length === 0) {
+      return true; // No prerequisites, so it's automatically met.
+    }
+
+    // This function now checks if EVERY prerequisite condition is met.
+    // A condition can be a single course OR a group of courses.
+    return course.prerequisites.every(prereqCondition => {
+      if (prereqCondition.includes('|')) {
+        const orOptions = prereqCondition.split('|');
+        return orOptions.some(optionId => plannedIds.includes(optionId));
+      } else {
+        // This is a standard, single-course prerequisite.
+        // Check if the student has planned this specific course.
+        return plannedIds.includes(prereqCondition);
+      }
+    });
   }
 
   function addCourse(course, deliveryMethod, placementGrade) {
