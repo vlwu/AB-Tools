@@ -48,15 +48,17 @@ function calculateGrade(examWeight) {
 
   const output = document.getElementById("output");
   output.innerText = "";
+  output.className = ''; // Reset classes to ensure visibility is re-evaluated
 
   inputs.forEach(input => {
-    if (input.id === "finalExam") return;
+    if (input.id === "finalExam" || hasError) return; // Stop processing if an error has been found
     const value = parseFloat(input.value);
     const weight = parseFloat(input.dataset.weight);
 
     if (!isNaN(value)) {
       if (value < 0 || value > 100) {
         output.innerText = `❌ "${input.previousElementSibling.innerText}" must be between 0 and 100.`;
+        output.classList.add('error');
         hasError = true;
         return;
       }
@@ -70,6 +72,7 @@ function calculateGrade(examWeight) {
 
   if (totalWeight === 0) {
     output.innerText = `Please enter at least one outcome grade.`;
+    output.classList.add('error');
     return;
   }
 
@@ -81,6 +84,7 @@ function calculateGrade(examWeight) {
 
     if (isNaN(finalExamScore) || finalExamScore < 0 || finalExamScore > 100) {
       output.innerText = "❌ Final Exam must be between 0 and 100.";
+      output.classList.add('error');
       return;
     }
 
@@ -90,8 +94,10 @@ function calculateGrade(examWeight) {
     ).toFixed(1);
 
     output.innerText = `✅ Course Grade (with Final Exam): ${finalGrade}%`;
+    output.classList.add('success');
     return;
   }
 
   output.innerText = `✅ Course Grade (without Final Exam): ${courseAverage.toFixed(1)}%`;
+  output.classList.add('success');
 }
