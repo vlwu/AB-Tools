@@ -1,3 +1,4 @@
+// assets/js/flashcards/ui.js
 import { formatInterval, calculateSrsIntervals } from './srs.js';
 
 // --- DOM Element Cache ---
@@ -151,15 +152,22 @@ export function showConfirmDeleteModal(deck, onConfirm) {
 }
 
 export function showImportModal() {
+    const modal = elements.modals.import;
     const fileInput = document.getElementById('import-file-input');
     const importBtn = document.getElementById('start-import-btn');
     const statusEl = document.getElementById('import-status');
+    const descriptionEl = modal.querySelector('p');
+
+    // Update the UI to only reflect TXT import
+    descriptionEl.textContent = 'Import from a plain text file (.txt). Each line should be "Front [Tab] Back".';
+    fileInput.accept = ".txt";
+
     fileInput.value = '';
     importBtn.disabled = true;
     importBtn.textContent = 'Import File';
     statusEl.textContent = '';
     statusEl.style.color = '';
-    elements.modals.import.style.display = 'flex';
+    modal.style.display = 'flex';
 }
 
 export function showExportModal() {
@@ -172,28 +180,9 @@ export function hideModals() {
 
 // --- Initializer for UI related checks ---
 export function initUI() {
+    // The import button is always available, so we just ensure it's in the correct state.
     const importBtn = document.getElementById('import-deck-btn');
-    importBtn.disabled = true;
-    importBtn.style.cursor = 'not-allowed';
-    importBtn.title = 'Initializing import functionality...';
-
-    // Improved script loading check
-    checkAndEnableAnkiParser();
-}
-
-function checkAndEnableAnkiParser(retries = 5, interval = 1000) {
-    const importBtn = document.getElementById('import-deck-btn');
-    if (typeof AnkiApkgParser !== 'undefined') {
-        importBtn.disabled = false;
-        importBtn.style.cursor = 'pointer';
-        importBtn.title = 'Import a deck from a file';
-        console.log("AnkiApkgParser library successfully loaded.");
-        return;
-    }
-    if (retries > 0) {
-        setTimeout(() => checkAndEnableAnkiParser(retries - 1, interval), interval);
-    } else {
-        importBtn.title = 'APKG import is unavailable. Please check your network or ad-blocker.';
-        console.error("AnkiApkgParser library failed to load after multiple attempts.");
-    }
+    importBtn.disabled = false;
+    importBtn.style.cursor = 'pointer';
+    importBtn.title = 'Import a deck from a file';
 }

@@ -1,3 +1,4 @@
+// assets/js/flashcards/import-export.js
 import { initializeCardSrs } from './srs.js';
 
 // --- Import Logic ---
@@ -7,17 +8,15 @@ export async function parseImportFile(file) {
 
     if (fileName.toLowerCase().endsWith('.txt')) {
         cards = await parseTxtFile(file);
-    } else if (fileName.toLowerCase().endsWith('.apkg')) {
-        cards = await parseApkgFile(file);
     } else {
-        throw new Error('Unsupported file type. Please select a .txt or .apkg file.');
+        throw new Error('Unsupported file type. Please select a .txt file.');
     }
 
     if (!cards || cards.length === 0) {
         throw new Error('No valid cards were found in the file.');
     }
 
-    const deckName = fileName.replace(/\.(apkg|txt)$/i, '');
+    const deckName = fileName.replace(/\.txt$/i, '');
     const newDeck = {
         id: `deck-${Date.now()}`,
         name: deckName,
@@ -51,22 +50,6 @@ function parseTxtFile(file) {
     });
 }
 
-async function parseApkgFile(file) {
-    if (typeof AnkiApkgParser === 'undefined') {
-        throw new Error("Anki parser library not loaded. Check internet connection.");
-    }
-    const parser = new AnkiApkgParser();
-    const deck = await parser.parse(file);
-    return deck.notes
-        .filter(note => note.fields && note.fields.length >= 2)
-        .map((note, i) => ({
-            id: `import-apkg-${Date.now()}-${i}`,
-            front: note.fields[0],
-            back: note.fields[1]
-        }));
-}
-
-
 // --- Export Logic ---
 export function exportDeck(format, deck) {
     const deckName = deck.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -75,22 +58,24 @@ export function exportDeck(format, deck) {
         const content = deck.cards.map(card => `${card.front}\t${card.back}`).join('\n');
         downloadFile(content, `${deckName}.txt`, 'text/plain;charset=utf-8');
     } else if (format === 'pdf') {
-        if (typeof jspdf === 'undefined' || !jspdf.jsPDF.API.autoTable) {
+        if (typeof jspdf === 'undefined' || typeof jspdf.jsPDF === 'undefined' || typeof jspdf.jsPDF.API.autoTable === 'undefined') {
             alert('PDF library not fully loaded. Please check your internet connection and try again.');
             return;
         }
         const { jsPDF } = jspdf;
         const doc = new jsPDF();
+
         doc.text(`Flashcard Deck: ${deck.name}`, 14, 15);
         doc.autoTable({
             head: [['Front (Question)', 'Back (Answer)']],
             body: deck.cards.map(card => [card.front, card.back]),
             startY: 20,
             styles: { cellPadding: 3, fontSize: 10, valign: 'middle' },
-            headStyles: { fillColor: [37, 52, 79] },
-            alternateRowStyles: { fillColor: [55, 78, 115] },
+            headStyles: { fillColor: [37, 52, 79], textColor: 240 }, // #25344f
+            alternateRowStyles: { fillColor: [55, 78, 115], textColor: 240 }, // #374e73
             theme: 'grid'
         });
+
         doc.save(`${deckName}.pdf`);
     }
 }
