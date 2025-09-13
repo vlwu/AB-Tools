@@ -36,12 +36,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const desiredGrade = parseFloat(desiredGradeEl.value);
     const examWeight = parseFloat(examWeightEl.value);
 
+    // To get a rounded grade (e.g., 85), the actual grade must be at least 84.5.
+    // We set our target to be 0.5 below the desired integer grade.
+    const targetGrade = desiredGrade - 0.5;
+
     // Calculate the weight of the coursework (e.g., 100% - 30% = 70%)
     const courseworkWeight = 1 - (examWeight / 100);
 
     // Formula to find the required score on the exam
-    // Required = (Goal - (Current * Coursework Weight)) / Exam Weight
-    const requiredScore = (desiredGrade - (currentGrade * courseworkWeight)) / (examWeight / 100);
+    // Required = (Target - (Current * Coursework Weight)) / Exam Weight
+    const requiredScore = (targetGrade - (currentGrade * courseworkWeight)) / (examWeight / 100);
 
     displayResult(requiredScore);
   }

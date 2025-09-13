@@ -10,7 +10,7 @@
   <div class="container">
     <header>
       <h1>🎯 Exam Goal Calculator</h1>
-      <p>Find out what you need on your final exam to achieve your desired course grade.</p>
+      <p>Find out what you need on your final exam to achieve your desired course grade. Decimals are allowed.</p>
     </header>
 
     <main>
@@ -22,9 +22,11 @@
 
           <label for="desiredGrade">My Desired Final Grade (%)</label>
           <input type="number" id="desiredGrade" placeholder="e.g., 85" min="0" max="100">
+          <p style="font-size: 0.9rem; margin-top: -0.75rem; color: #E1E1E1;">Note: PowerSchool rounds your final grade. This calculator determines what's needed to achieve your desired <strong>rounded</strong> grade.</p>
+
 
           <label for="examWeight">Final Exam Weight (%)</label>
-          <input type="number" id="examWeight" placeholder="e.g., 30 for a diploma course" min="1" max="99">
+          <input type="number" id="examWeight" placeholder="e.g., 30 for a diploma course" min="10" max="30">
 
           <button id="calculateButton">Calculate Required Score</button>
         </div>
