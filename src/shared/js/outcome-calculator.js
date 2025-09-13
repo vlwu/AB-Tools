@@ -1,4 +1,4 @@
-function createCalculator(containerId, outcomes, examWeight = 0) {
+export function createCalculator(containerId, outcomes, examWeight = 0) {
   const container = document.getElementById(containerId);
   container.innerHTML = ''; // Clear any existing content
 
@@ -18,10 +18,10 @@ function createCalculator(containerId, outcomes, examWeight = 0) {
 
   container.innerHTML += `
     <button id="calculateButton">Calculate</button>
-    <p id="output"></p>
+    <div id="output"></div>
   `;
 
-  // NEW: Add real-time validation listener to each input
+  // Add real-time validation listener to each input
   const inputs = container.querySelectorAll("input[type='number']");
   inputs.forEach(input => {
     input.addEventListener('input', () => {
@@ -47,7 +47,7 @@ function calculateGrade(examWeight) {
   let hasError = false;
 
   const output = document.getElementById("output");
-  output.innerText = "";
+  output.innerHTML = ""; // Use innerHTML to clear content
   output.className = ''; // Reset classes to ensure visibility is re-evaluated
 
   inputs.forEach(input => {
@@ -57,7 +57,7 @@ function calculateGrade(examWeight) {
 
     if (!isNaN(value)) {
       if (value < 0 || value > 100) {
-        output.innerText = `❌ "${input.previousElementSibling.innerText}" must be between 0 and 100.`;
+        output.innerHTML = `❌ "${input.previousElementSibling.innerText}" must be between 0 and 100.`;
         output.classList.add('error');
         hasError = true;
         return;
@@ -71,7 +71,7 @@ function calculateGrade(examWeight) {
   if (hasError) return;
 
   if (totalWeight === 0) {
-    output.innerText = `Please enter at least one outcome grade.`;
+    output.innerHTML = `Please enter at least one outcome grade.`;
     output.classList.add('error');
     return;
   }
@@ -83,7 +83,7 @@ function calculateGrade(examWeight) {
     const finalExamScore = parseFloat(finalExamInput.value);
 
     if (isNaN(finalExamScore) || finalExamScore < 0 || finalExamScore > 100) {
-      output.innerText = "❌ Final Exam must be between 0 and 100.";
+      output.innerHTML = "❌ Final Exam must be between 0 and 100.";
       output.classList.add('error');
       return;
     }
@@ -93,11 +93,11 @@ function calculateGrade(examWeight) {
       finalExamScore * (examWeight / 100)
     ).toFixed(1);
 
-    output.innerText = `✅ Course Grade (with Final Exam): ${finalGrade}%`;
+    output.innerHTML = `✅ Course Grade (with Final Exam): ${finalGrade}%`;
     output.classList.add('success');
     return;
   }
 
-  output.innerText = `✅ Course Grade (without Final Exam): ${courseAverage.toFixed(1)}%`;
+  output.innerHTML = `✅ Course Grade (without Final Exam): ${courseAverage.toFixed(1)}%`;
   output.classList.add('success');
 }

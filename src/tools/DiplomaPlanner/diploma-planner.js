@@ -2,14 +2,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- DATA ---
   // Using a hypothetical January 2026 schedule for demonstration
   const diplomaExams = [
-    { id: 'ela301a', subject: 'ELA 30-1 Part A (Written)', date: '2026-01-12T09:00:00', duration: '2 hours', calculator: '../OutcomeCalculator/ela301-calc.html' },
-    { id: 'ss301a', subject: 'Social 30-1 Part A (Written)', date: '2026-01-13T09:00:00', duration: '2.5 hours', calculator: '../OutcomeCalculator/ss301-calc.html' },
-    { id: 'ela301b', subject: 'ELA 30-1 Part B (Multiple Choice)', date: '2026-01-15T09:00:00', duration: '2 hours', calculator: '../OutcomeCalculator/ela301-calc.html' },
-    { id: 'ss301b', subject: 'Social 30-1 Part B (Multiple Choice)', date: '2026-01-16T09:00:00', duration: '2.5 hours', calculator: '../OutcomeCalculator/ss301-calc.html' },
-    { id: 'math301', subject: 'Mathematics 30-1', date: '2026-01-19T09:00:00', duration: '3 hours', calculator: '../OutcomeCalculator/math301-calc.html' },
-    { id: 'phy30', subject: 'Physics 30', date: '2026-01-20T09:00:00', duration: '3 hours', calculator: '../OutcomeCalculator/physics30-calc.html' },
-    { id: 'chem30', subject: 'Chemistry 30', date: '2026-01-22T09:00:00', duration: '3 hours', calculator: '../OutcomeCalculator/chem30-calc.html' },
-    { id: 'bio30', subject: 'Biology 30', date: '2026-01-23T09:00:00', duration: '3 hours', calculator: '../OutcomeCalculator/bio30-calc.html' },
+    { id: 'ela301a', subject: 'ELA 30-1 Part A (Written)', date: '2026-01-12T09:00:00', duration: '2 hours', calculator: '../OutcomeCalculator/calculator.html?course=ela301' },
+    { id: 'ss301a', subject: 'Social 30-1 Part A (Written)', date: '2026-01-13T09:00:00', duration: '2.5 hours', calculator: '../OutcomeCalculator/calculator.html?course=ss301' },
+    { id: 'ela301b', subject: 'ELA 30-1 Part B (Multiple Choice)', date: '2026-01-15T09:00:00', duration: '2 hours', calculator: '../OutcomeCalculator/calculator.html?course=ela301' },
+    { id: 'ss301b', subject: 'Social 30-1 Part B (Multiple Choice)', date: '2026-01-16T09:00:00', duration: '2.5 hours', calculator: '../OutcomeCalculator/calculator.html?course=ss301' },
+    { id: 'math301', subject: 'Mathematics 30-1', date: '2026-01-19T09:00:00', duration: '3 hours', calculator: '../OutcomeCalculator/calculator.html?course=math301' },
+    { id: 'phy30', subject: 'Physics 30', date: '2026-01-20T09:00:00', duration: '3 hours', calculator: '../OutcomeCalculator/calculator.html?course=physics30' },
+    { id: "chem30", subject: "Chemistry 30", date: "2026-01-22T09:00:00", duration: "3 hours", calculator: "../OutcomeCalculator/calculator.html?course=chem30" },
+    { id: 'bio30', subject: 'Biology 30', date: '2026-01-23T09:00:00', duration: '3 hours', calculator: '../OutcomeCalculator/calculator.html?course=bio30' },
     { id: 'sci30', subject: 'Science 30', date: '2026-01-26T09:00:00', duration: '3 hours', calculator: null } // No Science 30 calculator exists
   ];
 
