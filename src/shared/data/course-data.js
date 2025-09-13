@@ -1,4 +1,4 @@
-const courseData = [
+export const courseData = [
 
   { id: 'ELA10-1', name: 'ELA 10-1', grade: 10, credits: 5, category: 'ELA', prerequisites: [] },
   { id: 'ELA10-2', name: 'ELA 10-2', grade: 10, credits: 5, category: 'ELA', prerequisites: [] },

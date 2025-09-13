@@ -17,28 +17,11 @@
     <input type="number" id="g6" placeholder="Course 6" min="0" max="100">
     <input type="number" id="g7" placeholder="Course 7" min="0" max="100">
     <input type="number" id="g8" placeholder="Course 8" min="0" max="100">
-    <button onclick="calculateAverage()">Calculate Average</button>
+    <button id="calculateButton">Calculate Average</button>
   </div>
   <p id="output"></p>
 
-  <script>
-    // NEW: Add event listeners for real-time validation
-    document.addEventListener('DOMContentLoaded', () => {
-      for (let i = 1; i <= 8; i++) {
-        const input = document.getElementById('g' + i);
-        if (input) {
-          input.addEventListener('input', () => {
-            const grade = parseFloat(input.value);
-            if (input.value !== '' && (grade < 0 || grade > 100)) {
-              input.classList.add('invalid-input');
-            } else {
-              input.classList.remove('invalid-input');
-            }
-          });
-        }
-      }
-    });
-
+  <script type="module">
     function calculateAverage() {
       let sum = 0, count = 0, invalid = false;
       for (let i = 1; i <= 8; i++) {
@@ -63,6 +46,26 @@
           : "Enter at least one grade.";
       }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Attach event listener to the button
+      document.getElementById('calculateButton').addEventListener('click', calculateAverage);
+      
+      // Attach real-time validation listeners
+      for (let i = 1; i <= 8; i++) {
+        const input = document.getElementById('g' + i);
+        if (input) {
+          input.addEventListener('input', () => {
+            const grade = parseFloat(input.value);
+            if (input.value !== '' && (grade < 0 || grade > 100)) {
+              input.classList.add('invalid-input');
+            } else {
+              input.classList.remove('invalid-input');
+            }
+          });
+        }
+      }
+    });
   </script>
 </body>
 </html>

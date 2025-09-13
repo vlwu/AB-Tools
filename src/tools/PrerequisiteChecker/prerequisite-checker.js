@@ -1,3 +1,5 @@
+import { courseData } from '../../shared/data/course-data.js';
+
 document.addEventListener("DOMContentLoaded", () => {
     initChecker();
 });

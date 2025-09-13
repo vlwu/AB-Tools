@@ -1,3 +1,4 @@
+import { courseData } from '../../shared/data/course-data.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIGURATION ---
@@ -142,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (result.average >= rules.tier2.minAvg) {
       result.amount = rules.tier2.amount;
     } else if (result.average >= rules.tier1.minAvg) {
-      result.amount = rules.tier1.amount;
+      result.amount = rules.tier1.minAvg;
     }
 
     return result;
