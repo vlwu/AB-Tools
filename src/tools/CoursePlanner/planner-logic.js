@@ -340,15 +340,19 @@ document.addEventListener("DOMContentLoaded", () => {
         // Build the item content correctly
         const infoDiv = document.createElement('div');
         infoDiv.innerHTML = `<span class="name">${course.name}</span><span class="prereqs">${prereqText}</span>`;
-        if (isMet) {
-            // Only the infoDiv is clickable to add the course
-            infoDiv.style.cursor = 'pointer';
-            infoDiv.addEventListener('click', () => {
-                courseSelectionModal.style.display = 'none';
-                handleDirectCourseAdd(course, directDeliveryMethod);
-            });
-        }
         item.appendChild(infoDiv);
+
+        // Make the entire item clickable if prerequisites are met
+        if (isMet) {
+          item.addEventListener('click', (e) => {
+            // But ignore clicks on the visualize button
+            if (e.target.matches('.visualize-prereq-btn')) {
+              return;
+            }
+            courseSelectionModal.style.display = 'none';
+            handleDirectCourseAdd(course, directDeliveryMethod);
+          });
+        }
 
         if (course.prerequisites.length > 0) {
             const visualizeBtn = document.createElement('button');
