@@ -254,8 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchTerm = courseSearchInput.value.toLowerCase();
 
     const availableCourses = courseData.filter(course => {
-      const isGrade12Column = targetGradeForAdding.length === 1 && targetGradeForAdding[0] === 12;
-      const gradeMatch = targetGradeForAdding.includes(course.grade) || (isGrade12Column && course.grade === 11);
+      const gradeMatch = targetGradeForAdding.includes(course.grade) || (targetGradeForAdding.includes(12) && course.grade === 11);
 
       return !plannedIds.includes(course.id) &&
         gradeMatch &&
