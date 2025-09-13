@@ -158,6 +158,17 @@ export const outcomeData = {
       { id: "pc4", label: "PC4 – Binomial Theorem", weight: 5 }
     ]
   },
+  "math31": {
+    name: "Math 31",
+    examWeight: 0,
+    outcomes: [
+      { id: "precalc_limits", label: "PRECALC&LIMITS: Demonstrate understanding of functions.", weight: 15 },
+      { id: "derivatives", label: "DERIVATIVES: Demonstrate understanding of derivatives and derivative theorems.", weight: 20 },
+      { id: "app_derivatives", label: "APPOFDERIVATIVES: Apply derivatives to solve maximum-minimum and related rates problems.", weight: 20 },
+      { id: "integrals", label: "INTEGRALS: Demonstrate understanding of integrals and apply it to problems associated with displacement, velocity, and acceleration.", weight: 25 },
+      { id: "electives", label: "ELECTIVES: Demonstrate understanding in a selection of elective components.", weight: 20 }
+    ]
+  },
   "physics20": {
     name: "Physics 20",
     examWeight: 20,
