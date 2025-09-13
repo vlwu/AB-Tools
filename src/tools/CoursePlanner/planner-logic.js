@@ -255,10 +255,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const availableCourses = courseData.filter(course => {
       const gradeMatch = targetGradeForAdding.includes(course.grade) || (targetGradeForAdding.includes(12) && course.grade === 11);
+      const searchMatch = (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm) || course.id.toLowerCase().includes(searchTerm));
+      const isAlreadyPlanned = plannedIds.includes(course.id);
 
-      return !plannedIds.includes(course.id) &&
-        gradeMatch &&
-        (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm) || course.id.toLowerCase().includes(searchTerm));
+      // Initial filter: must not be planned, match grade, and match search term
+      if (isAlreadyPlanned || !gradeMatch || !searchMatch) {
+          return false;
+      }
+      
+      // Additional filter for summer school: only core classes, no AP
+      if (directDeliveryMethod === 'summer') {
+          const isAP = course.id.includes('AP');
+          const coreCategories = ['ELA', 'Social', 'Math', 'Science', 'ELA-30', 'Social-30', 'Science-30', 'CALM'];
+          const isCore = coreCategories.includes(course.category);
+          
+          return !isAP && isCore;
+      }
+
+      return true; // If not summer, course is available
     });
 
     if (availableCourses.length === 0) {
