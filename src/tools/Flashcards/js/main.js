@@ -1,5 +1,5 @@
-import { state, saveState, loadState, getDeck, getCard } from './state.js';
-import * as ui from './ui.js';
+import { state, saveState, loadState, getDeck, getCard } from '../../../../assets/js/flashcards/state.js';
+import * as ui from '../../../../assets/js/flashcards/ui.js';
 import { initializeCardSrs, updateCardSrs } from './srs.js';
 import { parseImportFile, exportDeck } from './import-export.js';
 

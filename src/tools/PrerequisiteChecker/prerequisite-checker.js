@@ -9,7 +9,7 @@ let universityData = {};
  */
 async function initChecker() {
     try {
-        const response = await fetch('../data/university_requirements.json');
+        const response = await fetch('../../shared/data/university_requirements.json');
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         universityData = await response.json();
         populateUniversities();
