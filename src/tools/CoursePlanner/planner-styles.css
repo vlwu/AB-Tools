@@ -257,6 +257,10 @@
 }
 
 .modal-course-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
   padding: 0.75rem;
   border: 1px solid #7b96c2;
   border-radius: 4px;
@@ -288,6 +292,25 @@
   color: #E1E1E1;
   display: block;
 }
+
+.visualize-prereq-btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  background-color: #8a63d2;
+  color: #E1E1E1;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.visualize-prereq-btn:hover {
+    background-color: #724bb8;
+    color: #E1E1E1;
+}
+.modal-course-item.locked .visualize-prereq-btn {
+    background-color: #374e73;
+}
+
 
 .modal-content button {
   margin: 0.5rem;
@@ -321,6 +344,133 @@
   pointer-events: none;
   white-space: nowrap;
 }
+
+/* --- Prerequisite Visualizer Styles --- */
+#prereq-visualizer-modal .modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+#prereq-tree-container {
+    text-align: center;
+    padding: 1rem 0;
+}
+.prereq-node {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 1rem 0;
+}
+.prereq-course {
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    font-weight: bold;
+    border: 2px solid;
+    min-width: 150px;
+}
+.prereq-course.target {
+    background-color: #3d6a7f;
+    border-color: #FFC107;
+}
+.prereq-course.met {
+    background-color: #2e5a5a;
+    border-color: #5cb85c;
+}
+.prereq-course.missing {
+    background-color: #4a2c2c;
+    border-color: #d9534f;
+}
+
+.prereq-children {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    padding-top: 2rem;
+}
+.prereq-children::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 2rem;
+    background-color: #7b96c2;
+}
+.prereq-node {
+    padding: 0 0.5rem;
+}
+.prereq-node::before {
+    content: '';
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    right: 50%;
+    height: 2px;
+    background-color: #7b96c2;
+}
+.prereq-node:first-child::before {
+    left: 50%;
+}
+.prereq-node:last-child::before {
+    right: 50%;
+}
+.prereq-node:only-child::before {
+    display: none;
+}
+.or-group {
+    border: 2px dashed #7b96c2;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    position: relative;
+}
+.or-group::before { /* Connector line for OR group */
+    content: '';
+    position: absolute;
+    top: -2rem;
+    left: 50%;
+    width: 2px;
+    height: 2rem;
+    background-color: #7b96c2;
+}
+.or-group-label {
+    position: absolute;
+    top: -1em;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #25344f;
+    padding: 0 0.5rem;
+    font-weight: bold;
+    color: #FFC107;
+}
+
+.prereq-legend {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #7b96c2;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+.legend-item {
+    font-weight: bold;
+    position: relative;
+    padding-left: 20px;
+}
+.legend-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+.legend-item.met::before { background-color: #2e5a5a; }
+.legend-item.missing::before { background-color: #4a2c2c; }
+.legend-item.target::before { background-color: #3d6a7f; }
 
 @media (max-width: 900px) {
   #planner-grid {

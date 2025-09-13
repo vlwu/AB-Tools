@@ -34,6 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const courseSearchInput = document.getElementById("course-search-input");
   const tooltip = document.getElementById("tooltip");
 
+  const prereqModal = document.getElementById('prereq-visualizer-modal');
+  const prereqTreeContainer = document.getElementById('prereq-tree-container');
+  const prereqModalTitle = document.getElementById('prereq-modal-title');
+
   // New Modal Elements
   const confirmModal = document.getElementById('confirm-modal');
   const confirmModalTitle = document.getElementById('confirm-modal-title');
@@ -232,6 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupDetailsModal();
     setupCourseSelectionModal();
     setupCustomModals();
+    setupPrereqVisualizerModal();
   }
 
   // --- MODAL MANAGEMENT ---
@@ -328,22 +333,30 @@ document.addEventListener("DOMContentLoaded", () => {
           prereqText = 'Requires: ' + course.prerequisites.map(prereqCondition => {
             return prereqCondition.split('|').map(pId => {
               const prereqCourse = findCourseById(pId);
-              // If the course is found, use its name. Otherwise, just show the ID.
               return prereqCourse ? prereqCourse.name : pId;
             }).join(' or ');
           }).join(', ');
         }
-
-        item.innerHTML = `
-          <span class="name">${course.name}</span>
-          <span class="prereqs">${prereqText}</span>
-        `;
-
+        
+        // Build the item content correctly
+        const infoDiv = document.createElement('div');
+        infoDiv.innerHTML = `<span class="name">${course.name}</span><span class="prereqs">${prereqText}</span>`;
         if (isMet) {
-          item.addEventListener('click', () => {
-            courseSelectionModal.style.display = 'none';
-            handleDirectCourseAdd(course, directDeliveryMethod);
-          });
+            // Only the infoDiv is clickable to add the course
+            infoDiv.style.cursor = 'pointer';
+            infoDiv.addEventListener('click', () => {
+                courseSelectionModal.style.display = 'none';
+                handleDirectCourseAdd(course, directDeliveryMethod);
+            });
+        }
+        item.appendChild(infoDiv);
+
+        if (course.prerequisites.length > 0) {
+            const visualizeBtn = document.createElement('button');
+            visualizeBtn.className = 'visualize-prereq-btn';
+            visualizeBtn.textContent = 'Visualize';
+            visualizeBtn.dataset.courseId = course.id;
+            item.appendChild(visualizeBtn);
         }
         courseListDiv.appendChild(item);
       });
@@ -379,6 +392,13 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('modal-cancel-selection').addEventListener('click', () => {
           courseSelectionModal.style.display = 'none';
       });
+      // Use event delegation for visualize buttons
+      modalCourseList.addEventListener('click', (e) => {
+        if (e.target.matches('.visualize-prereq-btn')) {
+            const courseId = e.target.dataset.courseId;
+            showPrerequisiteVisualizer(courseId);
+        }
+      });
   }
 
   function showDetailsModal(course) {
@@ -398,6 +418,14 @@ document.addEventListener("DOMContentLoaded", () => {
       switchDeliveryBtn.textContent = 'Switch to Online';
     }
 
+    // Show or hide the visualize button based on prerequisites
+    const visualizeBtn = detailsModal.querySelector('#details-modal-visualize');
+    if (course.prerequisites && course.prerequisites.length > 0) {
+        visualizeBtn.style.display = 'block';
+    } else {
+        visualizeBtn.style.display = 'none';
+    }
+
     detailsModal.style.display = 'flex';
   }
 
@@ -406,6 +434,10 @@ document.addEventListener("DOMContentLoaded", () => {
           const courseId = detailsModal.dataset.courseId;
           removeCourse(courseId);
           detailsModal.style.display = 'none';
+      });
+      detailsModal.querySelector('#details-modal-visualize').addEventListener('click', () => {
+          const courseId = detailsModal.dataset.courseId;
+          showPrerequisiteVisualizer(courseId);
       });
       detailsModal.querySelector('#details-modal-switch-delivery').addEventListener('click', () => {
           const courseId = detailsModal.dataset.courseId;
@@ -425,6 +457,50 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  // --- PREREQUISITE VISUALIZER LOGIC ---
+
+  function setupPrereqVisualizerModal() {
+    document.getElementById('prereq-modal-close').addEventListener('click', () => {
+        prereqModal.style.display = 'none';
+    });
+  }
+
+  function showPrerequisiteVisualizer(courseId) {
+    const course = findCourseById(courseId);
+    if (!course) return;
+
+    prereqModalTitle.textContent = `Prerequisite Path for ${course.name}`;
+    const plannedIds = plannedCourses.map(pc => pc.id);
+    prereqTreeContainer.innerHTML = buildPrereqTree(course, plannedIds, true);
+    prereqModal.style.display = 'flex';
+  }
+
+  function buildPrereqTree(course, plannedIds, isTarget = false) {
+    if (!course) return '';
+  
+    const statusClass = isTarget ? 'target' : plannedIds.includes(course.id) ? 'met' : 'missing';
+    let childrenHtml = '';
+  
+    if (course.prerequisites && course.prerequisites.length > 0) {
+      const childrenContent = course.prerequisites.map(prereqCondition => {
+        if (prereqCondition.includes('|')) {
+          const orOptions = prereqCondition.split('|');
+          const orHtml = orOptions.map(id => buildPrereqTree(findCourseById(id), plannedIds)).join('');
+          return `<div class="prereq-node or-group"><div class="or-group-label">OR</div><div class="prereq-children">${orHtml}</div></div>`;
+        } else {
+          return buildPrereqTree(findCourseById(prereqCondition), plannedIds);
+        }
+      }).join('');
+      childrenHtml = `<div class="prereq-children">${childrenContent}</div>`;
+    }
+  
+    return `
+      <div class="prereq-node">
+        <div class="prereq-course ${statusClass}">${course.name}</div>
+        ${childrenHtml}
+      </div>`;
+  }
+
   function setupCustomModals() {
     confirmModalCancel.addEventListener('click', () => confirmModal.style.display = 'none');
     infoModalClose.addEventListener('click', () => infoModal.style.display = 'none');
@@ -441,13 +517,10 @@ document.addEventListener("DOMContentLoaded", () => {
     confirmModalMessage.textContent = message;
     confirmModal.style.display = 'flex';
 
-    // The constant `confirmModalButton` can become a stale reference.
-    // We must re-query the DOM for the button that is currently attached.
     const buttonInDom = document.getElementById('confirm-modal-button');
     const newConfirmButton = buttonInDom.cloneNode(true);
     buttonInDom.parentNode.replaceChild(newConfirmButton, buttonInDom);
     
-    // Add the new event listener
     newConfirmButton.addEventListener('click', () => {
       onConfirm();
       confirmModal.style.display = 'none';
