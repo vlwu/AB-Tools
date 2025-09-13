@@ -1,0 +1,137 @@
+{
+  "interestCategories": [
+    { "id": "tech", "name": "Technology & Innovation" },
+    { "id": "health", "name": "Health & Medical Sciences" },
+    { "id": "business", "name": "Business & Finance" },
+    { "id": "engineering", "name": "Engineering & Applied Science" },
+    { "id": "arts", "name": "Arts & Humanities" }
+  ],
+  "careers": [
+    {
+      "id": "software_dev",
+      "title": "Software Developer",
+      "interestIds": ["tech"],
+      "description": "Designs, develops, and maintains software applications for computers and mobile devices. This field requires strong problem-solving skills and proficiency in programming languages.",
+      "avgSalaryAB": "$70,000 - $120,000",
+      "outlookAB": "Very Good",
+      "relatedPrograms": [
+        {
+          "programName": "Computer Science",
+          "universities": ["University of Toronto", "University of British Columbia", "University of Alberta", "University of Calgary", "University of Waterloo"]
+        },
+        {
+          "programName": "Software Engineering",
+          "universities": ["University of Waterloo", "McMaster University"]
+        }
+      ]
+    },
+    {
+      "id": "data_scientist",
+      "title": "Data Scientist",
+      "interestIds": ["tech", "business"],
+      "description": "Uses analytical and statistical skills to extract insights and knowledge from data. They help organizations make better decisions by interpreting complex datasets.",
+      "avgSalaryAB": "$75,000 - $130,000",
+      "outlookAB": "Very Good",
+      "relatedPrograms": [
+        {
+          "programName": "Computer Science",
+          "universities": ["University of Toronto", "University of British Columbia", "University of Waterloo"]
+        },
+        {
+          "programName": "Mathematics",
+          "universities": ["University of Waterloo"]
+        }
+      ]
+    },
+    {
+      "id": "mechanical_engineer",
+      "title": "Mechanical Engineer",
+      "interestIds": ["engineering"],
+      "description": "Designs, builds, and tests mechanical devices and systems, from small components to large machines. This role combines principles of physics, mathematics, and materials science.",
+      "avgSalaryAB": "$70,000 - $125,000",
+      "outlookAB": "Good",
+      "relatedPrograms": [
+        {
+          "programName": "Bachelor of Applied Science (Engineering)",
+          "universities": ["University of British Columbia", "Queen's University"]
+        },
+        {
+          "programName": "Engineering Science",
+          "universities": ["University of Toronto"]
+        },
+        {
+          "programName": "Bachelor of Science in Engineering",
+          "universities": ["University of Alberta", "University of Calgary"]
+        }
+      ]
+    },
+    {
+      "id": "registered_nurse",
+      "title": "Registered Nurse",
+      "interestIds": ["health"],
+      "description": "Provides direct patient care, administers medications, and educates patients and their families about health conditions. A critical role in the healthcare system.",
+      "avgSalaryAB": "$75,000 - $100,000",
+      "outlookAB": "Very Good",
+      "relatedPrograms": [
+        {
+          "programName": "Bachelor of Science in Nursing",
+          "universities": ["University of Alberta", "University of Calgary"]
+        }
+      ]
+    },
+    {
+      "id": "physiotherapist",
+      "title": "Physiotherapist",
+      "interestIds": ["health"],
+      "description": "Helps patients recover from injury, illness, and disability through movement and exercise, manual therapy, and education. Requires a post-graduate degree.",
+      "avgSalaryAB": "$70,000 - $100,000",
+      "outlookAB": "Good",
+      "relatedPrograms": [
+        {
+          "programName": "Bachelor of Kinesiology",
+          "universities": ["University of British Columbia", "University of Calgary"]
+        },
+        {
+          "programName": "Medical Sciences",
+          "universities": ["Western University"]
+        }
+      ]
+    },
+    {
+      "id": "accountant",
+      "title": "Accountant (CPA)",
+      "interestIds": ["business"],
+      "description": "Manages financial records, prepares tax returns, and provides financial advice to clients or their employer. The CPA designation is the industry standard.",
+      "avgSalaryAB": "$65,000 - $110,000",
+      "outlookAB": "Good",
+      "relatedPrograms": [
+        {
+          "programName": "Bachelor of Commerce",
+          "universities": ["University of Alberta", "University of Calgary", "Queen's University"]
+        },
+        {
+          "programName": "Rotman Commerce",
+          "universities": ["University of Toronto"]
+        }
+      ]
+    },
+    {
+      "id": "psychologist",
+      "title": "Psychologist",
+      "interestIds": ["arts", "health"],
+      "description": "Assesses and treats mental and emotional disorders. This career path requires graduate-level education (Master's or Ph.D.) beyond a bachelor's degree.",
+      "avgSalaryAB": "$70,000 - $115,000",
+      "outlookAB": "Good",
+      "relatedPrograms": [
+        {
+          "programName": "Bachelor of Arts - Psychology",
+          "universities": ["University of Calgary"]
+        },
+        {
+          "programName": "Bachelor of Arts",
+          "universities": ["McGill University", "University of British Columbia"]
+        }
+      ]
+    }
+  ]
+}

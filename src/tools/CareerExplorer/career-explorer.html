@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Pathway Explorer</title>
+  <link rel="stylesheet" href="../../shared/css/styles.css">
+  <link rel="stylesheet" href="career-explorer-styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🧭 Career Pathway Explorer</h1>
+      <p>Discover potential careers and the high school courses you'll need to pursue them. Start by selecting an area of interest.</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <div class="explorer-controls">
+          <label for="interest-select">Select an Interest Area:</label>
+          <select id="interest-select">
+            <option value="">-- Loading Interests --</option>
+          </select>
+        </div>
+      </section>
+
+      <div id="explorer-layout">
+        <section id="career-grid-section" class="card">
+          <h2>Potential Careers</h2>
+          <div id="career-grid-container">
+            <p class="placeholder-message">Please select an interest to see related careers.</p>
+          </div>
+        </section>
+
+        <section id="career-details-section" class="card">
+          <h2>Details & Requirements</h2>
+          <div id="career-details-container">
+            <p class="placeholder-message">Select a career on the left to view details.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="career-explorer.js" type="module"></script>
+</body>
+</html>

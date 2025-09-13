@@ -1,0 +1,108 @@
+.explorer-controls {
+  margin-bottom: 1rem;
+}
+.explorer-controls label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+#explorer-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+#career-grid-section h2, #career-details-section h2 {
+  margin-top: 0;
+}
+
+#career-grid-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.career-card {
+  background-color: #25344f;
+  border: 1px solid #7b96c2;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+.career-card:hover {
+  border-color: #E1E1E1;
+  transform: translateX(3px);
+}
+.career-card.active {
+  background-color: #374e73;
+  border-color: #FFC107;
+  box-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
+}
+.career-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+#career-details-container .placeholder-message,
+#career-grid-container .placeholder-message {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #E1E1E1;
+}
+
+#career-details-container h3 {
+  font-size: 1.75rem;
+  margin-top: 0;
+  color: #FFC107;
+}
+
+.career-stats {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  background: #25344f;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.career-description {
+  margin-bottom: 2rem;
+}
+
+.requirements-section h4 {
+  font-size: 1.2rem;
+  border-bottom: 1px solid #7b96c2;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.university-reqs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.university-reqs {
+  padding-left: 1rem;
+  border-left: 3px solid #7b96c2;
+}
+
+.university-reqs strong {
+  font-size: 1.1rem;
+}
+
+.university-reqs ul {
+  padding-left: 1.2rem;
+  list-style: disc;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  #explorer-layout {
+    grid-template-columns: 1fr;
+  }
+}
