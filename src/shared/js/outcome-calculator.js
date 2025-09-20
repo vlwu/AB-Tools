@@ -1,32 +1,37 @@
 export function createCalculator(containerId, outcomes, examWeight = 0) {
   const container = document.getElementById(containerId);
-  container.innerHTML = ''; // Clear any existing content
+  let content = '';
 
   outcomes.forEach(({ id, label, weight }) => {
-    container.innerHTML += `
-      <label for="${id}" class="calculator-label">${label} [${weight}%]</label>
-      <input type="number" min="0" max="100" id="${id}" data-weight="${weight}" inputmode="decimal">
+    content += `
+      <div class="calculator-row">
+        <label for="${id}" class="calculator-label">${label} [${weight}%]</label>
+        <input type="number" min="0" max="100" id="${id}" data-weight="${weight}" inputmode="decimal">
+      </div>
     `;
   });
 
   if (examWeight > 0) {
-    container.innerHTML += `
-      <label for="finalExam" class="calculator-label">Final Exam (${examWeight}%)</label>
-      <input type="number" min="0" max="100" id="finalExam" inputmode="decimal">
+    content += `
+      <div class="calculator-row">
+        <label for="finalExam" class="calculator-label">Final Exam (${examWeight}%)</label>
+        <input type="number" min="0" max="100" id="finalExam" inputmode="decimal">
+      </div>
     `;
   }
 
-  container.innerHTML += `
+  content += `
     <button id="calculateButton">Calculate</button>
     <div id="output"></div>
   `;
+
+  container.innerHTML = content;
 
   // Add real-time validation listener to each input
   const inputs = container.querySelectorAll("input[type='number']");
   inputs.forEach(input => {
     input.addEventListener('input', () => {
       const value = parseFloat(input.value);
-      // If value is not empty and outside the 0-100 range, add the invalid class
       if (input.value !== '' && (value < 0 || value > 100)) {
         input.classList.add('invalid-input');
       } else {
@@ -57,7 +62,7 @@ function calculateGrade(examWeight) {
 
     if (!isNaN(value)) {
       if (value < 0 || value > 100) {
-        output.innerHTML = `❌ "${input.previousElementSibling.innerText}" must be between 0 and 100.`;
+        output.innerHTML = `❌ "${input.closest('.calculator-row').querySelector('label').innerText}" must be between 0 and 100.`;
         output.classList.add('error');
         hasError = true;
         return;

@@ -145,9 +145,20 @@ footer {
 
 @media (max-width: 600px) {
   .container {
+    padding: 1rem;
+  }
+  .card {
     padding: 1.5rem;
   }
-
+  .calculator-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .calculator-row input {
+    width: 100%;
+    flex-basis: auto;
+  }
   h1 {
     font-size: 2rem;
   }
@@ -372,4 +383,23 @@ input[type=number]::-webkit-inner-spin-button {
 /* Hide spinners on number inputs for Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+/* --- Outcome Calculator Specific Styles --- */
+.calculator-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.calculator-row label {
+  margin-bottom: 0; /* Override default margin */
+}
+.calculator-row input {
+  flex-basis: 100px; /* Give a fixed base width */
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 100px;
+  margin-bottom: 0; /* Override default margin */
 }
