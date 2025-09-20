@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
       row.className = "input-row";
       row.innerHTML = `
         <select class="course-select" data-grade="${grade}"></select>
-        <input type="number" class="grade-input" placeholder="Grade %" min="0" max="100">
+        <input type="number" class="grade-input" placeholder="Grade %" min="0" max="100" inputmode="decimal">
       `;
       container.appendChild(row);
     }

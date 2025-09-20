@@ -5,14 +5,14 @@ export function createCalculator(containerId, outcomes, examWeight = 0) {
   outcomes.forEach(({ id, label, weight }) => {
     container.innerHTML += `
       <label for="${id}" class="calculator-label">${label} [${weight}%]</label>
-      <input type="number" min="0" max="100" id="${id}" data-weight="${weight}">
+      <input type="number" min="0" max="100" id="${id}" data-weight="${weight}" inputmode="decimal">
     `;
   });
 
   if (examWeight > 0) {
     container.innerHTML += `
       <label for="finalExam" class="calculator-label">Final Exam (${examWeight}%)</label>
-      <input type="number" min="0" max="100" id="finalExam">
+      <input type="number" min="0" max="100" id="finalExam" inputmode="decimal">
     `;
   }
 

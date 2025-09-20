@@ -360,3 +360,16 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #E1E1E1;
 }
+
+/* --- Improve Number Inputs --- */
+/* Hide spinners on number inputs for Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide spinners on number inputs for Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
