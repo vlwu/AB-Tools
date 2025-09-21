@@ -8,6 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const interestSelect = document.getElementById('interest-select');
     const careerGridContainer = document.getElementById('career-grid-container');
     const careerDetailsContainer = document.getElementById('career-details-container');
+    const infoModal = document.getElementById('info-modal');
+    const infoModalTitle = document.getElementById('info-modal-title');
+    const infoModalMessage = document.getElementById('info-modal-message');
+    const infoModalClose = document.getElementById('info-modal-close');
 
     /**
      * Main initialization function
@@ -105,39 +109,106 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Adds the required courses for a given career to the user's plan in localStorage.
+     * Recursively finds all prerequisites for a given course that are not already planned.
+     * @param {string} courseId - The ID of the course to check.
+     * @param {Set<string>} plannedIdsSet - A set of course IDs already in the user's plan.
+     * @param {Set<string>} chain - A set to accumulate the IDs of courses to add.
+     */
+    function getPrerequisiteChain(courseId, plannedIdsSet, chain) {
+        // Stop if the course is already planned or already in our list to be added
+        if (plannedIdsSet.has(courseId) || chain.has(courseId)) {
+            return;
+        }
+
+        const course = courseData.find(c => c.id === courseId);
+        if (!course) return;
+
+        // First, handle the prerequisites of the current course
+        if (course.prerequisites && course.prerequisites.length > 0) {
+            course.prerequisites.forEach(prereqCondition => {
+                // For 'OR' conditions like 'MATH10C|MATH10-FY', we default to the first option
+                const prereqId = prereqCondition.split('|')[0];
+                getPrerequisiteChain(prereqId, plannedIdsSet, chain);
+            });
+        }
+        
+        // After ensuring all prerequisites are in the chain, add the current course
+        chain.add(courseId);
+    }
+
+    /**
+     * Adds the required courses and their prerequisites for a given career to the user's plan.
      * @param {string} careerId - The ID of the career.
      */
     function addCoursesToPlan(careerId) {
         const career = careerData.careers.find(c => c.id === careerId);
         if (!career || career.generalRequirements.length === 0) return;
 
-        const reqCourseIds = career.generalRequirements;
+        const requiredCourseIds = career.generalRequirements;
         const savedPlanRaw = localStorage.getItem("emhsCoursePlan");
         let plannedCourses = savedPlanRaw ? JSON.parse(savedPlanRaw) : [];
         const plannedCourseIds = new Set(plannedCourses.map(pc => pc.id));
+        
+        const coursesToAddSet = new Set();
 
-        const coursesToAdd = [];
-        reqCourseIds.forEach(reqId => {
-            if (!plannedCourseIds.has(reqId)) {
-                const course = courseData.find(c => c.id === reqId);
-                if (course) {
-                    plannedCourses.push({
-                        id: course.id,
-                        delivery: 'regular', // Default delivery method
-                        placedInGrade: course.grade
-                    });
-                    coursesToAdd.push(course.name);
-                }
-            }
+        // For each required course, get its full prerequisite chain
+        requiredCourseIds.forEach(reqId => {
+            getPrerequisiteChain(reqId, plannedCourseIds, coursesToAddSet);
         });
 
-        if (coursesToAdd.length > 0) {
-            localStorage.setItem("emhsCoursePlan", JSON.stringify(plannedCourses));
-            alert(`The following courses have been added to your plan:\n\n- ${coursesToAdd.join('\n- ')}\n\nYou can view them in the Interactive Course Planner.`);
-        } else {
-            alert("All required courses for this career are already in your plan.");
+        if (coursesToAddSet.size === 0) {
+            showInfoModal('Plan Already Complete', 'All required courses and their prerequisites for this career are already in your plan.');
+            return;
         }
+
+        const coursesAddedNames = [];
+        
+        // Add the new courses to the plan
+        coursesToAddSet.forEach(newCourseId => {
+            const course = courseData.find(c => c.id === newCourseId);
+            if (course) {
+                plannedCourses.push({
+                    id: course.id,
+                    delivery: 'regular', // Default delivery method
+                    placedInGrade: course.grade
+                });
+                coursesAddedNames.push(course.name);
+            }
+        });
+        
+        // Sort courses by grade level for a more logical message
+        coursesAddedNames.sort((a, b) => {
+            const gradeA = parseInt(a.match(/\d+/)?.[0] || '0');
+            const gradeB = parseInt(b.match(/\d+/)?.[0] || '0');
+            return gradeA - gradeB;
+        });
+
+        localStorage.setItem("emhsCoursePlan", JSON.stringify(plannedCourses));
+        showInfoModal(
+            'Courses Added to Plan',
+            'You can view and arrange them in the Interactive Course Planner. The following courses and their prerequisites have been added:',
+            coursesAddedNames
+        );
+    }
+
+    /**
+     * Displays a custom modal with a title and message.
+     * @param {string} title - The title to display in the modal.
+     * @param {string} message - The main text message.
+     * @param {string[]} [courses=[]] - An optional list of courses to display as a bulleted list.
+     */
+    function showInfoModal(title, message, courses = []) {
+        infoModalTitle.textContent = title;
+        let messageHtml = `<p>${message}</p>`;
+        if (courses.length > 0) {
+            messageHtml += '<ul>';
+            courses.forEach(courseName => {
+                messageHtml += `<li>${courseName}</li>`;
+            });
+            messageHtml += '</ul>';
+        }
+        infoModalMessage.innerHTML = messageHtml;
+        infoModal.style.display = 'flex';
     }
 
     /**
@@ -171,6 +242,17 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.target.id === 'add-reqs-to-plan') {
                 const careerId = e.target.dataset.careerId;
                 addCoursesToPlan(careerId);
+            }
+        });
+        
+        // Add event listeners to close the info modal
+        infoModalClose.addEventListener('click', () => {
+            infoModal.style.display = 'none';
+        });
+
+        infoModal.addEventListener('click', (e) => {
+            if (e.target === infoModal) { // Click on the dark overlay
+                infoModal.style.display = 'none';
             }
         });
     }
