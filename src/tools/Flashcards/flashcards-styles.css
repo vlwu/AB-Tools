@@ -248,19 +248,19 @@
 
 /* --- Quill Editor Dark Theme Styles --- */
 .ql-toolbar {
-    background-color: #374e73;
-    border: 1px solid #7b96c2 !important;
+    background-color: #d4ddec;
+    border: 1px solid #b0b8c5 !important;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
 }
-.ql-toolbar .ql-stroke {
-    stroke: #E1E1E1;
+.ql-snow .ql-toolbar .ql-stroke {
+    stroke: #FFFFFF;
 }
-.ql-toolbar .ql-fill {
-    fill: #E1E1E1;
+.ql-snow .ql-toolbar .ql-fill {
+    fill: #FFFFFF;
 }
-.ql-toolbar .ql-picker-label {
-    color: #E1E1E1;
+.ql-snow .ql-toolbar .ql-picker-label {
+    color: #FFFFFF;
 }
 .ql-container {
     border: 1px solid #7b96c2 !important;
