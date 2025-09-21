@@ -25,8 +25,8 @@ const elements = {
 };
 
 // --- Quill Editor Instances ---
-let quillFront = null;
-let quillBack = null;
+export let quillFront = null;
+export let quillBack = null;
 
 // --- View Navigation ---
 export function navigate(viewName) {
@@ -127,23 +127,28 @@ export function showDeckModal(deck = null) {
   elements.modals.deck.style.display = 'flex';
 }
 
-function initQuillEditors(card = null) {
-    const toolbarOptions = [
-        ['bold', 'italic', 'underline'],
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-        ['link', 'image']
-    ];
-    const config = {
-        modules: { toolbar: toolbarOptions },
-        theme: 'snow'
-    };
+function setupQuillEditors(card = null) {
+    if (!quillFront) { // Only initialize if it hasn't been done
+        const toolbarOptions = [
+            ['bold', 'italic', 'underline'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            ['link', 'image']
+        ];
+        const config = {
+            modules: { toolbar: toolbarOptions },
+            theme: 'snow'
+        };
+        quillFront = new Quill('#card-front-input', config);
+        quillBack = new Quill('#card-back-input', config);
+    }
 
-    quillFront = new Quill('#card-front-input', config);
-    quillBack = new Quill('#card-back-input', config);
-
+    // Always clear and set content
     if (card) {
         quillFront.root.innerHTML = DOMPurify.sanitize(card.front);
         quillBack.root.innerHTML = DOMPurify.sanitize(card.back);
+    } else {
+        quillFront.setText('');
+        quillBack.setText('');
     }
 }
 
@@ -157,8 +162,8 @@ export function showCardModal(card = null) {
     document.getElementById('card-modal-title').textContent = "Add New Card";
   }
   elements.modals.card.style.display = 'flex';
-  // Initialize editors after the modal is visible
-  setTimeout(() => initQuillEditors(card), 0);
+  // Use the setup function to prevent re-initialization
+  setTimeout(() => setupQuillEditors(card), 0);
 }
 
 export function showConfirmDeleteModal(deck, onConfirm) {
@@ -202,14 +207,8 @@ export function showExportModal() {
 }
 
 export function hideModals() {
-  if (quillFront) {
-      quillFront = null;
-      document.getElementById('card-front-input').innerHTML = '';
-  }
-  if (quillBack) {
-      quillBack = null;
-      document.getElementById('card-back-input').innerHTML = '';
-  }
+  // We no longer destroy or nullify the Quill instances.
+  // They persist until the page is reloaded.
   Object.values(elements.modals).forEach(modal => modal.style.display = 'none');
 }
 

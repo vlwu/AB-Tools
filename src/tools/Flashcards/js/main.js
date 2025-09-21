@@ -109,10 +109,9 @@ function handleCardForm(e) {
     e.preventDefault();
     const id = document.getElementById('card-id').value;
 
-    // Get the Quill instances from the ui module (or wherever they are stored)
-    const quillFront = new Quill('#card-front-input');
-    const quillBack = new Quill('#card-back-input');
-    
+    // Use the persistent Quill instances from the ui module.
+    const { quillFront, quillBack } = ui;
+
     // Get HTML content from Quill editors
     const frontHTML = quillFront.root.innerHTML;
     const backHTML = quillBack.root.innerHTML;

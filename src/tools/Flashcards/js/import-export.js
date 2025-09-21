@@ -66,9 +66,22 @@ export function exportDeck(format, deck) {
         const doc = new jsPDF();
 
         doc.text(`Flashcard Deck: ${deck.name}`, 14, 15);
+        
+        // Convert card HTML content to plain text to avoid printing raw tags
+        const bodyData = deck.cards.map(card => {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = card.front;
+            const frontText = tempDiv.innerText;
+
+            tempDiv.innerHTML = card.back;
+            const backText = tempDiv.innerText;
+            
+            return [frontText, backText];
+        });
+        
         doc.autoTable({
             head: [['Front (Question)', 'Back (Answer)']],
-            body: deck.cards.map(card => [card.front, card.back]),
+            body: bodyData,
             startY: 20,
             styles: { cellPadding: 3, fontSize: 10, valign: 'middle' },
             headStyles: { fillColor: [37, 52, 79], textColor: 240 }, // #25344f
