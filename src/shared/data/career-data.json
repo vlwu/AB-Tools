@@ -4,26 +4,21 @@
     { "id": "health", "name": "Health & Medical Sciences" },
     { "id": "business", "name": "Business & Finance" },
     { "id": "engineering", "name": "Engineering & Applied Science" },
-    { "id": "arts", "name": "Arts & Humanities" }
+    { "id": "arts", "name": "Arts & Humanities" },
+    { "id": "creative", "name": "Creative & Design" },
+    { "id": "trades", "name": "Skilled Trades & Technology" },
+    { "id": "public_service", "name": "Public Service & Education" },
+    { "id": "environment", "name": "Environment & Agriculture" }
   ],
   "careers": [
     {
       "id": "software_dev",
       "title": "Software Developer",
-      "interestIds": ["tech"],
+      "interestIds": ["tech", "engineering"],
       "description": "Designs, develops, and maintains software applications for computers and mobile devices. This field requires strong problem-solving skills and proficiency in programming languages.",
       "avgSalaryAB": "$70,000 - $120,000",
-      "outlookAB": "Very Good",
-      "relatedPrograms": [
-        {
-          "programName": "Computer Science",
-          "universities": ["University of Toronto", "University of British Columbia", "University of Alberta", "University of Calgary", "University of Waterloo"]
-        },
-        {
-          "programName": "Software Engineering",
-          "universities": ["University of Waterloo", "McMaster University"]
-        }
-      ]
+      "outlook": "Strong",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "MATH31"]
     },
     {
       "id": "data_scientist",
@@ -31,17 +26,8 @@
       "interestIds": ["tech", "business"],
       "description": "Uses analytical and statistical skills to extract insights and knowledge from data. They help organizations make better decisions by interpreting complex datasets.",
       "avgSalaryAB": "$75,000 - $130,000",
-      "outlookAB": "Very Good",
-      "relatedPrograms": [
-        {
-          "programName": "Computer Science",
-          "universities": ["University of Toronto", "University of British Columbia", "University of Waterloo"]
-        },
-        {
-          "programName": "Mathematics",
-          "universities": ["University of Waterloo"]
-        }
-      ]
+      "outlook": "Strong",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "MATH31"]
     },
     {
       "id": "mechanical_engineer",
@@ -49,21 +35,8 @@
       "interestIds": ["engineering"],
       "description": "Designs, builds, and tests mechanical devices and systems, from small components to large machines. This role combines principles of physics, mathematics, and materials science.",
       "avgSalaryAB": "$70,000 - $125,000",
-      "outlookAB": "Good",
-      "relatedPrograms": [
-        {
-          "programName": "Bachelor of Applied Science (Engineering)",
-          "universities": ["University of British Columbia", "Queen's University"]
-        },
-        {
-          "programName": "Engineering Science",
-          "universities": ["University of Toronto"]
-        },
-        {
-          "programName": "Bachelor of Science in Engineering",
-          "universities": ["University of Alberta", "University of Calgary"]
-        }
-      ]
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "MATH31", "CHEM30", "PHY30"]
     },
     {
       "id": "registered_nurse",
@@ -71,13 +44,8 @@
       "interestIds": ["health"],
       "description": "Provides direct patient care, administers medications, and educates patients and their families about health conditions. A critical role in the healthcare system.",
       "avgSalaryAB": "$75,000 - $100,000",
-      "outlookAB": "Very Good",
-      "relatedPrograms": [
-        {
-          "programName": "Bachelor of Science in Nursing",
-          "universities": ["University of Alberta", "University of Calgary"]
-        }
-      ]
+      "outlook": "Strong",
+      "generalRequirements": ["ELA30-1", "BIO30", "CHEM30", "MATH30-1"]
     },
     {
       "id": "physiotherapist",
@@ -85,17 +53,8 @@
       "interestIds": ["health"],
       "description": "Helps patients recover from injury, illness, and disability through movement and exercise, manual therapy, and education. Requires a post-graduate degree.",
       "avgSalaryAB": "$70,000 - $100,000",
-      "outlookAB": "Good",
-      "relatedPrograms": [
-        {
-          "programName": "Bachelor of Kinesiology",
-          "universities": ["University of British Columbia", "University of Calgary"]
-        },
-        {
-          "programName": "Medical Sciences",
-          "universities": ["Western University"]
-        }
-      ]
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "BIO30", "CHEM30", "PHY30", "MATH30-1"]
     },
     {
       "id": "accountant",
@@ -103,35 +62,116 @@
       "interestIds": ["business"],
       "description": "Manages financial records, prepares tax returns, and provides financial advice to clients or their employer. The CPA designation is the industry standard.",
       "avgSalaryAB": "$65,000 - $110,000",
-      "outlookAB": "Good",
-      "relatedPrograms": [
-        {
-          "programName": "Bachelor of Commerce",
-          "universities": ["University of Alberta", "University of Calgary", "Queen's University"]
-        },
-        {
-          "programName": "Rotman Commerce",
-          "universities": ["University of Toronto"]
-        }
-      ]
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "MATH31"]
     },
     {
       "id": "psychologist",
       "title": "Psychologist",
-      "interestIds": ["arts", "health"],
+      "interestIds": ["arts", "health", "public_service"],
       "description": "Assesses and treats mental and emotional disorders. This career path requires graduate-level education (Master's or Ph.D.) beyond a bachelor's degree.",
       "avgSalaryAB": "$70,000 - $115,000",
-      "outlookAB": "Good",
-      "relatedPrograms": [
-        {
-          "programName": "Bachelor of Arts - Psychology",
-          "universities": ["University of Calgary"]
-        },
-        {
-          "programName": "Bachelor of Arts",
-          "universities": ["McGill University", "University of British Columbia"]
-        }
-      ]
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "BIO30"]
+    },
+    {
+      "id": "graphic_designer",
+      "title": "Graphic Designer",
+      "interestIds": ["creative", "arts"],
+      "description": "Creates visual concepts, using computer software or by hand, to communicate ideas that inspire, inform, and captivate consumers. They develop the overall layout and production design for advertisements, brochures, magazines, and corporate reports.",
+      "avgSalaryAB": "$50,000 - $85,000",
+      "outlook": "Average",
+      "generalRequirements": ["ELA30-1", "ART30", "DESIGN30"]
+    },
+    {
+      "id": "architect",
+      "title": "Architect",
+      "interestIds": ["creative", "engineering"],
+      "description": "Plans and designs buildings and other structures. Architects must consider function, safety, and aesthetics. This career requires a professional degree and licensure.",
+      "avgSalaryAB": "$75,000 - $130,000",
+      "outlook": "Average",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "MATH31", "PHY30"]
+    },
+    {
+      "id": "electrician",
+      "title": "Electrician",
+      "interestIds": ["trades"],
+      "description": "Installs, maintains, and repairs electrical power, communications, lighting, and control systems in homes, businesses, and factories. This is a skilled trade requiring apprenticeship and certification.",
+      "avgSalaryAB": "$60,000 - $100,000",
+      "outlook": "Strong",
+      "generalRequirements": ["ELA30-2", "MATH30-2", "SCI10"]
+    },
+    {
+      "id": "web_developer",
+      "title": "Web Developer",
+      "interestIds": ["tech", "creative"],
+      "description": "Focuses on the technical construction and functionality of websites and web applications. This includes front-end (user-facing) and back-end (server-side) development.",
+      "avgSalaryAB": "$65,000 - $110,000",
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "COMP30"]
+    },
+    {
+      "id": "teacher",
+      "title": "Teacher (K-12)",
+      "interestIds": ["public_service", "arts"],
+      "description": "Educates students at the elementary or secondary level. Requires a Bachelor of Education degree and certification. Subject specialization is necessary for secondary education.",
+      "avgSalaryAB": "$60,000 - $95,000",
+      "outlook": "Average",
+      "generalRequirements": ["ELA30-1"]
+    },
+    {
+      "id": "police_officer",
+      "title": "Police Officer",
+      "interestIds": ["public_service"],
+      "description": "Maintains law and order, protects members of the public and their property, prevents crime, and improves the quality of life for all citizens. Requires extensive physical and psychological testing.",
+      "avgSalaryAB": "$70,000 - $110,000",
+      "outlook": "Average",
+      "generalRequirements": []
+    },
+    {
+      "id": "environmental_scientist",
+      "title": "Environmental Scientist",
+      "interestIds": ["environment", "engineering"],
+      "description": "Uses knowledge of the natural sciences to protect the environment and human health. They may clean up polluted areas, advise policymakers, or work with industry to reduce waste.",
+      "avgSalaryAB": "$65,000 - $105,000",
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "BIO30", "CHEM30", "MATH30-1"]
+    },
+    {
+      "id": "veterinarian",
+      "title": "Veterinarian",
+      "interestIds": ["health", "environment"],
+      "description": "Cares for the health of animals. They diagnose, treat, and research medical conditions and diseases of pets, livestock, and other animals. Requires a Doctor of Veterinary Medicine degree.",
+      "avgSalaryAB": "$80,000 - $140,000",
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "BIO30", "CHEM30", "MATH30-1", "PHY30"]
+    },
+    {
+      "id": "marketing_manager",
+      "title": "Marketing Manager",
+      "interestIds": ["business", "creative"],
+      "description": "Plans, directs, or coordinates marketing policies and programs, such as determining the demand for products and services offered by a firm and its competitors, and identify potential customers.",
+      "avgSalaryAB": "$70,000 - $120,000",
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "SS30-1"]
+    },
+    {
+      "id": "civil_engineer",
+      "title": "Civil Engineer",
+      "interestIds": ["engineering"],
+      "description": "Designs, builds, and supervises infrastructure projects and systems in the public and private sector, including roads, buildings, airports, tunnels, dams, bridges, and systems for water supply and sewage treatment.",
+      "avgSalaryAB": "$75,000 - $130,000",
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "MATH30-1", "MATH31", "CHEM30", "PHY30"]
+    },
+    {
+      "id": "pharmacist",
+      "title": "Pharmacist",
+      "interestIds": ["health"],
+      "description": "Dispenses prescription medications to patients and offers expertise in the safe use of prescriptions. They also may conduct health and wellness screenings, provide immunizations, and provide advice on healthy lifestyles.",
+      "avgSalaryAB": "$90,000 - $125,000",
+      "outlook": "Good",
+      "generalRequirements": ["ELA30-1", "BIO30", "CHEM30", "MATH30-1"]
     }
   ]
 }

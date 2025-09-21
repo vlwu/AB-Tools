@@ -79,27 +79,42 @@
   margin-bottom: 1rem;
 }
 
-.university-reqs-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.university-reqs {
-  padding-left: 1rem;
-  border-left: 3px solid #7b96c2;
-}
-
-.university-reqs strong {
-  font-size: 1.1rem;
-}
-
-.university-reqs ul {
-  padding-left: 1.2rem;
+.requirements-section ul {
   list-style: disc;
-  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+  columns: 2;
+  gap: 1rem;
 }
+
+.requirements-section li {
+  margin-bottom: 0.5rem;
+}
+
+.career-outlook {
+  margin-bottom: 1.5rem;
+  background: #25344f;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.outlook-legend {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  color: #E1E1E1;
+}
+
+.outlook-legend .legend-item::before {
+  content: '■';
+  margin-right: 0.5rem;
+}
+
+.outlook-legend .legend-item.Strong::before { color: #5cb85c; }
+.outlook-legend .legend-item.Good::before { color: #5ab2d6; }
+.outlook-legend .legend-item.Average::before { color: #f0ad4e; }
+.outlook-legend .legend-item.Limited::before { color: #d9534f; }
 
 @media (max-width: 900px) {
   #explorer-layout {

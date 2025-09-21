@@ -3,7 +3,6 @@ import { courseData } from '../../shared/data/course-data.js';
 document.addEventListener("DOMContentLoaded", () => {
     // --- DATA CACHE ---
     let careerData = {};
-    let universityData = {};
 
     // --- DOM ELEMENTS ---
     const interestSelect = document.getElementById('interest-select');
@@ -15,11 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
      */
     async function init() {
         try {
-            // Fetch all required data in parallel
-            [careerData, universityData] = await Promise.all([
-                fetch('../../shared/data/career-data.json').then(res => res.json()),
-                fetch('../../shared/data/university_requirements.json').then(res => res.json())
-            ]);
+            // Fetch all required data
+            careerData = await fetch('../../shared/data/career-data.json').then(res => res.json());
             
             populateInterestSelect();
             attachEventListeners();
@@ -72,43 +68,32 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const findCourseName = (id) => courseData.find(c => c.id === id)?.name || id;
 
-        let requirementsHtml = career.relatedPrograms.map(program => {
-            let universityHtml = program.universities.map(uniName => {
-                const programReqs = universityData[uniName]?.programs[program.programName];
-                if (!programReqs) return '';
-
-                let coursesList = (programReqs.required_courses || [])
-                    .map(courseId => `<li>${findCourseName(courseId)}</li>`).join('');
-
-                if (programReqs.group_requirements) {
-                    programReqs.group_requirements.forEach(group => {
-                        coursesList += `<li><em>${group.description}</em></li>`;
-                    });
-                }
-                
-                return `
-                    <div class="university-reqs">
-                        <strong>${uniName}</strong>
-                        <ul>${coursesList}</ul>
-                    </div>
-                `;
-            }).join('');
-
-            return `
-                <h4>Pathway: ${program.programName}</h4>
-                <div class="university-reqs-grid">${universityHtml}</div>
-            `;
-        }).join('');
+        const requirementsHtml = career.generalRequirements.length > 0
+            ? `<ul>${career.generalRequirements.map(id => `<li>${findCourseName(id)}</li>`).join('')}</ul>`
+            : '<p>Varies by institution. A strong academic record is recommended.</p>';
+        
+        const outlookHtml = `
+            <div class="career-outlook">
+                <span><strong>Job Outlook:</strong> ${career.outlook}</span>
+                <div class="outlook-legend">
+                    <span><strong>Legend:</strong></span>
+                    <span class="legend-item Strong">Strong: High demand</span>
+                    <span class="legend-item Good">Good: Steady demand</span>
+                    <span class="legend-item Average">Average: Moderate demand</span>
+                    <span class="legend-item Limited">Limited: Low demand</span>
+                </div>
+            </div>
+        `;
 
         careerDetailsContainer.innerHTML = `
             <h3>${career.title}</h3>
             <div class="career-stats">
                 <span><strong>Avg. Salary (AB):</strong> ${career.avgSalaryAB}</span>
-                <span><strong>Job Outlook (AB):</strong> ${career.outlookAB}</span>
             </div>
+            ${outlookHtml}
             <p class="career-description">${career.description}</p>
             <div class="requirements-section">
-                <h4>Example University Pathways & Required Courses</h4>
+                <h4>General High School Course Requirements</h4>
                 ${requirementsHtml}
             </div>
         `;
