@@ -108,16 +108,21 @@ function handleDeckForm(e) {
 function handleCardForm(e) {
     e.preventDefault();
     const id = document.getElementById('card-id').value;
+
+    // Get the Quill instances from the ui module (or wherever they are stored)
+    const quillFront = new Quill('#card-front-input');
+    const quillBack = new Quill('#card-back-input');
     
-    // Get content from TinyMCE editors
-    const frontHTML = tinymce.get('card-front-input').getContent();
-    const backHTML = tinymce.get('card-back-input').getContent();
+    // Get HTML content from Quill editors
+    const frontHTML = quillFront.root.innerHTML;
+    const backHTML = quillBack.root.innerHTML;
     
     // Sanitize HTML content before saving
     const front = DOMPurify.sanitize(frontHTML);
     const back = DOMPurify.sanitize(backHTML);
 
-    if (!front || !back) {
+    // A check to see if the editor is effectively empty (Quill adds <p><br></p>)
+    if (quillFront.getLength() <= 1 || quillBack.getLength() <= 1) {
         alert("Both front and back of the card must have content.");
         return;
     }

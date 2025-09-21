@@ -24,6 +24,10 @@ const elements = {
   flashcard: document.getElementById('flashcard'),
 };
 
+// --- Quill Editor Instances ---
+let quillFront = null;
+let quillBack = null;
+
 // --- View Navigation ---
 export function navigate(viewName) {
   Object.values(elements.views).forEach(view => view.style.display = 'none');
@@ -123,33 +127,24 @@ export function showDeckModal(deck = null) {
   elements.modals.deck.style.display = 'flex';
 }
 
-const tinyMceConfig = {
-    height: 200,
-    menubar: false,
-    plugins: 'lists link image emoticons',
-    toolbar: 'bold italic underline | bullist numlist | link | image | emoticons',
-    skin: 'oxide-dark',
-    content_css: 'dark',
-    statusbar: false,
-    entity_encoding: 'raw' // Keep HTML entities as they are
-};
+function initQuillEditors(card = null) {
+    const toolbarOptions = [
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        ['link', 'image']
+    ];
+    const config = {
+        modules: { toolbar: toolbarOptions },
+        theme: 'snow'
+    };
 
-function initEditors(card = null) {
-    tinymce.remove(); // Remove any existing instances
-    tinymce.init({
-        selector: '#card-front-input',
-        ...tinyMceConfig,
-        setup: (editor) => {
-            editor.on('init', () => editor.setContent(card ? card.front : ''));
-        }
-    });
-    tinymce.init({
-        selector: '#card-back-input',
-        ...tinyMceConfig,
-        setup: (editor) => {
-            editor.on('init', () => editor.setContent(card ? card.back : ''));
-        }
-    });
+    quillFront = new Quill('#card-front-input', config);
+    quillBack = new Quill('#card-back-input', config);
+
+    if (card) {
+        quillFront.root.innerHTML = DOMPurify.sanitize(card.front);
+        quillBack.root.innerHTML = DOMPurify.sanitize(card.back);
+    }
 }
 
 export function showCardModal(card = null) {
@@ -161,8 +156,9 @@ export function showCardModal(card = null) {
   } else {
     document.getElementById('card-modal-title').textContent = "Add New Card";
   }
-  initEditors(card);
   elements.modals.card.style.display = 'flex';
+  // Initialize editors after the modal is visible
+  setTimeout(() => initQuillEditors(card), 0);
 }
 
 export function showConfirmDeleteModal(deck, onConfirm) {
@@ -184,11 +180,9 @@ export function showImportModal() {
     const fileInput = document.getElementById('import-file-input');
     const importBtn = document.getElementById('start-import-btn');
     const statusEl = document.getElementById('import-status');
-    const descriptionEl = modal.querySelector('p');
-
-    // Update the UI to only reflect TXT import
-    descriptionEl.textContent = 'Import from a plain text file (.txt). Each line should be "Front [Tab] Back".';
-    fileInput.accept = ".txt";
+    
+    fileInput.accept = ".txt"; // Only accept .txt files
+    modal.querySelector('p').textContent = 'Import from a plain text file (.txt). Each line should be "Front [Tab] Back".';
 
     fileInput.value = '';
     importBtn.disabled = true;
@@ -196,6 +190,11 @@ export function showImportModal() {
     statusEl.textContent = '';
     statusEl.style.color = '';
     modal.style.display = 'flex';
+
+    // Enable button only when a file is selected
+    fileInput.onchange = () => {
+        importBtn.disabled = !fileInput.files.length;
+    };
 }
 
 export function showExportModal() {
@@ -203,13 +202,19 @@ export function showExportModal() {
 }
 
 export function hideModals() {
-  if (tinymce) tinymce.remove(); // Clean up editors when any modal is hidden
+  if (quillFront) {
+      quillFront = null;
+      document.getElementById('card-front-input').innerHTML = '';
+  }
+  if (quillBack) {
+      quillBack = null;
+      document.getElementById('card-back-input').innerHTML = '';
+  }
   Object.values(elements.modals).forEach(modal => modal.style.display = 'none');
 }
 
 // --- Initializer for UI related checks ---
 export function initUI() {
-    // The import button is always available, so we just ensure it's in the correct state.
     const importBtn = document.getElementById('import-deck-btn');
     importBtn.disabled = false;
     importBtn.style.cursor = 'pointer';

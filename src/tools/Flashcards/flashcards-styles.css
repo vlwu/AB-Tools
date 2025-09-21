@@ -92,6 +92,7 @@
 .card-text {
   padding-right: 1rem;
   border-right: 1px solid #7b96c2;
+  overflow-wrap: break-word; /* Ensure long content without spaces wraps */
 }
 .card-text:last-of-type {
     border-right: none;
@@ -167,6 +168,7 @@
   height: 100%;
   backface-visibility: hidden;
   display: flex;
+  flex-direction: column; /* Allow content to flow naturally */
   align-items: center;
   justify-content: center;
   padding: 2rem;
@@ -175,8 +177,13 @@
   border-radius: 8px;
   border: 1px solid #7b96c2;
   background-color: #25344f;
-  white-space: pre-wrap;
-  overflow-y: auto;
+  overflow-y: auto; /* Add scroll for overflow */
+  white-space: normal; /* Change from pre-wrap */
+}
+
+/* Ensure rich text content inside card faces is styled correctly */
+.card-face * {
+    color: #E1E1E1;
 }
 
 .card-back {
@@ -239,21 +246,33 @@
     max-width: 700px;
 }
 
-/* Style for TinyMCE editor UI */
-.tox-tinymce {
+/* --- Quill Editor Dark Theme Styles --- */
+.ql-toolbar {
+    background-color: #374e73;
     border: 1px solid #7b96c2 !important;
-    border-radius: 6px !important;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 }
-.tox .tox-edit-area__iframe {
-    background-color: #25344f !important;
+.ql-toolbar .ql-stroke {
+    stroke: #E1E1E1;
 }
-.tox .tox-toolbar, .tox .tox-statusbar {
-    background-color: #374e73 !important;
+.ql-toolbar .ql-fill {
+    fill: #E1E1E1;
 }
-.tox .tox-tbtn, .tox .tox-mbtn, .tox .tox-split-button__chevron, .tox .tox-statusbar a, .tox .tox-statusbar__path-item, .tox .tox-statusbar__wordcount {
-    color: #E1E1E1 !important;
-    fill: #E1E1E1 !important;
+.ql-toolbar .ql-picker-label {
+    color: #E1E1E1;
 }
+.ql-container {
+    border: 1px solid #7b96c2 !important;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    background-color: #25344f;
+    color: #E1E1E1;
+    height: 150px; /* Set a default height */
+    font-size: 1rem; /* Match site font size */
+    font-family: "Cabin", sans-serif;
+}
+
 
 .modal-content h3 {
   margin-top: 0;
