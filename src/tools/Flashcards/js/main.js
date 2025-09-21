@@ -1,5 +1,5 @@
-import { state, saveState, loadState, getDeck, getCard } from '../../../../assets/js/flashcards/state.js';
-import * as ui from '../../../../assets/js/flashcards/ui.js';
+import { state, saveState, loadState, getDeck, getCard } from './state.js';
+import * as ui from './ui.js';
 import { initializeCardSrs, updateCardSrs } from './srs.js';
 import { parseImportFile, exportDeck } from './import-export.js';
 
@@ -108,9 +108,19 @@ function handleDeckForm(e) {
 function handleCardForm(e) {
     e.preventDefault();
     const id = document.getElementById('card-id').value;
-    const front = document.getElementById('card-front-input').value.trim();
-    const back = document.getElementById('card-back-input').value.trim();
-    if (!front || !back) return;
+    
+    // Get content from TinyMCE editors
+    const frontHTML = tinymce.get('card-front-input').getContent();
+    const backHTML = tinymce.get('card-back-input').getContent();
+    
+    // Sanitize HTML content before saving
+    const front = DOMPurify.sanitize(frontHTML);
+    const back = DOMPurify.sanitize(backHTML);
+
+    if (!front || !back) {
+        alert("Both front and back of the card must have content.");
+        return;
+    }
 
     const deck = getDeck(state.currentDeckId);
     if (id) { // Editing existing card

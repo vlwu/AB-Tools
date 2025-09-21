@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let hasUnsavedChanges = false;
   let targetGradeForAdding = null;
   let directDeliveryMethod = null;
+  let universityData = {};
 
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
@@ -38,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const prereqTreeContainer = document.getElementById('prereq-tree-container');
   const prereqModalTitle = document.getElementById('prereq-modal-title');
 
-  // New Modal Elements
   const confirmModal = document.getElementById('confirm-modal');
   const confirmModalTitle = document.getElementById('confirm-modal-title');
   const confirmModalMessage = document.getElementById('confirm-modal-message');
@@ -49,6 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const infoModalTitle = document.getElementById('info-modal-title');
   const infoModalMessage = document.getElementById('info-modal-message');
   const infoModalClose = document.getElementById('info-modal-close');
+
+  const universitySelect = document.getElementById('university-select');
+  const programSelect = document.getElementById('program-select');
 
 
   const gradRequirements = {
@@ -62,7 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
     'Option-30': { label: '10 Credits (30-level other than ELA 30 & Social Studies 30)', met: false },
   };
 
-  function init() {
+  async function init() {
+    await fetchUniversityData();
+    populateUniversities();
     updateUI();
     attachEventListeners();
   }
@@ -141,6 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderPlanner();
     updateGradTracker();
     updateGradeCredits();
+    updateCourseCardStyles();
     hasUnsavedChanges = true;
   }
 
@@ -233,10 +239,90 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("export-pdf").addEventListener("click", exportPlan);
     document.getElementById("reset-plan").addEventListener("click", resetPlan);
 
+    universitySelect.addEventListener('change', () => populatePrograms(universitySelect.value));
+    programSelect.addEventListener('change', updateCourseCardStyles);
+
     setupDetailsModal();
     setupCourseSelectionModal();
     setupCustomModals();
     setupPrereqVisualizerModal();
+  }
+  
+  // --- UNIVERSITY & PROGRAM INTEGRATION ---
+  async function fetchUniversityData() {
+    try {
+      const response = await fetch('../../shared/data/university_requirements.json');
+      if (!response.ok) throw new Error('Network response was not ok.');
+      universityData = await response.json();
+    } catch (error) {
+      console.error('Failed to fetch university data:', error);
+      // Handle error in UI if necessary
+    }
+  }
+
+  function populateUniversities() {
+    universitySelect.innerHTML = '<option value="">-- Select a University --</option>';
+    Object.keys(universityData).sort().forEach(uni => {
+      const option = document.createElement('option');
+      option.value = uni;
+      option.textContent = uni;
+      universitySelect.appendChild(option);
+    });
+  }
+
+  function populatePrograms(universityName) {
+    programSelect.innerHTML = '<option value="">-- Select a Program --</option>';
+    if (universityName && universityData[universityName]) {
+      Object.keys(universityData[universityName].programs).sort().forEach(prog => {
+        const option = document.createElement('option');
+        option.value = prog;
+        option.textContent = prog;
+        programSelect.appendChild(option);
+      });
+      programSelect.disabled = false;
+    } else {
+      programSelect.disabled = true;
+    }
+    updateCourseCardStyles(); // Update styles when university changes
+  }
+
+  function updateCourseCardStyles() {
+    const uni = universitySelect.value;
+    const prog = programSelect.value;
+    
+    // Clear all existing styles first
+    document.querySelectorAll('.course-card').forEach(card => {
+        card.classList.remove('required', 'recommended', 'unnecessary');
+    });
+
+    if (!uni || !prog) return; // Exit if no program is selected
+
+    const reqs = universityData[uni]?.programs[prog];
+    if (!reqs) return;
+
+    const requiredCourses = new Set(reqs.required_courses || []);
+    const recommendedCourses = new Set();
+    reqs.group_requirements?.forEach(group => {
+        group.courses.forEach(courseId => recommendedCourses.add(courseId));
+    });
+    if (reqs.notes) { // Also check notes for recommended courses
+        courseData.forEach(course => {
+            if (reqs.notes.includes(course.id)) {
+                recommendedCourses.add(course.id);
+            }
+        });
+    }
+
+    document.querySelectorAll('.course-card.planned').forEach(card => {
+        const courseId = card.dataset.id;
+        if (requiredCourses.has(courseId)) {
+            card.classList.add('required');
+        } else if (recommendedCourses.has(courseId)) {
+            card.classList.add('recommended');
+        } else {
+            card.classList.add('unnecessary');
+        }
+    });
   }
 
   // --- MODAL MANAGEMENT ---

@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const examSelectionList = document.getElementById("exam-selection-list");
   const scheduleTimeline = document.getElementById("schedule-timeline");
   const addStudyBlockBtn = document.getElementById("add-study-block-btn");
+  const scheduleControls = document.querySelector(".schedule-controls");
   const modal = document.getElementById("study-block-modal");
   const modalForm = document.getElementById("study-block-form");
   const modalCancelBtn = document.getElementById("modal-cancel-btn");
@@ -77,6 +78,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const allEvents = [...selectedExamDetails, ...state.customEvents].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Add or remove the 'Add to Calendar' button based on whether there are events
+    let calendarBtn = document.getElementById('export-calendar-btn');
+    if (allEvents.length > 0 && !calendarBtn) {
+        calendarBtn = document.createElement('button');
+        calendarBtn.id = 'export-calendar-btn';
+        calendarBtn.textContent = '📅 Add to Calendar';
+        calendarBtn.addEventListener('click', () => exportToICS(allEvents));
+        scheduleControls.appendChild(calendarBtn);
+    } else if (allEvents.length === 0 && calendarBtn) {
+        calendarBtn.remove();
+    }
 
     if (allEvents.length === 0) {
       scheduleTimeline.innerHTML = `<div class="empty-schedule-message"><p>Your schedule is empty.</p><p>Select an exam or add a study block to begin.</p></div>`;
@@ -206,6 +219,60 @@ document.addEventListener("DOMContentLoaded", () => {
       state.customEvents = state.customEvents.filter(event => event.id !== eventId);
       saveState();
       renderSchedule();
+  }
+  
+  // --- CALENDAR EXPORT LOGIC ---
+  function exportToICS(events) {
+    // Helper to format dates for iCalendar spec (YYYYMMDDTHHMMSSZ)
+    const toICSDate = (date) => new Date(date).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+    let icsString = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//EM-Study-Tools//Diploma-Planner//EN'
+    ].join('\r\n');
+
+    events.forEach(event => {
+        const startDate = new Date(event.date);
+        let endDate = new Date(startDate);
+        let summary = '';
+        let description = '';
+
+        if (event.type === 'exam') {
+            const durationHours = parseFloat(event.duration) || 2;
+            endDate.setHours(startDate.getHours() + durationHours);
+            summary = `${event.subject} Diploma Exam`;
+            description = `Duration: ${event.duration}`;
+        } else { // Custom study block
+            endDate.setHours(startDate.getHours() + 1); // Assume 1-hour block
+            summary = `Study: ${event.title}`;
+            description = `Custom study block for diploma exams.`;
+        }
+
+        const eventString = [
+            'BEGIN:VEVENT',
+            `UID:${event.id}@emstudy.ca`,
+            `DTSTAMP:${toICSDate(new Date())}`,
+            `DTSTART:${toICSDate(startDate)}`,
+            `DTEND:${toICSDate(endDate)}`,
+            `SUMMARY:${summary}`,
+            `DESCRIPTION:${description}`,
+            'END:VEVENT'
+        ].join('\r\n');
+        
+        icsString += '\r\n' + eventString;
+    });
+
+    icsString += '\r\nEND:VCALENDAR';
+
+    // Trigger download
+    const blob = new Blob([icsString], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'Diploma-Schedule.ics';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   // --- START THE APP ---

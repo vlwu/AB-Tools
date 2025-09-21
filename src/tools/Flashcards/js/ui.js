@@ -58,8 +58,8 @@ export function renderDeckView(deck) {
   const container = elements.cardListContainer;
   container.innerHTML = deck.cards.length ? deck.cards.map(card => `
     <div class="card-list-item">
-      <div class="card-text">${card.front}</div>
-      <div class="card-text">${card.back}</div>
+      <div class="card-text">${DOMPurify.sanitize(card.front)}</div>
+      <div class="card-text">${DOMPurify.sanitize(card.back)}</div>
       <div class="card-list-actions">
         <button class="edit-card-btn" data-card-id="${card.id}">Edit</button>
         <button class="delete-card-btn danger-btn" data-card-id="${card.id}">Delete</button>
@@ -71,8 +71,8 @@ export function renderDeckView(deck) {
 export function displayStudyCard(card, currentIndex, totalCards) {
     elements.flashcard.classList.remove('is-flipped');
     setTimeout(() => {
-        document.getElementById('card-front').textContent = card.front;
-        document.getElementById('card-back').textContent = card.back;
+        document.getElementById('card-front').innerHTML = DOMPurify.sanitize(card.front);
+        document.getElementById('card-back').innerHTML = DOMPurify.sanitize(card.back);
         document.getElementById('card-counter').textContent = `${currentIndex + 1} / ${totalCards}`;
         updateSrsButtonLabels(card);
         elements.studyControls.style.display = 'flex';
@@ -123,17 +123,45 @@ export function showDeckModal(deck = null) {
   elements.modals.deck.style.display = 'flex';
 }
 
+const tinyMceConfig = {
+    height: 200,
+    menubar: false,
+    plugins: 'lists link image emoticons',
+    toolbar: 'bold italic underline | bullist numlist | link | image | emoticons',
+    skin: 'oxide-dark',
+    content_css: 'dark',
+    statusbar: false,
+    entity_encoding: 'raw' // Keep HTML entities as they are
+};
+
+function initEditors(card = null) {
+    tinymce.remove(); // Remove any existing instances
+    tinymce.init({
+        selector: '#card-front-input',
+        ...tinyMceConfig,
+        setup: (editor) => {
+            editor.on('init', () => editor.setContent(card ? card.front : ''));
+        }
+    });
+    tinymce.init({
+        selector: '#card-back-input',
+        ...tinyMceConfig,
+        setup: (editor) => {
+            editor.on('init', () => editor.setContent(card ? card.back : ''));
+        }
+    });
+}
+
 export function showCardModal(card = null) {
   const form = document.getElementById('card-form');
   form.reset();
   if (card) {
     document.getElementById('card-modal-title').textContent = "Edit Card";
     document.getElementById('card-id').value = card.id;
-    document.getElementById('card-front-input').value = card.front;
-    document.getElementById('card-back-input').value = card.back;
   } else {
     document.getElementById('card-modal-title').textContent = "Add New Card";
   }
+  initEditors(card);
   elements.modals.card.style.display = 'flex';
 }
 
@@ -175,6 +203,7 @@ export function showExportModal() {
 }
 
 export function hideModals() {
+  if (tinymce) tinymce.remove(); // Clean up editors when any modal is hidden
   Object.values(elements.modals).forEach(modal => modal.style.display = 'none');
 }
 

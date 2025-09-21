@@ -176,6 +176,7 @@
   border: 1px solid #7b96c2;
   background-color: #25344f;
   white-space: pre-wrap;
+  overflow-y: auto;
 }
 
 .card-back {
@@ -231,6 +232,27 @@
   text-align: center;
   max-width: 450px;
   width: 90%;
+}
+
+/* Make card editor modal wider for rich text editor */
+#card-modal .modal-content {
+    max-width: 700px;
+}
+
+/* Style for TinyMCE editor UI */
+.tox-tinymce {
+    border: 1px solid #7b96c2 !important;
+    border-radius: 6px !important;
+}
+.tox .tox-edit-area__iframe {
+    background-color: #25344f !important;
+}
+.tox .tox-toolbar, .tox .tox-statusbar {
+    background-color: #374e73 !important;
+}
+.tox .tox-tbtn, .tox .tox-mbtn, .tox .tox-split-button__chevron, .tox .tox-statusbar a, .tox .tox-statusbar__path-item, .tox .tox-statusbar__wordcount {
+    color: #E1E1E1 !important;
+    fill: #E1E1E1 !important;
 }
 
 .modal-content h3 {

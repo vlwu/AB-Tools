@@ -33,7 +33,8 @@
         </div>
         <div class="tracker-actions">
           <button id="add-activity-btn">➕ Add New Activity</button>
-          <button id="export-pdf-btn">📄 Export as PDF</button>
+          <button id="export-summary-btn">📄 Export Summary PDF</button>
+          <button id="export-resume-btn">📄 Export Resume Style PDF</button>
         </div>
       </section>
 
@@ -86,8 +87,12 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="activity-description">Description & Skills Learned:</label>
-          <textarea id="activity-description" rows="4"></textarea>
+          <label for="activity-description">Description of Duties:</label>
+          <textarea id="activity-description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="activity-skills">Skills Learned (comma-separated):</label>
+            <textarea id="activity-skills" rows="2" placeholder="e.g., Teamwork, Communication, Leadership"></textarea>
         </div>
         <div class="modal-buttons">
           <button type="submit">Save Activity</button>

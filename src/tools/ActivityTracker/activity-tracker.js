@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- DOM ELEMENTS ---
   const addActivityBtn = document.getElementById("add-activity-btn");
-  const exportPdfBtn = document.getElementById("export-pdf-btn");
+  const exportSummaryBtn = document.getElementById("export-summary-btn");
+  const exportResumeBtn = document.getElementById("export-resume-btn");
   const activityListContainer = document.getElementById("activity-list-container");
   
   const modal = document.getElementById("activity-modal");
@@ -60,9 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createActivityCard(activity) {
-    const { id, organization, role, category, hours, startDate, endDate, description } = activity;
-    const formattedStart = new Date(startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-    const formattedEnd = new Date(endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    const { id, organization, role, category, hours, startDate, endDate, description, skills } = activity;
+    const formattedStart = new Date(startDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    const formattedEnd = new Date(endDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+
+    const skillsHtml = skills ? `<p><strong>Skills:</strong> ${skills}</p>` : '';
 
     return `
       <div class="activity-card">
@@ -73,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="activity-details">
           <p><strong>Duration:</strong> ${formattedStart} to ${formattedEnd}</p>
           <p><strong>Commitment:</strong> ~${hours} hours/week</p>
+          ${skillsHtml}
         </div>
         ${description ? `<div class="activity-description"><p>${description.replace(/\n/g, '<br>')}</p></div>` : ''}
         <div class="activity-actions">
@@ -120,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("activity-start-date").value = activity.startDate;
       document.getElementById("activity-end-date").value = activity.endDate;
       document.getElementById("activity-description").value = activity.description;
+      document.getElementById("activity-skills").value = activity.skills;
     } else {
       modalTitle.textContent = "Add New Activity";
     }
@@ -165,7 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    exportPdfBtn.addEventListener("click", exportToPdf);
+    exportSummaryBtn.addEventListener("click", exportSummaryPdf);
+    exportResumeBtn.addEventListener("click", exportResumeStylePdf);
   }
 
   function handleFormSubmit(e) {
@@ -178,7 +184,8 @@ document.addEventListener("DOMContentLoaded", () => {
       hours: parseFloat(document.getElementById("activity-hours").value) || 0,
       startDate: document.getElementById("activity-start-date").value,
       endDate: document.getElementById("activity-end-date").value,
-      description: document.getElementById("activity-description").value
+      description: document.getElementById("activity-description").value,
+      skills: document.getElementById("activity-skills").value
     };
 
     if (new Date(newActivity.endDate) < new Date(newActivity.startDate)) {
@@ -200,7 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   
   // --- EXPORT LOGIC ---
-  function exportToPdf() {
+  function exportSummaryPdf() {
     if (typeof jspdf === 'undefined' || !jspdf.jsPDF) {
         alert('PDF library not loaded. Please wait a moment and try again.');
         return;
@@ -210,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let yPos = 20;
 
     doc.setFontSize(20);
-    doc.text("Extracurricular & Volunteer Record", 14, yPos);
+    doc.text("Extracurricular & Volunteer Summary", 14, yPos);
     yPos += 15;
 
     const groupedActivities = state.activities.reduce((acc, activity) => {
@@ -245,7 +252,88 @@ document.addEventListener("DOMContentLoaded", () => {
         yPos = doc.autoTable.previous.finalY + 10;
     });
 
-    doc.save("emhs-activity-record.pdf");
+    doc.save("emhs-activity-summary.pdf");
+  }
+
+  function exportResumeStylePdf() {
+    if (typeof jspdf === 'undefined' || !jspdf.jsPDF) {
+        alert('PDF library not loaded. Please wait a moment and try again.');
+        return;
+    }
+    const { jsPDF } = jspdf;
+    const doc = new jsPDF();
+    const margin = 15;
+    let yPos = 20;
+
+    doc.setFontSize(22);
+    doc.text("Extracurricular & Work Experience", margin, yPos);
+    yPos += 12;
+
+    // 1. Consolidate and display skills
+    const allSkills = new Set();
+    state.activities.forEach(a => {
+        if (a.skills) {
+            a.skills.split(',').forEach(skill => allSkills.add(skill.trim()));
+        }
+    });
+
+    if (allSkills.size > 0) {
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text("Key Skills", margin, yPos);
+        yPos += 6;
+        doc.setFont(undefined, 'normal');
+        doc.setFontSize(11);
+        doc.text(Array.from(allSkills).join(' • '), margin, yPos, { maxWidth: 180 });
+        yPos += 15;
+    }
+    
+    // 2. Group activities by category and display them
+    const grouped = state.activities.reduce((acc, activity) => {
+        (acc[activity.category] = acc[activity.category] || []).push(activity);
+        return acc;
+    }, {});
+
+    Object.keys(grouped).forEach(category => {
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.text(category, margin, yPos);
+        yPos += 8;
+
+        grouped[category].forEach(a => {
+            if (yPos > 270) { // Add new page if content overflows
+                doc.addPage();
+                yPos = 20;
+            }
+            const start = new Date(a.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            const end = new Date(a.endDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'bold');
+            doc.text(a.organization, margin, yPos);
+            
+            doc.setFont(undefined, 'normal');
+            const dateStr = `${start} – ${end}`;
+            const dateWidth = doc.getTextWidth(dateStr);
+            doc.text(dateStr, 210 - margin - dateWidth, yPos); // Align right
+            yPos += 5;
+            
+            doc.setFont(undefined, 'italic');
+            doc.text(a.role, margin, yPos);
+            yPos += 6;
+
+            if (a.description) {
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(11);
+                const descLines = doc.splitTextToSize(`• ${a.description.replace(/\n/g, '\n• ')}`, 175);
+                doc.text(descLines, margin + 2, yPos);
+                yPos += descLines.length * 4.5 + 2;
+            }
+            yPos += 4;
+        });
+    });
+
+    doc.save("emhs-activity-resume.pdf");
   }
 
   // --- START THE APP ---

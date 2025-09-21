@@ -84,6 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             </div>
         `;
+        
+        const addToPlanButtonHtml = career.generalRequirements.length > 0
+            ? `<button id="add-reqs-to-plan" data-career-id="${career.id}">Add Requirements to My Plan</button>`
+            : '';
 
         careerDetailsContainer.innerHTML = `
             <h3>${career.title}</h3>
@@ -95,8 +99,45 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="requirements-section">
                 <h4>General High School Course Requirements</h4>
                 ${requirementsHtml}
+                ${addToPlanButtonHtml}
             </div>
         `;
+    }
+
+    /**
+     * Adds the required courses for a given career to the user's plan in localStorage.
+     * @param {string} careerId - The ID of the career.
+     */
+    function addCoursesToPlan(careerId) {
+        const career = careerData.careers.find(c => c.id === careerId);
+        if (!career || career.generalRequirements.length === 0) return;
+
+        const reqCourseIds = career.generalRequirements;
+        const savedPlanRaw = localStorage.getItem("emhsCoursePlan");
+        let plannedCourses = savedPlanRaw ? JSON.parse(savedPlanRaw) : [];
+        const plannedCourseIds = new Set(plannedCourses.map(pc => pc.id));
+
+        const coursesToAdd = [];
+        reqCourseIds.forEach(reqId => {
+            if (!plannedCourseIds.has(reqId)) {
+                const course = courseData.find(c => c.id === reqId);
+                if (course) {
+                    plannedCourses.push({
+                        id: course.id,
+                        delivery: 'regular', // Default delivery method
+                        placedInGrade: course.grade
+                    });
+                    coursesToAdd.push(course.name);
+                }
+            }
+        });
+
+        if (coursesToAdd.length > 0) {
+            localStorage.setItem("emhsCoursePlan", JSON.stringify(plannedCourses));
+            alert(`The following courses have been added to your plan:\n\n- ${coursesToAdd.join('\n- ')}\n\nYou can view them in the Interactive Course Planner.`);
+        } else {
+            alert("All required courses for this career are already in your plan.");
+        }
     }
 
     /**
@@ -122,6 +163,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const careerId = card.dataset.careerId;
                 renderCareerDetails(careerId);
+            }
+        });
+
+        // Use event delegation for the dynamically added "Add to Plan" button
+        careerDetailsContainer.addEventListener('click', (e) => {
+            if (e.target.id === 'add-reqs-to-plan') {
+                const careerId = e.target.dataset.careerId;
+                addCoursesToPlan(careerId);
             }
         });
     }

@@ -6,6 +6,8 @@
   <title>Digital Flashcard Creator</title>
   <link rel="stylesheet" href="../../shared/css/styles.css">
   <link rel="stylesheet" href="flashcards-styles.css">
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.3.8/purify.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -106,9 +108,9 @@
       <form id="card-form">
         <input type="hidden" id="card-id">
         <label for="card-front-input">Front:</label>
-        <textarea id="card-front-input" rows="4" required></textarea>
+        <div id="card-front-input"></div>
         <label for="card-back-input">Back:</label>
-        <textarea id="card-back-input" rows="4" required></textarea>
+        <div id="card-back-input"></div>
         <div class="modal-buttons">
           <button type="submit">Save Card</button>
           <button type="button" class="modal-cancel-btn danger-btn">Cancel</button>
