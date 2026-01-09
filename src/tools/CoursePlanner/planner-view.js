@@ -34,15 +34,35 @@ export function renderPlanner(callbacks) {
   const regularCourses = state.plannedCourses.filter(pc => pc.delivery !== 'summer');
   const summerCourses = state.plannedCourses.filter(pc => pc.delivery === 'summer');
 
+  // Track slots used to determine placeholders (4 blocks per semester)
+  const slotsPerSemester = {
+      '10-1': 0, '10-2': 0, '11-1': 0, '11-2': 0, '12-1': 0, '12-2': 0
+  };
+
   // Render Regular Courses
   regularCourses.forEach(pc => {
       const c = findCourseById(pc.id);
       const grade = pc.placedInGrade || c.grade;
       const semester = pc.semester || 1; 
       
+      // 1. Render in the primary semester
       const containerKey = `${grade}-${semester}`;
       if (gradeContainers[containerKey]) {
           gradeContainers[containerKey].appendChild(createCourseCard(c, callbacks.onCourseClick));
+          slotsPerSemester[containerKey]++;
+      }
+
+      // 2. If Full Year, render in the second semester as well (visual only)
+      // We assume Full Year starts in Sem 1.
+      if (c.isFullYear && semester === 1) {
+          const mirrorKey = `${grade}-2`;
+          if (gradeContainers[mirrorKey]) {
+              const mirrorCard = createCourseCard(c, callbacks.onCourseClick);
+              mirrorCard.classList.add('mirror-course'); // Visual style for duplicate
+              mirrorCard.style.opacity = '0.8'; 
+              gradeContainers[mirrorKey].appendChild(mirrorCard);
+              slotsPerSemester[mirrorKey]++;
+          }
       }
   });
 
@@ -57,13 +77,9 @@ export function renderPlanner(callbacks) {
   [10, 11, 12].forEach(grade => {
       [1, 2].forEach(sem => {
           const container = gradeContainers[`${grade}-${sem}`];
-          const coursesInSem = regularCourses.filter(pc => 
-              (pc.placedInGrade || findCourseById(pc.id).grade) === grade && 
-              (pc.semester || 1) === sem
-          );
-          
-          const slotsUsed = coursesInSem.length;
-          const emptySlots = 4 - slotsUsed;
+          const slotsUsed = slotsPerSemester[`${grade}-${sem}`];
+          // Standard load is 4 blocks.
+          const emptySlots = Math.max(0, 4 - slotsUsed);
           
           for(let i=0; i<emptySlots; i++) {
               container.appendChild(createPlaceholderCard([grade], 'regular', sem, callbacks.onAddClick));
@@ -87,8 +103,8 @@ function createCourseCard(course, onClick) {
 
   const plannedCourse = state.plannedCourses.find(pc => pc.id === course.id);
   let deliveryIcon = '';
-  if (plannedCourse.delivery === 'summer') deliveryIcon = '☀️';
-  if (plannedCourse.delivery === 'elearning') deliveryIcon = '💻';
+  if (plannedCourse && plannedCourse.delivery === 'summer') deliveryIcon = '☀️';
+  if (plannedCourse && plannedCourse.delivery === 'elearning') deliveryIcon = '💻';
   if (course.isFullYear) deliveryIcon += ' (FY)';
 
   card.innerHTML = `
@@ -140,14 +156,12 @@ export function updateGradeCreditsUI() {
 export function updateCourseCardStyles(uni, prog) {
   const presetActionsDiv = document.getElementById('preset-actions');
   
-  // Toggle Preset Button Visibility
   if (uni && prog) {
       presetActionsDiv.style.display = 'flex';
   } else {
       presetActionsDiv.style.display = 'none';
   }
 
-  // Clear all existing styles
   document.querySelectorAll('.course-card').forEach(card => {
       card.classList.remove('required', 'recommended', 'unnecessary');
   });
@@ -210,13 +224,26 @@ export function exportPlanPDF() {
             (pc.semester || 1) === sem
         );
         
-        if(courses.length === 0) {
+        // Handle full year courses appearing in Sem 2 visually for PDF
+        // Logic: if current sem is 2, check for full year courses in sem 1
+        const fullYearCoursesFromSem1 = sem === 2 ? state.plannedCourses.filter(pc => 
+             pc.delivery !== 'summer' && 
+             (pc.placedInGrade || findCourseById(pc.id).grade) === grade &&
+             (pc.semester || 1) === 1 &&
+             findCourseById(pc.id).isFullYear
+        ) : [];
+
+        const allCoursesForSem = [...courses, ...fullYearCoursesFromSem1];
+        
+        if(allCoursesForSem.length === 0) {
             doc.text("- No courses", 15, y);
             y += 6;
         } else {
-            courses.forEach(pc => {
+            allCoursesForSem.forEach(pc => {
                 const c = findCourseById(pc.id);
-                doc.text(`- ${c.name}`, 15, y);
+                let name = c.name;
+                if (c.isFullYear && sem === 2) name += " (Cont.)";
+                doc.text(`- ${name}`, 15, y);
                 y += 6;
             });
         }

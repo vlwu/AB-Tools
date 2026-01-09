@@ -138,6 +138,50 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  // --- EXCLUSION LOGIC ---
+  function getExclusionGroup(courseId) {
+    // Returns a group key. Courses in the same group are mutually exclusive.
+    const course = findCourseById(courseId);
+    if (!course) return null;
+
+    // Mutually exclusive: Same Subject + Same Grade Level
+    // E.g. MATH20-1 and MATH20-2.
+    // ELA10-1 and ELA10-2.
+    // Exceptions: Science (Bio/Chem/Phy are distinct).
+    
+    // Check main categories
+    if (['ELA', 'Social', 'Math'].includes(course.category)) {
+        return `${course.category}-${course.grade}`;
+    }
+    if (['ELA-30', 'Social-30'].includes(course.category)) {
+        // Strip the -30 suffix for cleaner grouping key
+        return `${course.category.split('-')[0]}-30`; 
+    }
+    
+    // For Science 10/20/30/14/24 (General Science)
+    if (course.category.startsWith('Science')) {
+        // If it's specifically "Science 20", "Science 30", "Science 10" (not Bio/Chem/Phy)
+        // The ID usually starts with SCI.
+        if (course.id.startsWith('SCI')) {
+            return `GeneralScience-${course.grade}`;
+        }
+    }
+    
+    return null; // No exclusion group (can take multiple Arts, CTS, etc.)
+  }
+
+  function checkExclusions(candidateCourse, plannedList) {
+      const candidateGroup = getExclusionGroup(candidateCourse.id);
+      if (!candidateGroup) return null;
+
+      const conflict = plannedList.find(pc => {
+          const plannedGroup = getExclusionGroup(pc.id);
+          return plannedGroup === candidateGroup && pc.id !== candidateCourse.id;
+      });
+
+      return conflict ? findCourseById(conflict.id) : null;
+  }
+
   // --- MODAL: COURSE SELECTION ---
   function showCourseSelectionModal(grades, delivery = null, semester = null) {
     targetGradeForAdding = grades;
@@ -200,14 +244,30 @@ document.addEventListener("DOMContentLoaded", () => {
         groupedCourses[category].forEach(course => {
             const item = document.createElement('div');
             item.className = 'modal-course-item';
-            const isMet = arePrerequisitesMet(course, tGrade, tSem, tDelivery);
-            if (!isMet) item.classList.add('locked');
+            
+            // Check Prerequisites
+            const isPrereqMet = arePrerequisitesMet(course, tGrade, tSem, tDelivery);
+            
+            // Check Exclusions (Mutually Exclusive)
+            const exclusionConflict = checkExclusions(course, state.plannedCourses);
             
             const info = document.createElement('div');
-            info.innerHTML = `<span class="name">${course.name}</span>`;
+            let infoText = `<span class="name">${course.name}</span>`;
+            
+            if (exclusionConflict) {
+                item.classList.add('locked');
+                infoText += `<span class="prereqs" style="color: #f0ad4e;">Excludes: ${exclusionConflict.name} (Planned)</span>`;
+            } else if (!isPrereqMet) {
+                item.classList.add('locked');
+                infoText += `<span class="prereqs">Prerequisites missing</span>`;
+            } else {
+                infoText += `<span class="prereqs">${course.prerequisites.length ? 'Prereqs met' : 'No prereqs'}</span>`;
+            }
+            
+            info.innerHTML = infoText;
             item.appendChild(info);
 
-            if (isMet) {
+            if (isPrereqMet && !exclusionConflict) {
                 item.addEventListener('click', (e) => {
                     if (e.target.matches('.visualize-prereq-btn')) return;
                     courseSelectionModal.style.display = 'none';

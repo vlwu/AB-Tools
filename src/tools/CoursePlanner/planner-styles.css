@@ -138,6 +138,11 @@
     border-color: #8a63d2;
 }
 
+.course-card.mirror-course {
+    opacity: 0.7;
+    border-style: dashed;
+}
+
 .course-card.highlight-prereq {
   box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.7);
   border-color: #ffc107;
@@ -154,7 +159,6 @@
   opacity: 0.7;
 }
 .course-card.required::after, .course-card.recommended::after {
-  /* Simplified for smaller cards */
   position: absolute;
   top: 5px;
   right: 5px;
@@ -336,6 +340,7 @@
   background-color: #374e73;
   color: #E1E1E1;
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .modal-course-item .name {
@@ -589,4 +594,64 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: bold;
+}
+
+/* --- Button UI Improvements --- */
+#load-preset-btn {
+  background-color: #ffffff;
+  color: #25344f;
+  border: 2px solid #ffffff;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+#load-preset-btn:hover {
+  background-color: #e6e6e6;
+  border-color: #e6e6e6;
+  transform: translateY(-1px);
+}
+
+/* --- Custom Checkbox Styles --- */
+.custom-checkbox-wrapper {
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+.custom-checkbox-wrapper input[type="checkbox"] {
+  display: none;
+}
+.custom-checkbox-wrapper label {
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.custom-checkbox-wrapper label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border: 2px solid #7b96c2;
+  border-radius: 4px;
+  background: #25344f;
+  transition: all 0.2s;
+}
+.custom-checkbox-wrapper input[type="checkbox"]:checked + label::before {
+  background: #5cb85c;
+  border-color: #5cb85c;
+  content: '✔';
+  color: white;
+  text-align: center;
+  line-height: 22px;
+  font-size: 16px;
+}
+.checkbox-description {
+    font-size: 0.9em;
+    color: #aaa;
+    margin-left: 35px;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
 }
