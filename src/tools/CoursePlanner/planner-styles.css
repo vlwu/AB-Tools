@@ -34,25 +34,53 @@
   color: #E1E1E1;
 }
 
+/* --- Semester Styles --- */
+.semester-group {
+    background-color: #2e4161;
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.semester-group h3 {
+    font-size: 0.9rem;
+    color: #aebfd6;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #7b96c2;
+    padding-bottom: 0.25rem;
+}
+
 .course-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   flex-grow: 1;
 }
 
+.course-list.semester-list {
+    min-height: 100px;
+}
+
+
 .course-card {
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 0.8rem;
   border: 1px solid #7b96c2;
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   position: relative;
   overflow: hidden;
+  font-size: 0.95rem;
 }
 
 .add-course-placeholder {
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 0.8rem;
   border: 2px dashed #7b96c2;
   border-radius: 6px;
   cursor: pointer;
@@ -63,7 +91,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 70px;
+  min-height: 50px;
+  font-size: 0.9rem;
 }
 
 .add-course-placeholder:hover {
@@ -74,12 +103,14 @@
 
 .course-card .name {
   font-weight: 600;
+  display: block;
+  margin-bottom: 0.1rem;
 }
 
 .course-card .credits {
-  font-size: 0.9em;
+  font-size: 0.85em;
   color: #E1E1E1;
-  display: block;
+  opacity: 0.8;
 }
 
 .course-card.locked {
@@ -103,12 +134,8 @@
 }
 
 .course-card.full-year-course {
-
-    min-height: 152px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    background-color: #4c4c8a; /* Different color for full year */
+    border-color: #8a63d2;
 }
 
 .course-card.highlight-prereq {
@@ -118,40 +145,37 @@
 
 /* --- Program Requirement Visual Feedback Styles --- */
 .course-card.required {
-  border-left: 5px solid #5cb85c;
+  border-left: 4px solid #5cb85c;
 }
 .course-card.recommended {
-  border-left: 5px solid #f0ad4e;
+  border-left: 4px solid #f0ad4e;
 }
 .course-card.unnecessary {
   opacity: 0.7;
 }
 .course-card.required::after, .course-card.recommended::after {
+  /* Simplified for smaller cards */
   position: absolute;
-  top: 50%;
+  top: 5px;
   right: 5px;
-  transform: translateY(-50%);
-  font-size: 0.8em;
-  font-weight: bold;
-  padding: 2px 5px;
-  border-radius: 4px;
-  color: #25344f;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  content: '';
 }
 .course-card.required::after {
-  content: 'Required';
   background-color: #5cb85c;
 }
 .course-card.recommended::after {
-  content: 'Recommended';
   background-color: #f0ad4e;
 }
 
 
 .delivery-icon {
   position: absolute;
-  top: 5px;
+  bottom: 5px;
   right: 5px;
-  font-size: 1.2em;
+  font-size: 1em;
 }
 
 .progress-bar-container {
@@ -354,9 +378,9 @@
 .grade-footer {
   text-align: right;
   padding-top: 1rem;
-  margin-top: 1rem;
+  margin-top: auto; /* Push to bottom */
   border-top: 2px solid #7b96c2;
-  font-size: 1.1em;
+  font-size: 1em;
 }
 
 .grade-footer.warning {
