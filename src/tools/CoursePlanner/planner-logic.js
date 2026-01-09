@@ -79,21 +79,45 @@ document.addEventListener("DOMContentLoaded", () => {
     universitySelect.addEventListener('change', () => populatePrograms(universitySelect.value));
     programSelect.addEventListener('change', () => updateCourseCardStyles(universitySelect.value, programSelect.value));
 
-    // Preset Buttons
-    document.getElementById('load-preset-btn').addEventListener('click', generatePreset);
-    document.getElementById('preset-settings-btn').addEventListener('click', () => {
+    // Modified Preset Buttons Logic
+    document.getElementById('load-preset-btn').addEventListener('click', () => {
+        const uni = universitySelect.value;
+        const prog = programSelect.value;
+        
+        // Guard clause: ensure valid selection before running logic
+        if (!uni || !prog) {
+            return; 
+        }
+
+        // Sync settings from state to UI before showing modal
         document.getElementById('setting-allow-summer').checked = presetSettings.allowSummer;
         document.getElementById('setting-fill-spares').checked = presetSettings.fillSpares;
         document.getElementById('setting-include-ap').checked = presetSettings.includeAP;
+        
+        // Open the settings modal to confirm generation
         presetSettingsModal.style.display = 'flex';
     });
-    document.getElementById('preset-settings-save').addEventListener('click', () => {
+
+    // Handle "Generate & Load" from the settings modal
+    document.getElementById('preset-generate-btn').addEventListener('click', () => {
+        // Update settings object
         presetSettings.allowSummer = document.getElementById('setting-allow-summer').checked;
         presetSettings.fillSpares = document.getElementById('setting-fill-spares').checked;
         presetSettings.includeAP = document.getElementById('setting-include-ap').checked;
+        
         presetSettingsModal.style.display = 'none';
-        showInfoModal("Settings Saved", "Preferences updated.");
+        
+        // Execute the preset generation (formerly in generatePreset)
+        const uni = universitySelect.value;
+        const prog = programSelect.value;
+        
+        const newPlan = executePresetGeneration(uni, prog, presetSettings);
+        state.plannedCourses = newPlan;
+        state.hasUnsavedChanges = true;
+        refreshUI();
+        showInfoModal("Preset Loaded", "Loaded best route based on your settings.");
     });
+    
     document.getElementById('preset-settings-cancel').addEventListener('click', () => presetSettingsModal.style.display = 'none');
 
     setupModalListeners();
@@ -124,26 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
       programSelect.disabled = true;
     }
     updateCourseCardStyles(universitySelect.value, programSelect.value);
-  }
-
-  // --- PRESET GENERATION ---
-  function generatePreset() {
-      const uni = universitySelect.value;
-      const prog = programSelect.value;
-      
-      // Guard clause: ensure valid selection before running logic
-      if (!uni || !prog) {
-          // This case handles if the button is clicked somehow while disabled
-          return; 
-      }
-
-      showConfirmModal("Load Preset?", "Replace plan with optimized route?", () => {
-          const newPlan = executePresetGeneration(uni, prog, presetSettings);
-          state.plannedCourses = newPlan;
-          state.hasUnsavedChanges = true;
-          refreshUI();
-          showInfoModal("Preset Loaded", "Loaded best route.");
-      });
   }
 
   // --- EXCLUSION LOGIC ---

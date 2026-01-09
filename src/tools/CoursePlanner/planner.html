@@ -41,10 +41,9 @@
               </select>
             </div>
           </div>
-          <!-- Updated: Removed inline display:none, handling visibility via CSS class -->
-          <div id="preset-actions" class="preset-actions-disabled" style="align-items: flex-end; gap: 0.5rem;">
-             <button id="load-preset-btn" title="Auto-fill the best course route for this program">Load Best Route Preset</button>
-             <button id="preset-settings-btn" title="Preset Settings" style="padding: 0.75rem;">⚙️</button>
+          <!-- Updated: Integrated settings into load button workflow -->
+          <div id="preset-actions" class="preset-actions-disabled" style="align-items: flex-end;">
+             <button id="load-preset-btn" title="Configure and load the best course route for this program">Load Best Route Preset</button>
           </div>
         </div>
         <div class="planner-controls">
@@ -177,7 +176,7 @@
 
   <div id="preset-settings-modal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
-      <h3>Preset Customization</h3>
+      <h3>Configure & Load Preset</h3>
       <p>Customize how the "Best Route" preset is generated.</p>
       
       <div style="text-align: left; margin: 1rem 0;">
@@ -193,7 +192,6 @@
           <p class="checkbox-description">Auto-fill empty slots with electives to maximize credits.</p>
         </div>
 
-        <!-- Updated: Added AP Checkbox -->
         <div class="custom-checkbox-wrapper">
             <input type="checkbox" id="setting-include-ap">
             <label for="setting-include-ap">Include AP/Pre-AP Courses</label>
@@ -201,8 +199,10 @@
         </div>
       </div>
 
+      <p style="color: #f0ad4e; font-size: 0.9rem; margin-top: 1rem;"><strong>Warning:</strong> Loading a preset will replace your current course plan.</p>
+
       <div class="modal-buttons">
-        <button id="preset-settings-save">Save Settings</button>
+        <button id="preset-generate-btn">Generate & Load</button>
         <button id="preset-settings-cancel" class="danger-btn">Cancel</button>
       </div>
     </div>
