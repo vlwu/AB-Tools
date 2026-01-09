@@ -312,14 +312,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("save-plan").addEventListener("click", savePlan);
     document.getElementById("load-plan").addEventListener("click", () => {
          // Manual load button
-         const saved = localStorage.getItem("emhsCoursePlan");
-         if(saved) {
-             showConfirmModal("Load Plan", "Overwrite current plan?", () => {
-                 loadPlanLogic(saved);
-             });
-         } else {
-             showInfoModal("No Plan", "No saved plan found.");
-         }
+        const saved = localStorage.getItem("emhsCoursePlan");
+        if(saved) {
+            showConfirmModal("Load Plan", "Overwrite current plan?", () => {
+                loadPlanLogic(saved);
+            });
+        } else {
+            showInfoModal("No Plan", "No saved plan found.");
+        }
     });
     document.getElementById("export-pdf").addEventListener("click", exportPlan);
     document.getElementById("reset-plan").addEventListener("click", resetPlan);
@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Mandatory
       ['ELA30-1', 'SS30-1', 'PE10', 'CALM', 'SCI10', 'MATH10C'].forEach(id => {
           if (!Array.from(coursesToAdd).some(cid => cid.includes(id.substring(0, 4)))) {
-               resolvePrerequisites(id, coursesToAdd);
+              resolvePrerequisites(id, coursesToAdd);
           }
       });
 
@@ -493,14 +493,14 @@ document.addEventListener("DOMContentLoaded", () => {
               // Check completion of prereqs to determine earliest sem
               let earliestTime = 0;
               if (course.prerequisites.length > 0) {
-                   course.prerequisites.forEach(p => {
-                       const pid = p.split('|')[0];
-                       const plannedPrereq = newPlan.find(pc => pc.id === pid);
-                       if(plannedPrereq) {
-                           const finish = getCompletionTime(pid, plannedPrereq);
-                           if (finish > earliestTime) earliestTime = finish;
-                       }
-                   });
+                  course.prerequisites.forEach(p => {
+                      const pid = p.split('|')[0];
+                      const plannedPrereq = newPlan.find(pc => pc.id === pid);
+                      if(plannedPrereq) {
+                          const finish = getCompletionTime(pid, plannedPrereq);
+                          if (finish > earliestTime) earliestTime = finish;
+                      }
+                  });
               }
               
               // Earliest start:
@@ -862,28 +862,28 @@ document.addEventListener("DOMContentLoaded", () => {
       y += 8;
       
       [1, 2].forEach(sem => {
-           doc.setFontSize(12);
-           doc.text(`Semester ${sem}`, 10, y);
-           y += 6;
-           doc.setFontSize(10);
-           
-           const courses = plannedCourses.filter(pc => 
-               pc.delivery !== 'summer' && 
-               (pc.placedInGrade || findCourseById(pc.id).grade) === grade &&
-               (pc.semester || 1) === sem
-           );
-           
-           if(courses.length === 0) {
-               doc.text("- No courses", 15, y);
-               y += 6;
-           } else {
-               courses.forEach(pc => {
-                   const c = findCourseById(pc.id);
-                   doc.text(`- ${c.name}`, 15, y);
-                   y += 6;
-               });
-           }
-           y += 2;
+          doc.setFontSize(12);
+          doc.text(`Semester ${sem}`, 10, y);
+          y += 6;
+          doc.setFontSize(10);
+          
+          const courses = plannedCourses.filter(pc => 
+              pc.delivery !== 'summer' && 
+              (pc.placedInGrade || findCourseById(pc.id).grade) === grade &&
+              (pc.semester || 1) === sem
+          );
+          
+          if(courses.length === 0) {
+              doc.text("- No courses", 15, y);
+              y += 6;
+          } else {
+              courses.forEach(pc => {
+                  const c = findCourseById(pc.id);
+                  doc.text(`- ${c.name}`, 15, y);
+                  y += 6;
+              });
+          }
+          y += 2;
       });
       
       const summer = plannedCourses.filter(pc => pc.delivery === 'summer' && (pc.placedInGrade || findCourseById(pc.id).grade) === grade);
@@ -893,9 +893,9 @@ document.addEventListener("DOMContentLoaded", () => {
           y += 6;
           doc.setFontSize(10);
           summer.forEach(pc => {
-               const c = findCourseById(pc.id);
-               doc.text(`- ${c.name}`, 15, y);
-               y += 6;
+              const c = findCourseById(pc.id);
+              doc.text(`- ${c.name}`, 15, y);
+              y += 6;
           });
       }
       y += 5;
