@@ -9,6 +9,11 @@ export const state = {
 export const findCourseById = (id) => courseData.find(c => c.id === id);
 
 export function addCourseToState(course, deliveryMethod, placementGrade, semester) {
+  // Fix: Force full-year courses to always start in Semester 1 to ensure mirroring logic works
+  if (course.isFullYear) {
+      semester = 1;
+  }
+
   if (!state.plannedCourses.some(pc => pc.id === course.id)) {
     state.plannedCourses.push({ 
         id: course.id, 

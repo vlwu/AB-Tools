@@ -128,6 +128,13 @@ export function updateGradTrackerUI() {
   const totalCredits = calculateCredits();
   creditCountEl.textContent = `${totalCredits}`;
   progressBarEl.style.width = `${Math.min((totalCredits / 100) * 100, 100)}%`;
+  
+  // Visual Feedback: Red if incomplete, Green if complete (via CSS class)
+  if (totalCredits < 100) {
+      progressBarEl.classList.add('incomplete');
+  } else {
+      progressBarEl.classList.remove('incomplete');
+  }
 
   const reqs = checkGradRequirements();
   requirementsEl.innerHTML = Object.entries(reqs)
@@ -137,6 +144,7 @@ export function updateGradTrackerUI() {
 
 export function updateGradeCreditsUI() {
   [10, 11, 12].forEach(grade => {
+    // 1. Calculate Credits
     const credits = state.plannedCourses
       .filter(pc => pc.delivery !== 'summer')
       .filter(pc => (pc.placedInGrade || findCourseById(pc.id).grade) === grade)
@@ -144,11 +152,32 @@ export function updateGradeCreditsUI() {
       .reduce((sum, c) => sum + c.credits, 0);
     gradeCreditEls[grade].textContent = credits;
 
+    // 2. High Credit Warning
     const footer = gradeCreditEls[grade].parentElement;
     if (credits > 45) { 
       footer.classList.add('warning');
     } else {
       footer.classList.remove('warning');
+    }
+
+    // 3. Grade 10 Full Schedule Validation
+    if (grade === 10) {
+        const grade10Col = gradeContainers['10-1'].closest('.grade-column');
+        
+        // Calculate used blocks (Full Year = 2, Standard = 1)
+        const usedBlocks = state.plannedCourses
+            .filter(pc => pc.delivery !== 'summer' && (pc.placedInGrade || findCourseById(pc.id).grade) === 10)
+            .reduce((sum, pc) => {
+                const c = findCourseById(pc.id);
+                return sum + (c.isFullYear ? 2 : 1);
+            }, 0);
+
+        // Expectation: 8 blocks filled
+        if (usedBlocks < 8) {
+            grade10Col.classList.add('grade-error');
+        } else {
+            grade10Col.classList.remove('grade-error');
+        }
     }
   });
 }
@@ -157,9 +186,9 @@ export function updateCourseCardStyles(uni, prog) {
   const presetActionsDiv = document.getElementById('preset-actions');
   
   if (uni && prog) {
-      presetActionsDiv.style.display = 'flex';
+      presetActionsDiv.classList.remove('preset-actions-disabled');
   } else {
-      presetActionsDiv.style.display = 'none';
+      presetActionsDiv.classList.add('preset-actions-disabled');
   }
 
   document.querySelectorAll('.course-card').forEach(card => {

@@ -10,10 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let targetSemesterForAdding = null;
   let directDeliveryMethod = null;
   
-  // Preset Settings
+  // Preset Settings (Updated with AP option)
   let presetSettings = {
     allowSummer: true,
-    fillSpares: false
+    fillSpares: false,
+    includeAP: false
   };
 
   // DOM Cache
@@ -25,10 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const courseSelectionModal = document.getElementById("course-selection-modal");
   const modalCourseList = document.getElementById("modal-course-list");
   const courseSearchInput = document.getElementById("course-search-input");
-  const prereqModal = document.getElementById('prereq-visualizer-modal');
-  const confirmModal = document.getElementById('confirm-modal');
-  const infoModal = document.getElementById('info-modal');
-  const presetSettingsModal = document.getElementById('preset-settings-modal');
+  const prereqModal = document.getElementById("prereq-visualizer-modal");
+  const confirmModal = document.getElementById("confirm-modal");
+  const infoModal = document.getElementById("info-modal");
+  const presetSettingsModal = document.getElementById("preset-settings-modal");
 
   async function init() {
     await fetchUniversityData();
@@ -83,11 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('preset-settings-btn').addEventListener('click', () => {
         document.getElementById('setting-allow-summer').checked = presetSettings.allowSummer;
         document.getElementById('setting-fill-spares').checked = presetSettings.fillSpares;
+        document.getElementById('setting-include-ap').checked = presetSettings.includeAP;
         presetSettingsModal.style.display = 'flex';
     });
     document.getElementById('preset-settings-save').addEventListener('click', () => {
         presetSettings.allowSummer = document.getElementById('setting-allow-summer').checked;
         presetSettings.fillSpares = document.getElementById('setting-fill-spares').checked;
+        presetSettings.includeAP = document.getElementById('setting-include-ap').checked;
         presetSettingsModal.style.display = 'none';
         showInfoModal("Settings Saved", "Preferences updated.");
     });
@@ -127,7 +130,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function generatePreset() {
       const uni = universitySelect.value;
       const prog = programSelect.value;
-      if (!uni || !prog) return showInfoModal("Error", "Select University and Program first.");
+      
+      // Guard clause: ensure valid selection before running logic
+      if (!uni || !prog) {
+          // This case handles if the button is clicked somehow while disabled
+          return; 
+      }
 
       showConfirmModal("Load Preset?", "Replace plan with optimized route?", () => {
           const newPlan = executePresetGeneration(uni, prog, presetSettings);
@@ -145,29 +153,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!course) return null;
 
     // Mutually exclusive: Same Subject + Same Grade Level
-    // E.g. MATH20-1 and MATH20-2.
-    // ELA10-1 and ELA10-2.
-    // Exceptions: Science (Bio/Chem/Phy are distinct).
-    
-    // Check main categories
     if (['ELA', 'Social', 'Math'].includes(course.category)) {
         return `${course.category}-${course.grade}`;
     }
     if (['ELA-30', 'Social-30'].includes(course.category)) {
-        // Strip the -30 suffix for cleaner grouping key
         return `${course.category.split('-')[0]}-30`; 
     }
     
     // For Science 10/20/30/14/24 (General Science)
     if (course.category.startsWith('Science')) {
-        // If it's specifically "Science 20", "Science 30", "Science 10" (not Bio/Chem/Phy)
-        // The ID usually starts with SCI.
         if (course.id.startsWith('SCI')) {
             return `GeneralScience-${course.grade}`;
         }
     }
     
-    return null; // No exclusion group (can take multiple Arts, CTS, etc.)
+    return null; 
   }
 
   function checkExclusions(candidateCourse, plannedList) {

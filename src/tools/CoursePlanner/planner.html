@@ -41,7 +41,8 @@
               </select>
             </div>
           </div>
-          <div id="preset-actions" style="display: none; align-items: flex-end; gap: 0.5rem;">
+          <!-- Updated: Removed inline display:none, handling visibility via CSS class -->
+          <div id="preset-actions" class="preset-actions-disabled" style="align-items: flex-end; gap: 0.5rem;">
              <button id="load-preset-btn" title="Auto-fill the best course route for this program">Load Best Route Preset</button>
              <button id="preset-settings-btn" title="Preset Settings" style="padding: 0.75rem;">⚙️</button>
           </div>
@@ -190,6 +191,13 @@
           <input type="checkbox" id="setting-fill-spares">
           <label for="setting-fill-spares">Limit Spares (Fill Schedule)</label>
           <p class="checkbox-description">Auto-fill empty slots with electives to maximize credits.</p>
+        </div>
+
+        <!-- Updated: Added AP Checkbox -->
+        <div class="custom-checkbox-wrapper">
+            <input type="checkbox" id="setting-include-ap">
+            <label for="setting-include-ap">Include AP/Pre-AP Courses</label>
+            <p class="checkbox-description">Use Advanced Placement courses where available.</p>
         </div>
       </div>
 
