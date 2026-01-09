@@ -158,6 +158,22 @@
 
 .modal-content textarea {
     resize: vertical;
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #25344f;
+    border: 1px solid #7b96c2;
+    color: #E1E1E1;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: inherit;
+    margin-bottom: 1rem;
+}
+
+#activity-description {
+    min-height: 150px;
+}
+
+#activity-skills {
     min-height: 80px;
 }
 
