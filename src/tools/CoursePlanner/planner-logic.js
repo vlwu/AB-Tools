@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let targetGradeForAdding = null;
   let directDeliveryMethod = null;
   let universityData = {};
+  
+  // Default Settings
+  let presetSettings = {
+    allowSummer: true,
+    fillSpares: false
+  };
 
   const findCourseById = (id) => courseData.find(c => c.id === id);
 
@@ -52,6 +58,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const universitySelect = document.getElementById('university-select');
   const programSelect = document.getElementById('program-select');
+  const presetActionsDiv = document.getElementById('preset-actions');
+  const loadPresetBtn = document.getElementById('load-preset-btn');
+  const presetSettingsBtn = document.getElementById('preset-settings-btn');
+  
+  const presetSettingsModal = document.getElementById('preset-settings-modal');
+  const presetSettingsSave = document.getElementById('preset-settings-save');
+  const presetSettingsCancel = document.getElementById('preset-settings-cancel');
+  const settingAllowSummer = document.getElementById('setting-allow-summer');
+  const settingFillSpares = document.getElementById('setting-fill-spares');
 
 
   const gradRequirements = {
@@ -199,18 +214,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function arePrerequisitesMet(course, plannedIds) {
     if (!course.prerequisites || course.prerequisites.length === 0) {
-      return true; // No prerequisites, so it's automatically met.
+      return true;
     }
-
-    // This function now checks if EVERY prerequisite condition is met.
-    // A condition can be a single course OR a group of courses.
     return course.prerequisites.every(prereqCondition => {
       if (prereqCondition.includes('|')) {
         const orOptions = prereqCondition.split('|');
         return orOptions.some(optionId => plannedIds.includes(optionId));
       } else {
-        // This is a standard, single-course prerequisite.
-        // Check if the student has planned this specific course.
         return plannedIds.includes(prereqCondition);
       }
     });
@@ -242,6 +252,11 @@ document.addEventListener("DOMContentLoaded", () => {
     universitySelect.addEventListener('change', () => populatePrograms(universitySelect.value));
     programSelect.addEventListener('change', updateCourseCardStyles);
 
+    loadPresetBtn.addEventListener('click', generatePreset);
+    presetSettingsBtn.addEventListener('click', showPresetSettingsModal);
+    presetSettingsSave.addEventListener('click', savePresetSettings);
+    presetSettingsCancel.addEventListener('click', () => presetSettingsModal.style.display = 'none');
+
     setupDetailsModal();
     setupCourseSelectionModal();
     setupCustomModals();
@@ -256,7 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
       universityData = await response.json();
     } catch (error) {
       console.error('Failed to fetch university data:', error);
-      // Handle error in UI if necessary
     }
   }
 
@@ -272,6 +286,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function populatePrograms(universityName) {
     programSelect.innerHTML = '<option value="">-- Select a Program --</option>';
+    presetActionsDiv.style.display = 'none';
+
     if (universityName && universityData[universityName]) {
       Object.keys(universityData[universityName].programs).sort().forEach(prog => {
         const option = document.createElement('option');
@@ -283,19 +299,26 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       programSelect.disabled = true;
     }
-    updateCourseCardStyles(); // Update styles when university changes
+    updateCourseCardStyles();
   }
 
   function updateCourseCardStyles() {
     const uni = universitySelect.value;
     const prog = programSelect.value;
     
-    // Clear all existing styles first
+    // Toggle Preset Button Visibility
+    if (uni && prog) {
+        presetActionsDiv.style.display = 'flex';
+    } else {
+        presetActionsDiv.style.display = 'none';
+    }
+
+    // Clear all existing styles
     document.querySelectorAll('.course-card').forEach(card => {
         card.classList.remove('required', 'recommended', 'unnecessary');
     });
 
-    if (!uni || !prog) return; // Exit if no program is selected
+    if (!uni || !prog) return;
 
     const reqs = universityData[uni]?.programs[prog];
     if (!reqs) return;
@@ -305,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
     reqs.group_requirements?.forEach(group => {
         group.courses.forEach(courseId => recommendedCourses.add(courseId));
     });
-    if (reqs.notes) { // Also check notes for recommended courses
+    if (reqs.notes) {
         courseData.forEach(course => {
             if (reqs.notes.includes(course.id)) {
                 recommendedCourses.add(course.id);
@@ -324,6 +347,167 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
   }
+
+  // --- PRESET GENERATION LOGIC ---
+
+  function showPresetSettingsModal() {
+      settingAllowSummer.checked = presetSettings.allowSummer;
+      settingFillSpares.checked = presetSettings.fillSpares;
+      presetSettingsModal.style.display = 'flex';
+  }
+
+  function savePresetSettings() {
+      presetSettings.allowSummer = settingAllowSummer.checked;
+      presetSettings.fillSpares = settingFillSpares.checked;
+      presetSettingsModal.style.display = 'none';
+      showInfoModal("Settings Saved", "Your preset preferences have been updated. Load a preset to apply them.");
+  }
+
+  function generatePreset() {
+      const uni = universitySelect.value;
+      const prog = programSelect.value;
+
+      if (!uni || !prog) {
+          showInfoModal("Error", "Please select a University and Program first.");
+          return;
+      }
+
+      showConfirmModal(
+          "Load Preset?",
+          "This will replace your current course plan with a generated path optimized for this program. This cannot be undone.",
+          () => executePresetGeneration(uni, prog)
+      );
+  }
+
+  function executePresetGeneration(uni, prog) {
+      const reqs = universityData[uni]?.programs[prog];
+      if (!reqs) return;
+
+      const coursesToAdd = new Set();
+
+      // 1. Add specific required courses and their full prereq chains
+      if (reqs.required_courses) {
+          reqs.required_courses.forEach(id => resolvePrerequisites(id, coursesToAdd));
+      }
+
+      // 2. Handle Group Requirements (Pick first available option for "Best Route")
+      if (reqs.group_requirements) {
+          reqs.group_requirements.forEach(group => {
+              // Pick the first option in the group list
+              const bestOption = group.courses[0]; 
+              if (bestOption) resolvePrerequisites(bestOption, coursesToAdd);
+          });
+      }
+
+      // 3. Add Mandatory Graduation Requirements if not already present
+      // ELA 30-1 is usually a prereq for Uni, so check ELA chain.
+      // ELA 30-1 should trigger 20-1 and 10-1.
+      // If program didn't specify ELA (rare for Uni), add standard Uni Prep ELA.
+      if (!Array.from(coursesToAdd).some(id => id.includes('ELA30'))) {
+          resolvePrerequisites('ELA30-1', coursesToAdd);
+      }
+      // Social 30-1 for Uni Prep
+      if (!Array.from(coursesToAdd).some(id => id.includes('SS30'))) {
+          resolvePrerequisites('SS30-1', coursesToAdd);
+      }
+      // Mandatory Non-Academic
+      resolvePrerequisites('PE10', coursesToAdd);
+      resolvePrerequisites('CALM', coursesToAdd);
+      
+      // Science 10 is almost always needed for 30-level sciences, but double check
+      if (!coursesToAdd.has('SCI10')) resolvePrerequisites('SCI10', coursesToAdd);
+      
+      // Math 10C check
+      if (!coursesToAdd.has('MATH10C') && !coursesToAdd.has('MATH10-FY')) resolvePrerequisites('MATH10C', coursesToAdd);
+
+      // 4. Build new plan array
+      let newPlan = [];
+      const courseObjects = Array.from(coursesToAdd).map(id => findCourseById(id)).filter(Boolean);
+
+      // Sort by grade to help with filling logic
+      courseObjects.sort((a, b) => a.grade - b.grade);
+
+      // 5. Schedule Courses & Apply Settings
+      const gradeLoad = { 10: 0, 11: 0, 12: 0 };
+      
+      courseObjects.forEach(course => {
+          let delivery = 'regular';
+          let placement = course.grade;
+
+          // Summer School Logic (Simple Heuristic: Move CALM or single 5-credit options if overloaded)
+          if (presetSettings.allowSummer) {
+              // Priority candidates for Summer: CALM
+              if (course.id === 'CALM') {
+                  delivery = 'summer';
+                  placement = 10; // Summer after Grade 10
+              }
+          }
+
+          newPlan.push({ id: course.id, delivery, placedInGrade: placement });
+          if (delivery === 'regular') {
+              const weight = (course.credits >= 10 || course.isFullYear) ? 2 : 1;
+              gradeLoad[placement] += weight;
+          }
+      });
+
+      // 6. Fill Spares if requested
+      if (presetSettings.fillSpares) {
+          const fillers = [
+              'COMP10', 'ART10', 'DRAMA10', 'SPORTSMED10', 'BIZ10', // Grade 10 Options
+              'COMP20', 'ART20', 'DRAMA20', 'SPORTSMED20', 'BIZ20', // Grade 11 Options
+              'COMP30', 'ART30', 'DRAMA30', 'SPORTSMED30', 'BIZ30'  // Grade 12 Options
+          ];
+          
+          [10, 11, 12].forEach(grade => {
+              while (gradeLoad[grade] < 8) { // Assuming 8 blocks per year
+                  // Find a valid filler for this grade that isn't already used
+                  const validFillerId = fillers.find(fid => {
+                      const c = findCourseById(fid);
+                      if (!c || c.grade !== grade) return false;
+                      // Check if already in plan
+                      if (newPlan.some(p => p.id === fid)) return false;
+                      // Check prereqs for 20/30 fillers
+                      if (c.prerequisites.length > 0) {
+                          return arePrerequisitesMet(c, newPlan.map(p => p.id));
+                      }
+                      return true;
+                  });
+
+                  if (validFillerId) {
+                      newPlan.push({ id: validFillerId, delivery: 'regular', placedInGrade: grade });
+                      gradeLoad[grade]++;
+                  } else {
+                      break; // No more valid fillers found
+                  }
+              }
+          });
+      }
+
+      plannedCourses = newPlan;
+      updateUI();
+      showInfoModal("Preset Loaded", `Successfully loaded the best route for ${prog}.`);
+  }
+
+  function resolvePrerequisites(courseId, set) {
+      if (set.has(courseId)) return;
+      
+      const course = findCourseById(courseId);
+      if (!course) return;
+
+      // Add prerequisites first
+      if (course.prerequisites) {
+          course.prerequisites.forEach(condition => {
+              // Handle OR conditions (e.g. MATH10C|MATH10-FY). 
+              // For "Best Route" preset, we default to the first option (Standard route).
+              const reqId = condition.split('|')[0];
+              resolvePrerequisites(reqId, set);
+          });
+      }
+
+      // Add the course itself
+      set.add(courseId);
+  }
+
 
   // --- MODAL MANAGEMENT ---
   function showCourseSelectionModal(grades, delivery = null) {
@@ -344,12 +528,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const searchMatch = (course.name.toLowerCase().includes(searchTerm) || course.category.toLowerCase().includes(searchTerm) || course.id.toLowerCase().includes(searchTerm));
       const isAlreadyPlanned = plannedIds.includes(course.id);
 
-      // Initial filter: must not be planned, match grade, and match search term
       if (isAlreadyPlanned || !gradeMatch || !searchMatch) {
           return false;
       }
       
-      // Additional filter for summer school: only core classes, no AP
       if (directDeliveryMethod === 'summer') {
           const isAP = course.id.includes('AP');
           const coreCategories = ['ELA', 'Social', 'Math', 'Science', 'ELA-30', 'Social-30', 'Science-30', 'CALM'];
@@ -358,7 +540,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return !isAP && isCore;
       }
 
-      return true; // If not summer, course is available
+      return true;
     });
 
     if (availableCourses.length === 0) {
@@ -437,15 +619,12 @@ document.addEventListener("DOMContentLoaded", () => {
           }).join(', ');
         }
         
-        // Build the item content correctly
         const infoDiv = document.createElement('div');
         infoDiv.innerHTML = `<span class="name">${course.name}</span><span class="prereqs">${prereqText}</span>`;
         item.appendChild(infoDiv);
 
-        // Make the entire item clickable if prerequisites are met
         if (isMet) {
           item.addEventListener('click', (e) => {
-            // But ignore clicks on the visualize button
             if (e.target.matches('.visualize-prereq-btn')) {
               return;
             }
@@ -495,7 +674,6 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById('modal-cancel-selection').addEventListener('click', () => {
           courseSelectionModal.style.display = 'none';
       });
-      // Use event delegation for visualize buttons
       modalCourseList.addEventListener('click', (e) => {
         if (e.target.matches('.visualize-prereq-btn')) {
             const courseId = e.target.dataset.courseId;
@@ -521,7 +699,6 @@ document.addEventListener("DOMContentLoaded", () => {
       switchDeliveryBtn.textContent = 'Switch to Online';
     }
 
-    // Show or hide the visualize button based on prerequisites
     const visualizeBtn = detailsModal.querySelector('#details-modal-visualize');
     if (course.prerequisites && course.prerequisites.length > 0) {
         visualizeBtn.style.display = 'block';
@@ -559,8 +736,6 @@ document.addEventListener("DOMContentLoaded", () => {
           detailsModal.style.display = 'none';
       });
   }
-
-  // --- PREREQUISITE VISUALIZER LOGIC ---
 
   function setupPrereqVisualizerModal() {
     document.getElementById('prereq-modal-close').addEventListener('click', () => {
